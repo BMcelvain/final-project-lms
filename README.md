@@ -1,5 +1,4 @@
-# final-project-lms
-#Final Project - Group 1 - Learning Management System#
+# Final Project - Group 1 - Learning Management System
 
 **Learning Management System Final Project: Phase 1**
 
