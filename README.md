@@ -16,7 +16,7 @@ Direct all questions to your PO
 
 **Technical Requirements**
 
-ASP.NET Web Api
-Integrate Swagger
-Create a controller
-Create a DAO
+- [ ] ASP.NET Web Api
+- [ ] Integrate Swagger
+- [ ] Create a controller
+- [ ] Create a DAO
