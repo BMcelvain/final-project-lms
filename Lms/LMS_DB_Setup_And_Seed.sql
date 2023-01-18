@@ -63,11 +63,11 @@ insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndD
 insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (3, 5, 'Safety', 1, '7/1/2021', '9/1/2021', 'Inactive');
 insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (4, 3, 'CE Training', 1, '7/1/2021', '9/1/2021', 'Inactive');
 insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (5, 1, 'Loans R Us', 1, '7/1/2021', '9/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (6, 2, 'Book Club', 2, '10/1/2021', '12/1/2021', 1);
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (7, 3, 'Health & Wellbeing', 2, '10/1/2021', '12/1/2021', 1);
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (8, 1, 'Tech for dummies', 2, '10/1/2021', '12/1/2021', 1);
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (9, 5, 'Where is Waldo?', 2, '10/1/2021', '12/1/2021', 1);
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (10, 4, 'Morning Coffee', 2, '10/1/2021', '12/1/2021', 1);
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (6, 2, 'Book Club', 2, '10/1/2021', '12/1/2021', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (7, 3, 'Health & Wellbeing', 2, '10/1/2021', '12/1/2021', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (8, 1, 'Tech for dummies', 2, '10/1/2021', '12/1/2021', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (9, 5, 'Where is Waldo?', 2, '10/1/2021', '12/1/2021', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (10, 4, 'Morning Coffee', 2, '10/1/2021', '12/1/2021', 'Active');
 SET IDENTITY_INSERT Course OFF;
 
 SET IDENTITY_INSERT Student ON;
