@@ -69,11 +69,11 @@ insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndD
 insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (8, 1, 'Tech for dummies', 2, '10/1/2021', '12/1/2021', 'Active');
 insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (9, 5, 'Where is Waldo?', 2, '10/1/2021', '12/1/2021', 'Active');
 insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (10, 4, 'Morning Coffee', 2, '10/1/2021', '12/1/2021', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (11, 2, 'CodeVU', 2, '10/1/2021', '12/1/2021', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (12, 3, 'Top LO Training', 2, '10/1/2021', '12/1/2021', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (13, 1, 'Top LS Training', 2, '10/1/2021', '12/1/2021', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (14, 5, 'LH Training', 2, '10/1/2021', '12/1/2021', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (15, 4, 'All Group 2', 2, '10/1/2021', '12/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (11, 2, 'CodeVU', 2, '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (12, 3, 'Top LO Training', 2, '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (13, 1, 'Top LS Training', 2, '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (14, 5, 'LH Training', 2, '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (15, 4, 'All Group 2', 2, '1/1/2022', '3/1/2022', 'Inactive');
 SET IDENTITY_INSERT Course OFF;
 
 SET IDENTITY_INSERT Student ON;
