@@ -25,10 +25,10 @@ CourseStatus varchar(255),
 
 CREATE TABLE Student (
 StudentId int IDENTITY(1,1) PRIMARY KEY,
-FirstName varchar(255) not NULL,
-LastName varchar(255) not NULL,
-Phone varchar(255) not NULL,
-Email varchar(255) not NULL,
+StudentFirstName varchar(255) not NULL,
+StudentLastName varchar(255) not NULL,
+StudentPhone varchar(255) not NULL,
+StudentEmail varchar(255) not NULL,
 StudentStatus varchar(255), 
 TotalPassCourses int, 
 );
@@ -77,31 +77,31 @@ insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndD
 SET IDENTITY_INSERT Course OFF;
 
 SET IDENTITY_INSERT Student ON;
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (1, 'Giraud', 'Ford', '988-726-7318', 'gford0@bravesites.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (2, 'Wittie', 'Faulkener', '747-673-5031', 'wfaulkener1@pen.io', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (3, 'Nye', 'Lapsley', '375-259-7257', 'nlapsley2@army.mil', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (4, 'Pier', 'Ramelet', '921-718-9148', 'pramelet3@cloudflare.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (5, 'Baillie', 'Iacivelli', '653-361-4346', 'biacivelli4@msn.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (6, 'Ludwig', 'Serris', '535-137-1605', 'lserris5@hexun.com', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (7, 'Grissel', 'Shingfield', '770-216-7148', 'gshingfield6@sourceforge.net', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (8, 'Arnoldo', 'Milmoe', '203-366-2872', 'amilmoe7@springer.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (9, 'Giles', 'Purdy', '983-568-1573', 'gpurdy8@redcross.org', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (10, 'Daphna', 'McCardle', '945-932-8283', 'dmccardle9@histats.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (11, 'Venita', 'Fuster', '338-536-0834', 'vfustera@apache.org', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (12, 'Virginie', 'Huske', '411-698-1469', 'vhuskeb@eepurl.com', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (13, 'Bridgette', 'Cashmore', '177-567-8992', 'bcashmorec@ow.ly', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (14, 'Elysha', 'Whiteside', '853-298-5597', 'ewhitesided@yellowpages.com', 'Ative', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (15, 'Wynne', 'Gronowe', '273-251-2737', 'wgronowee@lycos.com', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (16, 'Elvin', 'Comiam', '522-270-7716', 'ecomiamf@npr.org', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (17, 'Eyde', 'Membry', '257-557-2593', 'emembryg@nydailynews.com', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (18, 'Kaja', 'Fairbank', '418-879-4473', 'kfairbankh@about.me', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (19, 'Waite', 'Burney', '543-903-3086', 'wburneyi@godaddy.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (20, 'Howey', 'Karolovsky', '576-649-3226', 'hkarolovskyj@ning.com', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (21, 'Brewer', 'Cauldwell', '221-917-6598', 'bcauldwellk@wikipedia.org', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (22, 'Clary', 'Peperell', '590-302-7664', 'cpeperelll@acquirethisname.com', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (23, 'Thornton', 'McOrkill', '235-467-6021', 'tmcorkillm@pcworld.com', 'Active', 1);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (24, 'Flossy', 'Baylis', '820-633-3662', 'fbaylisn@cornell.edu', 'Active', 2);
-insert into Student (StudentId, FirstName, LastName, Phone, Email, StudentStatus, TotalPassCourses) values (25, 'Alisha', 'Salzen', '412-196-1087', 'asalzeno@wikia.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (1, 'Giraud', 'Ford', '988-726-7318', 'gford0@bravesites.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (2, 'Wittie', 'Faulkener', '747-673-5031', 'wfaulkener1@pen.io', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (3, 'Nye', 'Lapsley', '375-259-7257', 'nlapsley2@army.mil', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (4, 'Pier', 'Ramelet', '921-718-9148', 'pramelet3@cloudflare.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (5, 'Baillie', 'Iacivelli', '653-361-4346', 'biacivelli4@msn.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (6, 'Ludwig', 'Serris', '535-137-1605', 'lserris5@hexun.com', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (7, 'Grissel', 'Shingfield', '770-216-7148', 'gshingfield6@sourceforge.net', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (8, 'Arnoldo', 'Milmoe', '203-366-2872', 'amilmoe7@springer.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (9, 'Giles', 'Purdy', '983-568-1573', 'gpurdy8@redcross.org', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (10, 'Daphna', 'McCardle', '945-932-8283', 'dmccardle9@histats.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (11, 'Venita', 'Fuster', '338-536-0834', 'vfustera@apache.org', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (12, 'Virginie', 'Huske', '411-698-1469', 'vhuskeb@eepurl.com', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (13, 'Bridgette', 'Cashmore', '177-567-8992', 'bcashmorec@ow.ly', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (14, 'Elysha', 'Whiteside', '853-298-5597', 'ewhitesided@yellowpages.com', 'Ative', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (15, 'Wynne', 'Gronowe', '273-251-2737', 'wgronowee@lycos.com', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (16, 'Elvin', 'Comiam', '522-270-7716', 'ecomiamf@npr.org', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (17, 'Eyde', 'Membry', '257-557-2593', 'emembryg@nydailynews.com', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (18, 'Kaja', 'Fairbank', '418-879-4473', 'kfairbankh@about.me', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (19, 'Waite', 'Burney', '543-903-3086', 'wburneyi@godaddy.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (20, 'Howey', 'Karolovsky', '576-649-3226', 'hkarolovskyj@ning.com', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (21, 'Brewer', 'Cauldwell', '221-917-6598', 'bcauldwellk@wikipedia.org', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (22, 'Clary', 'Peperell', '590-302-7664', 'cpeperelll@acquirethisname.com', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (23, 'Thornton', 'McOrkill', '235-467-6021', 'tmcorkillm@pcworld.com', 'Active', 1);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (24, 'Flossy', 'Baylis', '820-633-3662', 'fbaylisn@cornell.edu', 'Active', 2);
+insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone, StudentEmail, StudentStatus, TotalPassCourses) values (25, 'Alisha', 'Salzen', '412-196-1087', 'asalzeno@wikia.com', 'Active', 1);
 SET IDENTITY_INSERT Student OFF;
 
 SET IDENTITY_INSERT StudentEnrollmentLog On;
