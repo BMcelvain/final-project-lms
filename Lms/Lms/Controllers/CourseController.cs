@@ -20,8 +20,7 @@ namespace Lms.Controllers
 
         public void CallDao()
         {
-            CourseDao courseDao = new CourseDao();
-            throw new NotImplementedException();
+            courseDao.GetCourse();
         }
     }
 }

@@ -18,7 +18,6 @@ namespace LMS.UnitTests
             sut.CallDao();
 
             mockCourseDao.Verify(courseDao => courseDao.GetCourse(), Times.Once());
-
         }
     }
 }
