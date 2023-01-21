@@ -22,5 +22,21 @@ namespace Lms.Controllers
         {
             courseDao.GetCourse();
         }
+
+        //[HttpPost]
+        //[Route("Course")]
+        //public async Task<IActionResult> AddCourse(int CourseId, int TeacherId, string CourseName, int SemesterId, string StartDate, string EndDate, string CourseStatus)
+        //{
+        //    try
+        //    {
+        //        await courseDao.AddCourse(CourseId,TeacherId,CourseName,SemesterId,StartDate,EndDate,CourseStatus);
+        //        return Ok();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, e.Message);
+        //    }
+        //}
+
     }
 }
