@@ -1,9 +1,9 @@
 CREATE TABLE Teacher (
 TeacherId int IDENTITY(1,1) PRIMARY KEY,
-FirstName varchar(255) not NULL,
-LastName varchar(255) not NULL,
-Phone varchar(255) not NULL,
-Email varchar(255) not NULL,
+TeacherFirstName varchar(255) not NULL,
+TeacherLastName varchar(255) not NULL,
+TeacherPhone varchar(255) not NULL,
+TeacherEmail varchar(255) not NULL,
 TeacherStatus varchar(255) not Null
 );
 
@@ -45,11 +45,11 @@ HasPassed bit
 );
 
 SET IDENTITY_INSERT Teacher ON;
-insert into Teacher (TeacherId, FirstName, LastName, Phone, Email, TeacherStatus) values (1, 'Roseline', 'Blaver', '113-393-3844', 'rblaver0@smugmug.com', 'Active');
-insert into Teacher (TeacherId, FirstName, LastName, Phone, Email, TeacherStatus) values (2, 'Lenette', 'Van der Linde', '516-350-4479', 'lvanderlinde1@cafepress.com', 'Active');
-insert into Teacher (TeacherId, FirstName, LastName, Phone, Email, TeacherStatus) values (3, 'Reeta', 'Laydel', '631-883-5112', 'rlaydel2@elpais.com', 'Active');
-insert into Teacher (TeacherId, FirstName, LastName, Phone, Email, TeacherStatus) values (4, 'Cirilo', 'Rossant', '221-471-3470', 'crossant3@live.com', 'Inactive');
-insert into Teacher (TeacherId, FirstName, LastName, Phone, Email, TeacherStatus) values (5, 'Whitman', 'Ridsdell', '317-376-5914', 'wridsdell4@nymag.com', 'Active');
+insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values (1, 'Roseline', 'Blaver', '113-393-3844', 'rblaver0@smugmug.com', 'Active');
+insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values (2, 'Lenette', 'Van der Linde', '516-350-4479', 'lvanderlinde1@cafepress.com', 'Active');
+insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values (3, 'Reeta', 'Laydel', '631-883-5112', 'rlaydel2@elpais.com', 'Active');
+insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values (4, 'Cirilo', 'Rossant', '221-471-3470', 'crossant3@live.com', 'Inactive');
+insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values (5, 'Whitman', 'Ridsdell', '317-376-5914', 'wridsdell4@nymag.com', 'Active');
 SET IDENTITY_INSERT Teacher OFF;
 
 SET IDENTITY_INSERT Semester ON;
