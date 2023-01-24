@@ -19,7 +19,7 @@ Direct all questions to your PO
 
 **Technical Requirements**
 
-- [ ] ASP.NET Web Api
-- [ ] Integrate Swagger
-- [ ] Create a controller
-- [ ] Create a DAO
+- [X] ASP.NET Web Api
+- [X] Integrate Swagger
+- [X] Create a controller
+- [X] Create a DAO
