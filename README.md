@@ -7,7 +7,7 @@ The company wants to start their own internal learning management system. The tr
 
 **AC**
 
-- [ ] CRUD functionality for courses, students, and teachers
+- [ ] CRUD functionality for ~~Courses~~, Students, and Teachers
 - [ ] Maintain some type of audit history for active/inactive courses for students
 - [ ] You will need to stub out some data b/c the database has not been created yet
 
@@ -21,5 +21,5 @@ Direct all questions to your PO
 
 - [X] ASP.NET Web Api
 - [X] Integrate Swagger
-- [X] Create a controller
-- [X] Create a DAO
+- [ ] Create a controller (~~Course~~, Student, Teacher)
+- [ ] Create a DAO (~~Course~~, Student, Teacher)
