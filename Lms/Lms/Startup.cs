@@ -5,10 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Lms.Daos;
 
 namespace Lms
 {
@@ -24,7 +26,17 @@ namespace Lms
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddSingleton<DapperContext>();
+            services.AddScoped<CourseDao>();
+            //services.AddScoped<TeacherDao>();
+            //services.AddScoped<StudentDao>();
+
+            services.AddControllers().AddNewtonsoftJson();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS Api", Description = "A CRUD Api for Learning Management System", Version = "v1" });
+            }).AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,6 +46,9 @@ namespace Lms
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS Api V1"));
 
             app.UseRouting();
 
