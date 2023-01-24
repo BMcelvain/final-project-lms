@@ -19,6 +19,7 @@ namespace Lms.Controllers
             this.studentDao = studentDao;
         }
 
+        [NonAction]
         public void CallDao()
         {
             studentDao.GetStudent();

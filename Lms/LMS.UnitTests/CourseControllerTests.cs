@@ -17,7 +17,7 @@ namespace LMS.UnitTests
 
             sut.CallDao();  //in CallDao throw exception 
 
-            mockCourseDao.Verify(courseDao => courseDao.GetCourse(), Times.Once()); //this is used as a temp object
+            mockCourseDao.Verify(courseDao => courseDao.GetCourses(), Times.Once()); //this is used as a temp object
         }
     }
 }
