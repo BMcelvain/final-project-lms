@@ -24,21 +24,5 @@ namespace Lms.Controllers
         {
             teacherDao.GetTeacher();
         }
-
-        //[HttpPost]
-        //[Route("Teacher")]
-        //public async Task<IActionResult> AddTeacher(int TeacherId, string TeacherFirstName, string TeacherLastName, string TeacherPhone, string TeacherEmail, string TeacherStatus)
-        //{
-        //    try
-        //    {
-        //        await courseDao.AddCourse(TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus);
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
-
     }
 }
