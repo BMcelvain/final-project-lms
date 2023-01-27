@@ -28,8 +28,8 @@ namespace Lms
         {
             services.AddSingleton<DapperContext>();
             services.AddScoped<ICourseDao, CourseDao>();
-            //services.AddScoped<TeacherDao>();
-            //services.AddScoped<StudentDao>();
+            services.AddScoped<ITeacherDao, TeacherDao>();
+            services.AddScoped<IStudentDao, StudentDao>();
 
             services.AddControllers().AddNewtonsoftJson();
 

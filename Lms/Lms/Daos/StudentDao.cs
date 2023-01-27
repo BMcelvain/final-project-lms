@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Lms.Daos
 {
-    public class StudentDao //: IStudentDao
+    public class StudentDao : IStudentDao
     {
         private readonly DapperContext _context;
 

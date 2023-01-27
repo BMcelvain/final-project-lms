@@ -15,24 +15,18 @@ namespace Lms.Controllers
     public class StudentController : ControllerBase
     {
         private IStudentDao studentDao;
-        private readonly StudentDao _studentDao;
 
         public StudentController(IStudentDao studentDao)
         {
             this.studentDao = studentDao;
         }
 
-        [ActivatorUtilitiesConstructor]
-        public StudentController(StudentDao studentDao)
-        {
-            _studentDao = studentDao;
-        }
-
         [NonAction]
         public void CallDao()
         {
-            studentDao.GetStudent();
+            studentDao.GetStudents();
         }
+
 
         [HttpPost]
         [Route("student")]
@@ -40,7 +34,7 @@ namespace Lms.Controllers
         {
             try
             {
-                await _studentDao.CreateStudent(newStudent);
+                await studentDao.CreateStudent(newStudent);
                 return Ok();
             }
             catch (Exception e)
@@ -55,7 +49,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var students = await _studentDao.GetStudents();
+                var students = await studentDao.GetStudents();
                 return Ok(students);
             }
             catch (Exception e)
@@ -70,7 +64,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var student = await _studentDao.GetStudentById(id);
+                var student = await studentDao.GetStudentById(id);
                 if (student == null)
                 {
                     return StatusCode(404);
@@ -90,7 +84,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var student = await _studentDao.GetStudentById(id);
+                var student = await studentDao.GetStudentById(id);
 
                 if (student == null)
                 {
@@ -98,7 +92,7 @@ namespace Lms.Controllers
                 }
 
                 studentUpdates.ApplyTo(student);
-                await _studentDao.PartiallyUpdateStudentById(student);
+                await studentDao.PartiallyUpdateStudentById(student);
 
                 return StatusCode(200);
             }
@@ -114,13 +108,13 @@ namespace Lms.Controllers
         {
             try
             {
-                var student = await _studentDao.GetStudentById(id);
+                var student = await studentDao.GetStudentById(id);
                 if (student == null)
                 {
                     return StatusCode(404);
                 }
 
-                await _studentDao.DeleteStudentById(id);
+                await studentDao.DeleteStudentById(id);
                 return StatusCode(200);
             }
             catch (Exception e)
