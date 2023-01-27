@@ -22,11 +22,11 @@ namespace Lms.Daos
         // POST a new student within the Student table. 
         public async Task CreateStudent(StudentModel newStudent)
         {
-            var query = "INSERT Student (StudentId, StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus, TotalPassCourses)" +
-                         $"VALUES(@StudentId, @StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus, @TotalPassCourses)";
+            var query = "INSERT Student (StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus, TotalPassCourses)" +
+                         $"VALUES(@StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus, @TotalPassCourses)";
 
             var parameters = new DynamicParameters();
-            parameters.Add("StudentId", newStudent.StudentId, DbType.Int32);
+
             parameters.Add("StudentFirstName", newStudent.StudentFirstName, DbType.String);
             parameters.Add("StudentLastName", newStudent.StudentLastName, DbType.String);
             parameters.Add("StudentPhone ", newStudent.StudentPhone, DbType.String);
@@ -67,8 +67,8 @@ namespace Lms.Daos
         // PATCH a student within the Student table. 
         public async Task PartiallyUpdateStudentById(StudentModel updateRequest)
         {
-            var query = "UPDATE Student SET StudentId=@StudentId, StudentFirstName=@StudentFirstName, StudentLastName=@StudentLastName, " +
-                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus, TotalPassCourses=@TotalPassCourses" +
+            var query = "UPDATE Student SET StudentFirstName=@StudentFirstName, StudentLastName=@StudentLastName, " +
+                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus, TotalPassCourses=@TotalPassCourses " +
                         $"WHERE StudentId=@StudentId";
 
             var parameters = new DynamicParameters();

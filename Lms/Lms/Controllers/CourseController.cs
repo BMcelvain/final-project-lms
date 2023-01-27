@@ -22,9 +22,6 @@ namespace Lms.Controllers
             this.courseDao = courseDao;
         }
 
-
-        // [NonAction] Needed to show the program that we don't invoke this method. 
-        // https://www.tutorialspoint.com/what-is-the-significance-of-nonactionattribute-in-asp-net-mvc-chash
         [NonAction]
         public void CallDao()
         {

@@ -22,13 +22,10 @@ namespace Lms.Controllers
             this.teacherDao = teacherDao;
         }
 
-
-        // [NonAction] Needed to show the program that we don't invoke this method. 
-        // https://www.tutorialspoint.com/what-is-the-significance-of-nonactionattribute-in-asp-net-mvc-chash
         [NonAction]
         public void CallDao()
         {
-            teacherDao.GetTeachers();
+            teacherDao.GetTeacher();
         }
 
         [HttpPost]
@@ -52,7 +49,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var teachers = await teacherDao.GetTeachers();
+                var teachers = await teacherDao.GetTeacher();
                 return Ok(teachers);
             }
             catch (Exception e)

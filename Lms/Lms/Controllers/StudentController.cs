@@ -27,7 +27,6 @@ namespace Lms.Controllers
             studentDao.GetStudents();
         }
 
-
         [HttpPost]
         [Route("student")]
         public async Task<IActionResult> CreateStudent(StudentModel newStudent)

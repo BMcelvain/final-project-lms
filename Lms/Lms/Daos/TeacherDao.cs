@@ -27,10 +27,6 @@ namespace Lms.Daos
         }
 
         //when testing -- update to your database name LMS
-        public void GetTeacher()
-        {
-            sqlWrapper.Query<TeacherModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
-        }
 
         public void GetTeacher(bool shouldCallSql = true)
         {
@@ -43,8 +39,8 @@ namespace Lms.Daos
         // POST a new teacher within the Teacher table. 
         public async Task CreateTeacher(TeacherModel newTeacher)
         {
-            var query = "INSERT Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)" +
-                         $"VALUES(@TeacherId, @TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)";
+            var query = "INSERT Teacher (TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)" +
+                         $"VALUES(@TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)";
 
             var parameters = new DynamicParameters();
             parameters.Add("TeacherId", newTeacher.TeacherId, DbType.Int32);
@@ -62,7 +58,7 @@ namespace Lms.Daos
         }
 
         // GET all teachers within the Teacher table. 
-        public async Task<IEnumerable<TeacherModel>> GetTeachers()
+        public async Task<IEnumerable<TeacherModel>> GetTeacher()
         {
             var query = "SELECT * FROM Teacher";
             using (var connection = _context.CreateConnection())
@@ -88,7 +84,7 @@ namespace Lms.Daos
         // PATCH a teacher within the Teacher table. 
         public async Task PartiallyUpdateTeacherById(TeacherModel updateRequest)
         {
-            var query = "UPDATE Teacher SET TeacherId=@TeacherId, TeacherFirstName=@TeacherFirstName, TeacherLastName=@TeacherLastName, " +
+            var query = "UPDATE Teacher SET TeacherFirstName=@TeacherFirstName, TeacherLastName=@TeacherLastName, " +
                         $"TeacherPhone=@TeacherPhone, TeacherEmail=@TeacherEmail, TeacherStatus=@TeacherStatus WHERE TeacherId=@TeacherId";
 
             var parameters = new DynamicParameters();

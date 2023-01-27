@@ -27,10 +27,6 @@ namespace Lms.Daos
         }
 
        //when testing -- update to your database name LMS
-        public void GetCourse()
-        {
-            sqlWrapper.Query<CourseModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
-        }
 
         public void GetCourse(bool shouldCallSql = true)
         {

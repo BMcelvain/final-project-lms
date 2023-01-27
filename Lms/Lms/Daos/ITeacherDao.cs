@@ -8,11 +8,11 @@ namespace Lms.Daos
     public interface ITeacherDao
     {
 
-        //void GetTeacher(bool shouldCallSql = true); //testing
+        void GetTeacher(bool shouldCallSql = true); //testing
 
         Task CreateTeacher(TeacherModel newTeacher);
 
-        Task<IEnumerable<TeacherModel>> GetTeachers();
+        Task<IEnumerable<TeacherModel>> GetTeacher();
 
         Task<TeacherModel> GetTeacherById(int id);
 
