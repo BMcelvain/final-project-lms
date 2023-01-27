@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Lms.Wrappers
 {
@@ -12,7 +13,12 @@ namespace Lms.Wrappers
             ConnectionString = "LMSConnectionString";
         }
 
-        //public Task 
+        public Task<List<T>> Query<T>(string sql)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        
 
 
     }

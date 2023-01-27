@@ -7,16 +7,37 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Lms.Models;
+using System;
 
 namespace Lms.Daos
 {
-    public class CourseDao //: ICourseDao
+    public class CourseDao : ICourseDao
     {
         private readonly DapperContext _context;
+        private readonly ISqlWrapper sqlWrapper;
 
         public CourseDao(DapperContext context)
         {
             _context = context;
+        }
+
+        public CourseDao(ISqlWrapper sqlWrapper) 
+        {
+            this.sqlWrapper = sqlWrapper;
+        }
+
+       //when testing -- update to your database name LMS
+        public void GetCourse()
+        {
+            sqlWrapper.Query<CourseModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
+        }
+
+        public void GetCourse(bool shouldCallSql = true)
+        {
+            if (shouldCallSql) 
+            {
+                sqlWrapper.Query<CourseModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
+            }
         }
 
         // POST a new course within the Course table. 

@@ -69,7 +69,7 @@ namespace Lms.Daos
         public async Task PartiallyUpdateStudentById(StudentModel updateRequest)
         {
             var query = "UPDATE Student SET StudentId=@StudentId, StudentFirstName=@StudentFirstName, StudentLastName=@StudentLastName, " +
-                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus, TotalPassCourses=@TotalPassCourses"+
+                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus, TotalPassCourses=@TotalPassCourses" +
                         $"WHERE StudentId=@StudentId";
 
             var parameters = new DynamicParameters();

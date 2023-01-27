@@ -14,8 +14,6 @@ namespace Lms.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
-
-
         private IStudentDao studentDao;
         private readonly StudentDao _studentDao;
 
@@ -132,3 +130,4 @@ namespace Lms.Controllers
         }
     }
 }
+

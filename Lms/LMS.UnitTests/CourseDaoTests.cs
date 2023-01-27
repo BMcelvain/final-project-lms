@@ -1,9 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Lms.Wrappers;
+using Lms.Daos;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Moq;
+using Lms.Models;
+
 
 namespace LMS.UnitTests
 {
@@ -11,26 +16,32 @@ namespace LMS.UnitTests
     public class CourseDaoTests
     {
 
-        //[TestMethod]
-        //public void CallSqlWithString()
-        //{
-        //    Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper> ();
-        //    CourseDao sut = new CourseDao(mockSqlWrapper.Object);
+        [TestMethod]
+        public void CallSqlWithString()
+        {
+            //Arrange
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
+            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
-        //    sut.GetCourse();
+            //Act
+            sut.GetCourse();
 
-        //    mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<CourseModel>>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LMS]")),Times.Once);  
-        //}
+            //Assert
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < CourseModel >> (It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Once);
+        }
 
-        //[TestMethod]
-        //public void DoNotCallSqlWithString()
-        //{
-        //    Mock<ISqlWrapper> mockSqlWrapper = new Mock<IServiceProvider> ();
-        //    CourseDao sut = new CourseDao(mockSqlWrapper.Object);
+        [TestMethod]
+        public void DoNotCallSqlWithString()
+        {
+            //Arrange
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<IServiceProvider>();
+            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
-        //    sut.GetCourse(false);
+            //Act
+            sut.GetCourse(false);
 
-        //    mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LMS]")), Times.Never);
-        //}
+            //Assert
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LMS]")), Times.Never);
+        }
     }
 }

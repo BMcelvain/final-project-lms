@@ -10,6 +10,12 @@ namespace LMS.UnitTests
         [TestMethod] // Every method must have this. 
         public void AddCourse()
         {
+            CourseModel sut = new CourseModel();
+            CourseModel expectedCourse = new CourseModel();
+
+            sut.AddCourse(expectedCourse);
+
+            Assert.AreEqual(new CourseModel(), sut.Course);
 
         }
     }
