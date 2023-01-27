@@ -12,7 +12,7 @@ namespace LMS.UnitTests
     public class CourseControllerTests
     {
         [TestMethod] // Every method must have this. 
-        public void CallDao()
+        public void CallDao_ShouldCallDao_ReturnCourse()
         {
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>(); //will work when you're actually in code
 

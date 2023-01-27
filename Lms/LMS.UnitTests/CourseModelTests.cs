@@ -16,7 +16,6 @@ namespace LMS.UnitTests
             //sut.AddCourse(expectedCourse);
 
             Assert.IsInstanceOfType(expectedCourse,typeof(CourseModel));
-
         }
     }
 }
