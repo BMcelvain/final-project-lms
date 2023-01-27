@@ -15,7 +15,7 @@ namespace LMS.UnitTests
 
             sut.AddCourse(expectedCourse);
 
-            Assert.AreEqual(new CourseModel(), sut.Course);
+            Assert.AreEqual(expectedCourse, sut.Course);
 
         }
     }
