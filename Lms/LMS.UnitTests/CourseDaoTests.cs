@@ -41,7 +41,7 @@ namespace LMS.UnitTests
             sut.GetCourse(false);
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LMS]")), Times.Never);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Never);
         }
     }
 }
