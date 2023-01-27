@@ -27,7 +27,7 @@ namespace Lms
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<DapperContext>();
-            services.AddScoped<CourseDao>();
+            services.AddScoped<ICourseDao, CourseDao>();
             //services.AddScoped<TeacherDao>();
             //services.AddScoped<StudentDao>();
 

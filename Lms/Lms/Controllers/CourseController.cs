@@ -16,22 +16,12 @@ namespace Lms.Controllers
     public class CourseController : ControllerBase
     {
         private ICourseDao courseDao;
-        private readonly CourseDao _courseDao;
 
         public CourseController(ICourseDao courseDao)
         {
             this.courseDao = courseDao;
         }
 
-        // [ActivatorUtilitiesConstructor] Needed to distinguish between contructors
-        // (ie: our testing constructor - CourseController(ICourseDao courseDao) &
-        // CourseController(CourseDao courseDao)
-        // https://stackoverflow.com/questions/32931716/asp-net-core-dependency-injection-with-multiple-constructors
-        [ActivatorUtilitiesConstructor]
-        public CourseController(CourseDao courseDao)
-        {
-            _courseDao = courseDao;
-        }
 
         // [NonAction] Needed to show the program that we don't invoke this method. 
         // https://www.tutorialspoint.com/what-is-the-significance-of-nonactionattribute-in-asp-net-mvc-chash
@@ -47,7 +37,7 @@ namespace Lms.Controllers
         {
             try
             {
-                await _courseDao.CreateCourse(newCourse);
+                await courseDao.CreateCourse(newCourse);
                 return Ok();
             }
             catch (Exception e)
@@ -62,7 +52,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var courses = await _courseDao.GetCourses();
+                var courses = await courseDao.GetCourses();
                 return Ok(courses);
             }
             catch (Exception e)
@@ -77,7 +67,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await _courseDao.GetCourseById(id);
+                var course = await courseDao.GetCourseById(id);
                 if (course == null)
                 {
                     return StatusCode(404);
@@ -97,7 +87,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await _courseDao.GetCourseById(id);
+                var course = await courseDao.GetCourseById(id);
 
                 if (course == null)
                 {
@@ -105,7 +95,7 @@ namespace Lms.Controllers
                 }
 
                 courseUpdates.ApplyTo(course);
-                await _courseDao.PartiallyUpdateCourseById(course);
+                await courseDao.PartiallyUpdateCourseById(course);
 
                 return StatusCode(200);
             }
@@ -121,13 +111,13 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await _courseDao.GetCourseById(id);
+                var course = await courseDao.GetCourseById(id);
                 if (course == null)
                 {
                     return StatusCode(404);
                 }
 
-                await _courseDao.DeleteCourseById(id);
+                await courseDao.DeleteCourseById(id);
                 return StatusCode(200);
             }
             catch (Exception e)
