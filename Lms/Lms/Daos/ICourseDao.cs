@@ -13,6 +13,7 @@ namespace Lms.Daos
         Task CreateCourse(CourseModel newCourse);
 
         Task<IEnumerable<CourseModel>> GetCourses();
+        Task<IEnumerable<CourseModel>> GetCourseByStatus(string status);
 
         Task<CourseModel> GetCourseById(int id);
 

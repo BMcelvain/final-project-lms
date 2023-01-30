@@ -44,7 +44,7 @@ namespace Lms.Controllers
         }
 
         [HttpGet]
-        [Route("course")]
+        [Route("courses")]
         public async Task<IActionResult> GetCourses()
         {
             try
@@ -71,6 +71,21 @@ namespace Lms.Controllers
                 }
 
                 return Ok(course);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("courses/{status}")]
+        public async Task<IActionResult> GetCourseByStatus([FromRoute] string status)
+        {
+            try
+            {
+                var courses = await courseDao.GetCourseByStatus(status);
+                return Ok(courses);
             }
             catch (Exception e)
             {

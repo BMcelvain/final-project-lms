@@ -81,6 +81,18 @@ namespace Lms.Daos
             }
         }
 
+        // GET all courses within the Course table. 
+        public async Task<IEnumerable<CourseModel>> GetCourseByStatus(string status)
+        {
+            var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'";
+            using (var connection = _context.CreateConnection())
+            {
+                var courses = await connection.QueryAsync<CourseModel>(query);
+
+                return courses.ToList();
+            }
+        }
+
         // PATCH a course within the Course table. 
         public async Task PartiallyUpdateCourseById(CourseModel updateRequest)
         {
