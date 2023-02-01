@@ -48,8 +48,8 @@ namespace Lms.Controllers
         {
             try
             {
-                var students = await studentDao.GetStudents();
-                return Ok(students);
+                var student = await studentDao.GetStudents();
+                return Ok(student);
             }
             catch (Exception e)
             {
