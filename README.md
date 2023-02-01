@@ -8,7 +8,8 @@ The company wants to start their own internal learning management system. The tr
 **AC**
 
 - [X] CRUD functionality for ~~Courses~~, ~~Students~~, and ~~Teachers~~
-- [ ] Maintain some type of audit history for active/inactive courses for students
+- [X] Maintain some type of audit history for active/inactive courses for students
+- [X] Maintain some type of audit history for every course a student has enrolled or unenrolled
 - [X] You will need to stub out some data b/c the database has not been created yet
 
 
