@@ -7,7 +7,6 @@ namespace Lms.Daos
     // Interfaces show a blueprint (no logic) of the methods for the class. 
     public interface ITeacherDao
     {
-
         void GetTeacher(bool shouldCallSql = true); //testing
 
         Task CreateTeacher(TeacherModel newTeacher);
