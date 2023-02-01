@@ -2,6 +2,7 @@
 using Lms.Models;
 using Lms.Wrappers;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,10 +14,16 @@ namespace Lms.Daos
     public class StudentDao : IStudentDao
     {
         private readonly DapperContext _context;
+        private ISqlWrapper @object;
 
         public StudentDao(DapperContext context)
         {
             _context = context;
+        }
+
+        public StudentDao(ISqlWrapper @object)
+        {
+            this.@object = @object;
         }
 
         // POST a new student within the Student table. 
@@ -41,7 +48,7 @@ namespace Lms.Daos
         }
 
         // GET all students within the Student table. 
-        public async Task<IEnumerable<StudentModel>> GetStudents()
+        public async Task<IEnumerable<StudentModel>> GetStudents(bool v)
         {
             var query = "SELECT * FROM Student";
             using (var connection = _context.CreateConnection())
@@ -96,6 +103,16 @@ namespace Lms.Daos
             {
                 await connection.ExecuteAsync(query);
             }
+        }
+
+        public void GetStudents()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<StudentModel>> IStudentDao.GetStudents()
+        {
+            throw new NotImplementedException();
         }
     }
 

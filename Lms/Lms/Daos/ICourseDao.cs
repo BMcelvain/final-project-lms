@@ -8,7 +8,7 @@ namespace Lms.Daos
     public interface ICourseDao
     {
  
-        void GetCourse(bool shouldCallSql = true); //testing
+        //void GetCourse(bool shouldCallSql = true); //testing
 
         Task CreateCourse(CourseModel newCourse);
 
