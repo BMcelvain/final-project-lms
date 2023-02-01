@@ -29,7 +29,7 @@ namespace Lms.Controllers
         }
 
         [HttpPost]
-        [Route("course")]
+        [Route("courses")]
         public async Task<IActionResult> CreateCourse(CourseModel newCourse)
         {
             try
@@ -59,7 +59,7 @@ namespace Lms.Controllers
         }
 
         [HttpGet]
-        [Route("course/{id}")]
+        [Route("courses/byId/{id}")]
         public async Task<IActionResult> GetCourseById([FromRoute] int id)
         {
             try
@@ -79,7 +79,7 @@ namespace Lms.Controllers
         }
 
         [HttpGet]
-        [Route("courses/{status}")]
+        [Route("courses/byStatus/{status}")]
         public async Task<IActionResult> GetCourseByStatus([FromRoute] string status)
         {
             try
@@ -94,7 +94,7 @@ namespace Lms.Controllers
         }
 
         [HttpPatch]
-        [Route("course/{id}")]
+        [Route("courses/{id}")]
         public async Task<IActionResult> PartiallyUpdateCourseById([FromRoute]int id, JsonPatchDocument<CourseModel> courseUpdates)
         {
             try
@@ -118,7 +118,7 @@ namespace Lms.Controllers
         }
 
         [HttpDelete]
-        [Route("course/{id}")]
+        [Route("courses/{id}")]
         public async Task<IActionResult> DeleteCourseById([FromRoute] int id)
         {
             try
