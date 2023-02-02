@@ -14,16 +14,26 @@ namespace Lms.Daos
     public class StudentDao : IStudentDao
     {
         private readonly DapperContext _context;
-        private ISqlWrapper @object;
+        private readonly ISqlWrapper sqlWrapper;
 
         public StudentDao(DapperContext context)
         {
             _context = context;
         }
 
-        public StudentDao(ISqlWrapper @object)
+        public StudentDao(ISqlWrapper sqlWrapper)
         {
-            this.@object = @object;
+            this.sqlWrapper = sqlWrapper;
+        }
+
+        //when testing -- update to your database name LMS
+
+        public void GetStudent(bool shouldCallSql = true)
+        {
+            if (shouldCallSql)
+            {
+                sqlWrapper.Query<StudentModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
+            }
         }
 
         // POST a new student within the Student table. 
