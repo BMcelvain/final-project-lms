@@ -11,7 +11,6 @@ namespace Lms.Daos
 
         Task CreateStudent(StudentModel newStudent);
 
-        Task<IEnumerable<StudentModel>> GetStudents(bool v);
         Task<IEnumerable<StudentModel>> GetStudents();
 
         Task<StudentModel> GetStudentById(int id);

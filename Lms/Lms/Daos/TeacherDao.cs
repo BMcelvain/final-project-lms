@@ -26,16 +26,6 @@ namespace Lms.Daos
             this.sqlWrapper = sqlWrapper;
         }
 
-        //when testing -- update to your database name LMS
-
-        public void GetTeacher(bool shouldCallSql = true)
-        {
-            if (shouldCallSql)
-            {
-                sqlWrapper.Query<TeacherModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
-            }
-        }
-
         // POST a new teacher within the Teacher table. 
         public async Task CreateTeacher(TeacherModel newTeacher)
         {
@@ -58,15 +48,13 @@ namespace Lms.Daos
         }
 
         // GET all teachers within the Teacher table. 
-        public async Task<IEnumerable<TeacherModel>> GetTeacher()
+        public async Task<IEnumerable<TeacherModel>> GetTeachers()
         {
             var query = "SELECT * FROM Teacher";
-            using (var connection = _context.CreateConnection())
-            {
-                var teachers = await connection.QueryAsync<TeacherModel>(query);
-
-                return teachers.ToList();
-            }
+            //replaces the connection async
+            var teachers = await sqlWrapper.Query<TeacherModel>(query);
+            return teachers.ToList();
+            
         }
 
         // GET a single teacher (by Id) within the Teacher table.
