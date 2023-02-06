@@ -26,6 +26,14 @@ namespace Lms.Daos
             this.sqlWrapper = sqlWrapper;
         }
 
+        public void GetStudent(bool shouldCallSql = true)
+        {
+            if (shouldCallSql)
+            {
+                sqlWrapper.Query<StudentModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
+            }
+        }
+
         // POST a new student within the Student table. 
         public async Task CreateStudent(StudentModel newStudent)
         {

@@ -26,10 +26,10 @@ namespace LMS.UnitTests
             Assert.IsInstanceOfType(response, typeof(OkResult));
         }
 
-        [TestMethod]
-        public async Task CreateClass_Returns500StatusCode()
-        {
+        //[TestMethod]
+        //public async Task CreateClass_Returns500StatusCode()
+        //{
 
-        }
+        //}
     }
 }
