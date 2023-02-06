@@ -17,31 +17,18 @@ namespace LMS.UnitTests
     {
 
         [TestMethod]
-        public void CallSqlWithString()
+        public void GetAllCoursesInSql()
         {
             //Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
             CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
             //Act
-            sut.GetCourse();
+            sut.GetCourses();
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < CourseModel > (It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < CourseModel > (It.Is<string>(sql => sql == "SELECT * FROM Course")), Times.Once);
         }
 
-        [TestMethod]
-        public void DoNotCallSqlWithString()
-        {
-            //Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
-
-            //Act
-            sut.GetCourse(false);
-
-            //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Never);
-        }
     }
 }

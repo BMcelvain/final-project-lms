@@ -22,9 +22,9 @@ namespace LMS.UnitTests
 
             TeacherController sut = new TeacherController(mockTeacherDao.Object);
 
-            sut.CallDao();  //in CallDao throw exception 
+            sut.GetTeachers();  //in CallDao throw exception 
 
-            mockTeacherDao.Verify(teacherDao => teacherDao.GetTeacher(), Times.Once()); //this is used as a temp object
+            mockTeacherDao.Verify(teacherDao => teacherDao.GetTeachers(), Times.Once()); //this is used as a temp object
         }
 
         [TestMethod]

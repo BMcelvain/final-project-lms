@@ -26,16 +26,6 @@ namespace Lms.Daos
             this.sqlWrapper = sqlWrapper;
         }
 
-       //when testing -- update to your database name LMS
-
-        public void GetCourse(bool shouldCallSql = true)
-        {
-            if (shouldCallSql) 
-            {
-                sqlWrapper.Query<CourseModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
-            }
-        }
-
         // POST a new course within the Course table. 
         public async Task CreateCourse(CourseModel newCourse)
         {
@@ -61,12 +51,9 @@ namespace Lms.Daos
         public async Task<IEnumerable<CourseModel>> GetCourses()
         {
             var query = "SELECT * FROM Course";
-            using (var connection = _context.CreateConnection())
-            {
-                var courses = await connection.QueryAsync<CourseModel>(query);
+            var courses = await sqlWrapper.Query<CourseModel>(query);
 
-                return courses.ToList();
-            }
+            return courses.ToList();
         }
 
         // GET a single course (by Id) within the Course table.

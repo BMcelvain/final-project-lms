@@ -14,9 +14,9 @@ namespace Lms.Daos
     public class StudentDao : IStudentDao
     {
         private readonly DapperContext _context;
-        private readonly ISqlWrapper sqlWrapper;
+        private ISqlWrapper sqlWrapper;
 
-        public StudentDao(DapperContext context)
+        public StudentDao(DapperContext context)  //replace with sqlWrapper
         {
             _context = context;
         }
@@ -25,8 +25,6 @@ namespace Lms.Daos
         {
             this.sqlWrapper = sqlWrapper;
         }
-
-        //when testing -- update to your database name LMS
 
         public void GetStudent(bool shouldCallSql = true)
         {
@@ -58,15 +56,13 @@ namespace Lms.Daos
         }
 
         // GET all students within the Student table. 
-        public async Task<IEnumerable<StudentModel>> GetStudents(bool v)
+        public async Task<IEnumerable<StudentModel>> GetStudents()
         {
             var query = "SELECT * FROM Student";
-            using (var connection = _context.CreateConnection())
-            {
-                var students = await connection.QueryAsync<StudentModel>(query);
+           
+            var students = await sqlWrapper.Query<StudentModel>(query);
 
-                return students.ToList();
-            }
+            return students.ToList();
         }
 
         // GET a single student (by Id) within the Student table.
@@ -113,11 +109,6 @@ namespace Lms.Daos
             {
                 await connection.ExecuteAsync(query);
             }
-        }
-
-        public void GetStudents()
-        {
-            throw new NotImplementedException();
         }
 
         Task<IEnumerable<StudentModel>> IStudentDao.GetStudents()
