@@ -18,6 +18,6 @@ namespace Lms.Models
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string CourseStatus { get; set; }
-  
+ 
     }
 }

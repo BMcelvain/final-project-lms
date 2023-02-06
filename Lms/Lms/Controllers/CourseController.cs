@@ -109,7 +109,7 @@ namespace Lms.Controllers
                 courseUpdates.ApplyTo(course);
                 await courseDao.PartiallyUpdateCourseById(course);
 
-                return StatusCode(200);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -130,7 +130,7 @@ namespace Lms.Controllers
                 }
 
                 await courseDao.DeleteCourseById(id);
-                return StatusCode(200);
+                return Ok();
             }
             catch (Exception e)
             {
