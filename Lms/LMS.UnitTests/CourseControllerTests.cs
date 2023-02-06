@@ -15,18 +15,6 @@ namespace LMS.UnitTests
     [TestClass] // Every class must have this.
     public class CourseControllerTests
     {
-        [TestMethod] // Every method must have this. 
-        public void CallDao_ShouldCallDao_ReturnCourse()
-        {
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>(); //will work when you're actually in code
-
-            CourseController sut = new CourseController(mockCourseDao.Object);
-
-            sut.CallDao();  //in CallDao throw exception 
-
-            mockCourseDao.Verify(courseDao => courseDao.GetCourses(), Times.Once()); //this is used as a temp object
-        }
-
         [TestMethod]
         public async Task CreateCourse_ReturnsOkStatusCode()
         {

@@ -13,22 +13,21 @@ using Lms.Models;
 namespace LMS.UnitTests
 {
     [TestClass] // Every class must have this.
-    public class CourseDaoTests
+    public class StudentDaoTests
     {
 
         [TestMethod]
-        public void GetAllCoursesInSql()
+        public void GetAllStudentsInSql()
         {
             //Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
+            StudentDao sut = new StudentDao(mockSqlWrapper.Object);
 
             //Act
-            sut.GetCourses();
+            sut.GetStudents();
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < CourseModel > (It.Is<string>(sql => sql == "SELECT * FROM Course")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < StudentModel > (It.Is<string>(sql => sql == "SELECT * FROM Student")), Times.Once);
         }
-
     }
 }
