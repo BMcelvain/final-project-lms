@@ -22,11 +22,6 @@ namespace Lms.Controllers
             this.teacherDao = teacherDao;
         }
 
-        [NonAction]
-        public void CallDao()
-        {
-            teacherDao.GetTeacher();
-        }
 
         [HttpPost]
         [Route("teacher")]
@@ -49,7 +44,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var teachers = await teacherDao.GetTeacher();
+                var teachers = await teacherDao.GetTeachers();
                 return Ok(teachers);
             }
             catch (Exception e)

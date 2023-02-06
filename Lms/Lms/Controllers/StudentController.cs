@@ -21,11 +21,6 @@ namespace Lms.Controllers
             this.studentDao = studentDao;
         }
 
-        [NonAction]
-        public void CallDao()
-        {
-            studentDao.GetStudents();
-        }
 
         [HttpPost]
         [Route("student")]

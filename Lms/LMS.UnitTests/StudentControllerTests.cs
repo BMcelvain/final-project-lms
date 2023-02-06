@@ -21,7 +21,7 @@ namespace LMS.UnitTests
 
             StudentController sut = new StudentController(mockStudentDao.Object);
 
-            sut.CallDao();  //in CallDao throw exception 
+            sut.GetStudents();  //in CallDao throw exception 
 
             mockStudentDao.Verify(studentDao => studentDao.GetStudents(), Times.Once()); //this is used as a temp object
         }
