@@ -15,6 +15,33 @@ namespace LMS.UnitTests
     [TestClass] // Every class must have this.
     public class TeacherDaoTests
     {
+        [TestMethod]
+        public void CallSqlWithString()
+        {
+            //Arrange
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
+            TeacherDao sut = new TeacherDao(mockSqlWrapper.Object);
+
+            //Act
+            Task<IEnumerable<TeacherModel>> task = sut.GetTeacher();
+
+            //Assert
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Once);
+        }
+
+        [TestMethod]
+        public void DoNotCallSqlWithString()
+        {
+            //Arrange
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
+            TeacherDao sut = new TeacherDao(mockSqlWrapper.Object);
+
+            //Act
+            sut.GetTeacher(false);
+
+            //Assert
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Never);
+        }
 
         //[TestMethod]
         //public void CallSqlWithString()
