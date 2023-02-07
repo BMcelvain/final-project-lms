@@ -121,7 +121,7 @@ namespace Lms.Controllers
                 var course = await courseDao.GetCourseById(id);
                 if (course == null)
                 {
-                    return StatusCode(404);
+                    return NotFound();
                 }
 
                 await courseDao.DeleteCourseById(id);
