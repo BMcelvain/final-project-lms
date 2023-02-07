@@ -23,24 +23,10 @@ namespace LMS.UnitTests
             TeacherDao sut = new TeacherDao(mockSqlWrapper.Object);
 
             //Act
-            Task<IEnumerable<TeacherModel>> task = sut.GetTeacher();
+            Task<IEnumerable<TeacherModel>> task = sut.GetTeachers();
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Once);
-        }
-
-        [TestMethod]
-        public void DoNotCallSqlWithString()
-        {
-            //Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            TeacherDao sut = new TeacherDao(mockSqlWrapper.Object);
-
-            //Act
-            sut.GetTeacher(false);
-
-            //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM [DBO.[LearningManagementSystem]")), Times.Never);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher")), Times.Once);
         }
     }
 }
