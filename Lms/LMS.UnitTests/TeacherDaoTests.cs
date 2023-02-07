@@ -15,7 +15,6 @@ namespace LMS.UnitTests
     [TestClass] // Every class must have this.
     public class TeacherDaoTests
     {
-
         [TestMethod]
         public void CallSqlWithString()
         {
