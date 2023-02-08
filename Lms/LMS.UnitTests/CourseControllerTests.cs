@@ -138,7 +138,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetCouseByStatus_ReturnsOKStatusCode()
+        public async Task GetCourseByStatus_ReturnsOKStatusCode()
         {
             // Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();

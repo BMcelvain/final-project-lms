@@ -88,7 +88,7 @@ namespace Lms.Controllers
                 studentUpdates.ApplyTo(student);
                 await studentDao.PartiallyUpdateStudentById(student);
 
-                return StatusCode(200);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -105,11 +105,11 @@ namespace Lms.Controllers
                 var student = await studentDao.GetStudentById(id);
                 if (student == null)
                 {
-                    return StatusCode(404);
+                    return NotFound();
                 }
 
                 await studentDao.DeleteStudentById(id);
-                return StatusCode(200);
+                return Ok();
             }
             catch (Exception e)
             {
