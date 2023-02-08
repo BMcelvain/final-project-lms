@@ -17,7 +17,7 @@ namespace LMS.UnitTests
     public class StudentControllerTests
     {
         [TestMethod] // Every method must have this. 
-        public void CallDao()
+        public void CallStudentDao()
         {
             Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>(); //will work when you're actually in code
 
