@@ -24,7 +24,7 @@ namespace LMS.UnitTests
             StudentDao sut = new StudentDao(mockSqlWrapper.Object);
 
             //Act
-            sut.GetStudents();
+            _ = sut.GetStudents();
 
             //Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < StudentModel > (It.Is<string>(sql => sql == "SELECT * FROM Student")), Times.Once);
