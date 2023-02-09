@@ -73,6 +73,21 @@ namespace Lms.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("teachers/byStatus/{status}")]
+        public async Task<IActionResult> GetTeacherByStatus([FromRoute] string status)
+        {
+            try
+            {
+                var teachers = await teacherDao.GetTeacherByStatus(status);
+                return Ok(teachers);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPatch]
         [Route("teacher/{id}")]
         public async Task<IActionResult> PartiallyUpdateTeacherById([FromRoute] int id, JsonPatchDocument<TeacherModel> teacherUpdates)
@@ -89,7 +104,7 @@ namespace Lms.Controllers
                 teacherUpdates.ApplyTo(teacher);
                 await teacherDao.PartiallyUpdateTeacherById(teacher);
 
-                return StatusCode(200);
+                return Ok();
             }
             catch (Exception e)
             {
@@ -106,11 +121,11 @@ namespace Lms.Controllers
                 var teacher = await teacherDao.GetTeacherById(id);
                 if (teacher == null)
                 {
-                    return StatusCode(404);
+                    return NotFound();
                 }
 
                 await teacherDao.DeleteTeacherById(id);
-                return StatusCode(200);
+                return Ok();
             }
             catch (Exception e)
             {

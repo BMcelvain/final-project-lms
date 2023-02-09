@@ -14,6 +14,8 @@ namespace Lms.Daos
 
         Task<TeacherModel> GetTeacherById(int id);
 
+        Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status);
+
         Task PartiallyUpdateTeacherById(TeacherModel updateRequest);
 
         Task DeleteTeacherById(int id);

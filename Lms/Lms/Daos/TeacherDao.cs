@@ -69,6 +69,18 @@ namespace Lms.Daos
             }
         }
 
+        //Get teachers by status within the Teacher table
+        public async Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status)
+        {
+            var query = $"SELECT * FROM Teacher WHERE TeacherStatus = '{status}'";
+            using (var connection = _context.CreateConnection())
+            {
+                var teachers = await connection.QueryAsync<TeacherModel>(query);
+
+                return teachers.ToList();
+            }
+        }
+
         // PATCH a teacher within the Teacher table. 
         public async Task PartiallyUpdateTeacherById(TeacherModel updateRequest)
         {
