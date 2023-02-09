@@ -36,5 +36,20 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("studentEnrollment/byStudentFirstName/{studentFirstName}")]
+        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentFirstNam([FromRoute] string studentFirstName)
+        {
+            try
+            {
+                var studentFirstNameEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentFirstName(studentFirstName);
+                return Ok(studentFirstNameEnrollments);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
