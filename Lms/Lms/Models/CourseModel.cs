@@ -4,12 +4,6 @@ namespace Lms.Models
 {
     public class CourseModel
     {
-        public CourseModel Course { get; set; }
-
-        public void AddCourse(CourseModel expectedCourse)
-        {
-            Course = expectedCourse;
-        } 
 
         public int CourseId { get; set; }
         public int TeacherId { get; set; }
