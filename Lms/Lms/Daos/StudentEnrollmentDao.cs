@@ -91,7 +91,7 @@ namespace Lms.Daos
                 $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog]  ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
                 $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
                 $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-                $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentFirstName] = {studentFirstName}";
+                $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentFirstName] = '{studentFirstName}'";
 
                 using (var connection = sqlWrapper.CreateConnection())
                 {

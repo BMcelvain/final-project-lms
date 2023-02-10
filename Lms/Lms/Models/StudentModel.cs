@@ -2,12 +2,7 @@
 {
     public class StudentModel
     {
-        public StudentModel Student { get; set; }
 
-        public void AddStudent(StudentModel expectedStudent)
-        {
-            Student = expectedStudent;
-        }
         public int StudentId { get; set; }
         public string StudentFirstName { get; set; }
         public string StudentLastName { get; set; }
