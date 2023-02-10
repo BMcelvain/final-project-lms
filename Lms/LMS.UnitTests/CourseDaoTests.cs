@@ -1,14 +1,11 @@
 ﻿using Lms.Wrappers;
 using Lms.Daos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using Lms.Models;
-
+using System.Data;
+using Dapper;
+using Microsoft.Data.SqlClient;
 
 namespace LMS.UnitTests
 {
@@ -20,15 +17,30 @@ namespace LMS.UnitTests
         public void GetAllCoursesInSql()
         {
             //Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();  
             CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
             //Act
             _ = sut.GetCourses();
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < CourseModel > (It.Is<string>(sql => sql == "SELECT * FROM Course")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course")), Times.Once);
         }
 
+
+        [TestMethod]
+        public void CreateCourseInSql()
+        {
+            //Arrange
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
+            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
+            var mockCourse = new CourseModel();
+
+            //Act
+            _ = sut.CreateCourse(mockCourse);
+
+            //Assert
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsyncWithParameters(It.Is<string>(sql => sql == "INSERT Course (TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus)VALUES(@TeacherId, @CourseName, @SemesterId, @StartDate, @EndDate, @CourseStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
+        }
     }
 }

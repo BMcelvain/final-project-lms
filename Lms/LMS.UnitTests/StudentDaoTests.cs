@@ -27,7 +27,7 @@ namespace LMS.UnitTests
             _ = sut.GetStudents();
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query < StudentModel > (It.Is<string>(sql => sql == "SELECT * FROM Student")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync< StudentModel > (It.Is<string>(sql => sql == "SELECT * FROM Student")), Times.Once);
         }
     }
 }

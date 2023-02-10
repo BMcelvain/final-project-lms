@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lms.Daos;
+using Lms.Wrappers;
 
 namespace Lms
 {
@@ -26,7 +27,7 @@ namespace Lms
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<DapperContext>();
+            services.AddScoped<ISqlWrapper, SqlWrapper>();
             services.AddScoped<ICourseDao, CourseDao>();
             services.AddScoped<ITeacherDao, TeacherDao>();
             services.AddScoped<IStudentDao, StudentDao>();

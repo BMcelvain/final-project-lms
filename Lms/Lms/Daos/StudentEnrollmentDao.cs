@@ -14,13 +14,12 @@ namespace Lms.Daos
 {
     public class StudentEnrollmentDao : IStudentEnrollmentDao
     {
-        private readonly DapperContext _context;
+        private readonly ISqlWrapper sqlWrapper;
 
-        public StudentEnrollmentDao(DapperContext context)
+        public StudentEnrollmentDao(ISqlWrapper sqlWrapper)
         {
-            _context = context;
+            this.sqlWrapper = sqlWrapper;
         }
-
         public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistory(int id)
         {
             var query = $"SELECT [Id]" +
@@ -53,7 +52,7 @@ namespace Lms.Daos
             $" INNER JOIN[LearningManagementSystem].[dbo].[Student] ON[LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 var studentHistory = await connection.QueryAsync<StudentEnrollmentModel>(query);
 
@@ -94,7 +93,7 @@ namespace Lms.Daos
                 $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
                 $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentFirstName] = {studentFirstName}";
 
-                using (var connection = _context.CreateConnection())
+                using (var connection = sqlWrapper.CreateConnection())
                 {
                     var studentHistory = await connection.QueryAsync<StudentEnrollmentModel>(query);
 

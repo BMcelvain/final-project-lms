@@ -26,7 +26,7 @@ namespace LMS.UnitTests
             Task<IEnumerable<TeacherModel>> task = sut.GetTeachers();
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.Query<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher")), Times.Once);
         }
     }
 }
