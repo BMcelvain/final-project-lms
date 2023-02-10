@@ -13,13 +13,7 @@ namespace Lms.Daos
 {
     public class StudentDao : IStudentDao
     {
-        private readonly DapperContext _context;
         private ISqlWrapper sqlWrapper;
-
-        public StudentDao(DapperContext context)  //replace with sqlWrapper
-        {
-            _context = context;
-        }
 
         public StudentDao(ISqlWrapper sqlWrapper)
         {
@@ -30,7 +24,7 @@ namespace Lms.Daos
         {
             if (shouldCallSql)
             {
-                sqlWrapper.Query<StudentModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
+                sqlWrapper.QueryAsync<StudentModel>("SELECT * FROM [DBO.[LearningManagementSystem]");
             }
         }
 
@@ -49,7 +43,7 @@ namespace Lms.Daos
             parameters.Add("StudentStatus", newStudent.StudentStatus, DbType.String);
             parameters.Add("TotalPassCourses", newStudent.TotalPassCourses, DbType.Int32);
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
             }
@@ -60,7 +54,7 @@ namespace Lms.Daos
         {
             var query = "SELECT * FROM Student";
            
-            var students = await sqlWrapper.Query<StudentModel>(query);
+            var students = await sqlWrapper.QueryAsync<StudentModel>(query);
 
             return students.ToList();
         }
@@ -70,7 +64,7 @@ namespace Lms.Daos
         {
             var query = $"SELECT * FROM Student WHERE StudentId = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 var student = await connection.QueryFirstOrDefaultAsync<StudentModel>(query);
                 return student;
@@ -94,7 +88,7 @@ namespace Lms.Daos
             parameters.Add("StudentStatus", updateRequest.StudentStatus, DbType.String);
             parameters.Add("TotalPassCourses", updateRequest.TotalPassCourses, DbType.Int32);
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
             }
@@ -105,7 +99,7 @@ namespace Lms.Daos
         {
             var query = $"DELETE FROM Student WHERE StudentId = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 await connection.ExecuteAsync(query);
             }

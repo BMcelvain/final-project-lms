@@ -13,13 +13,7 @@ namespace Lms.Daos
 {
     public class TeacherDao : ITeacherDao
     {
-        private readonly DapperContext _context;
         private readonly ISqlWrapper sqlWrapper;
-
-        public TeacherDao(DapperContext context)
-        {
-            _context = context;
-        }
 
         public TeacherDao(ISqlWrapper sqlWrapper)
         {
@@ -41,7 +35,7 @@ namespace Lms.Daos
             parameters.Add("TeacherStatus", newTeacher.TeacherStatus, DbType.String);
 
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
             }
@@ -52,7 +46,7 @@ namespace Lms.Daos
         {
             var query = "SELECT * FROM Teacher";
             //replaces the connection async
-            var teachers = await sqlWrapper.Query<TeacherModel>(query);
+            var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);
             return teachers.ToList();
             
         }
@@ -62,7 +56,7 @@ namespace Lms.Daos
         {
             var query = $"SELECT * FROM Teacher WHERE TeacherId = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 var teacher = await connection.QueryFirstOrDefaultAsync<TeacherModel>(query);
                 return teacher;
@@ -73,7 +67,7 @@ namespace Lms.Daos
         public async Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status)
         {
             var query = $"SELECT * FROM Teacher WHERE TeacherStatus = '{status}'";
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 var teachers = await connection.QueryAsync<TeacherModel>(query);
 
@@ -95,7 +89,7 @@ namespace Lms.Daos
             parameters.Add("TeacherEmail", updateRequest?.TeacherEmail, DbType.String);
             parameters.Add("TeacherStatus", updateRequest.TeacherStatus, DbType.String);
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
             }
@@ -106,7 +100,7 @@ namespace Lms.Daos
         {
             var query = $"DELETE FROM Teacher WHERE TeacherId = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (var connection = sqlWrapper.CreateConnection())
             {
                 await connection.ExecuteAsync(query);
             }

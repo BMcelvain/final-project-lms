@@ -13,13 +13,7 @@ namespace Lms.Daos
 {
     public class CourseDao : ICourseDao
     {
-        private readonly DapperContext _context;
         private readonly ISqlWrapper sqlWrapper;
-
-        public CourseDao(DapperContext context)
-        {
-            _context = context;
-        }
 
         public CourseDao(ISqlWrapper sqlWrapper) 
         {
@@ -41,9 +35,9 @@ namespace Lms.Daos
             parameters.Add("CourseStatus", newCourse.CourseStatus, DbType.String);
 
 
-            using (var connection = _context.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);
+                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
             }
         }
 
@@ -51,9 +45,13 @@ namespace Lms.Daos
         public async Task<IEnumerable<CourseModel>> GetCourses()
         {
             var query = "SELECT * FROM Course";
-            var courses = await sqlWrapper.Query<CourseModel>(query);
 
-            return courses.ToList();
+            using (sqlWrapper.CreateConnection())
+            {
+                var courses = await sqlWrapper.QueryAsync<CourseModel>(query);
+
+                return courses.ToList();
+            }
         }
 
         // GET a single course (by Id) within the Course table.
@@ -61,9 +59,9 @@ namespace Lms.Daos
         {
             var query = $"SELECT * FROM Course WHERE CourseId = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                var course = await connection.QueryFirstOrDefaultAsync<CourseModel>(query);
+                var course = await sqlWrapper.QueryFirstOrDefaultAsync<CourseModel>(query);
                 return course;
             }
         }
@@ -72,9 +70,9 @@ namespace Lms.Daos
         public async Task<IEnumerable<CourseModel>> GetCourseByStatus(string status)
         {
             var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'";
-            using (var connection = _context.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                var courses = await connection.QueryAsync<CourseModel>(query);
+                var courses = await sqlWrapper.QueryAsync<CourseModel>(query);
 
                 return courses.ToList();
             }
@@ -95,9 +93,9 @@ namespace Lms.Daos
             parameters.Add("EndDate", updateRequest?.EndDate, DbType.String);
             parameters.Add("CourseStatus", updateRequest.CourseStatus, DbType.String);
 
-            using (var connection = _context.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);
+                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
             }
         }
 
@@ -106,9 +104,9 @@ namespace Lms.Daos
         {
             var query = $"DELETE FROM Course WHERE CourseId = {id}";
 
-            using (var connection = _context.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query);
+               await sqlWrapper.ExecuteAsync(query);
             }
         }
     }
