@@ -1,13 +1,8 @@
 ﻿using Lms.Daos;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Lms.Models;
-using System.Drawing.Printing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.JsonPatch;
 
 namespace Lms.Controllers

@@ -3,9 +3,7 @@ using Lms.Daos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Lms.Models;
-using System.Data;
 using Dapper;
-using Microsoft.Data.SqlClient;
 
 namespace LMS.UnitTests
 {
@@ -13,7 +11,7 @@ namespace LMS.UnitTests
     public class CourseDaoTests
     {
         [TestMethod]
-        public void CreateCourseInSql()
+        public void CreateCourse_UsesProperSqlQuery_OneTime()
         {
             //Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
@@ -28,7 +26,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void GetAllCoursesInSql()
+        public void GetAllCourses_UsesProperSqlQuery_OneTime()
         {
             //Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();  
@@ -42,7 +40,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void GetCoursesByIdInSql()
+        public void GetCoursesById_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
@@ -56,7 +54,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void GetCoursesByStatusInSql()
+        public void GetCoursesByStatus_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
@@ -70,7 +68,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void PartiallyUpdateCourseByIdInSql()
+        public void PartiallyUpdateCourseById_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
@@ -85,7 +83,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void DeleteCourseByIdInSql()
+        public void DeleteCourseById_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();

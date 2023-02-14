@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 using Lms.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Diagnostics;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace LMS.UnitTests
 {

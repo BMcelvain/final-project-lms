@@ -1,12 +1,9 @@
 ﻿using Dapper;
 using Lms.Models;
 using Lms.Wrappers;
-using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Lms.Daos
@@ -35,9 +32,9 @@ namespace Lms.Daos
             parameters.Add("StudentStatus", newStudent.StudentStatus, DbType.String);
             parameters.Add("TotalPassCourses", newStudent.TotalPassCourses, DbType.Int32);
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);
+                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
             }
         }
 
@@ -45,10 +42,13 @@ namespace Lms.Daos
         public async Task<IEnumerable<StudentModel>> GetStudents()
         {
             var query = "SELECT * FROM Student";
-           
-            var students = await sqlWrapper.QueryAsync<StudentModel>(query);
+            
+            using (sqlWrapper.CreateConnection())
+            {
+                var students = await sqlWrapper.QueryAsync<StudentModel>(query);
 
-            return students.ToList();
+                return students.ToList();
+            }  
         }
 
         // GET a single student (by Id) within the Student table.

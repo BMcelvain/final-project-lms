@@ -24,11 +24,11 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("studentEnrollment/byId/{id}")]
-        public async Task<IActionResult> GetstudentEnrollments([FromRoute] int id)
+        public async Task<IActionResult> GetStudentEnrollmentHistoryById([FromRoute] int id)
         {
             try
             {
-                var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistory(id);
+                var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryById(id);
                 return Ok(studentEnrollments);
             }
             catch (Exception e)
@@ -39,7 +39,7 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("studentEnrollment/byStudentFirstName/{studentFirstName}")]
-        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentFirstNam([FromRoute] string studentFirstName)
+        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentFirstName([FromRoute] string studentFirstName)
         {
             try
             {
