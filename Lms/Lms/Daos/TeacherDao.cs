@@ -31,10 +31,9 @@ namespace Lms.Daos
             parameters.Add("TeacherEmail", newTeacher?.TeacherEmail, DbType.String);
             parameters.Add("TeacherStatus", newTeacher.TeacherStatus, DbType.String);
 
-
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);
+                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
             }
         }
 
@@ -55,9 +54,9 @@ namespace Lms.Daos
         {
             var query = $"SELECT * FROM Teacher WHERE TeacherId = {id}";
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                var teacher = await connection.QueryFirstOrDefaultAsync<TeacherModel>(query);
+                var teacher = await sqlWrapper.QueryFirstOrDefaultAsync<TeacherModel>(query);
                 return teacher;
             }
         }
@@ -66,9 +65,9 @@ namespace Lms.Daos
         public async Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status)
         {
             var query = $"SELECT * FROM Teacher WHERE TeacherStatus = '{status}'";
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                var teachers = await connection.QueryAsync<TeacherModel>(query);
+                var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);
 
                 return teachers.ToList();
             }
@@ -88,9 +87,9 @@ namespace Lms.Daos
             parameters.Add("TeacherEmail", updateRequest?.TeacherEmail, DbType.String);
             parameters.Add("TeacherStatus", updateRequest.TeacherStatus, DbType.String);
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);
+                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
             }
         }
 
@@ -99,9 +98,9 @@ namespace Lms.Daos
         {
             var query = $"DELETE FROM Teacher WHERE TeacherId = {id}";
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query);
+                await sqlWrapper.ExecuteAsync(query);
             }
         }
     }
