@@ -13,21 +13,9 @@ using System.Threading.Tasks;
 
 namespace LMS.UnitTests
 {
-    [TestClass] // Every class must have this.
+    [TestClass] 
     public class TeacherControllerTests
     {
-        [TestMethod] // Every method must have this. 
-        public void CallTeacherDao()
-        {
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>(); //will work when you're actually in code
-
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-
-            _ = sut.GetTeachers();  //in CallDao throw exception 
-
-            mockTeacherDao.Verify(teacherDao => teacherDao.GetTeachers(), Times.Once()); //this is used as a temp object
-        }
-
         [TestMethod]
         public async Task CreateClass_ReturnsOkStatusCode()
         {

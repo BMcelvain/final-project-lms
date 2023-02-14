@@ -1,13 +1,10 @@
 ﻿using Lms.Wrappers;
-using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Lms.Models;
-using System;
 
 namespace Lms.Daos
 {
@@ -45,10 +42,12 @@ namespace Lms.Daos
         public async Task<IEnumerable<TeacherModel>> GetTeachers()
         {
             var query = "SELECT * FROM Teacher";
-            //replaces the connection async
-            var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);
-            return teachers.ToList();
-            
+
+            using (sqlWrapper.CreateConnection())
+            {
+                var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);
+                return teachers.ToList();
+            }    
         }
 
         // GET a single teacher (by Id) within the Teacher table.

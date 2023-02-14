@@ -1,21 +1,15 @@
 ﻿using Lms.Wrappers;
 using Lms.Daos;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using Lms.Models;
 
 
 namespace LMS.UnitTests
 {
-    [TestClass] // Every class must have this.
+    [TestClass] 
     public class StudentDaoTests
     {
-
         [TestMethod]
         public void GetAllStudentsInSql()
         {

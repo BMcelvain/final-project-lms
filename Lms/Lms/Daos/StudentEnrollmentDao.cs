@@ -1,14 +1,9 @@
 ﻿using Lms.Wrappers;
-using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Lms.Models;
-using System;
-using System.Reflection;
 
 namespace Lms.Daos
 {
@@ -20,7 +15,7 @@ namespace Lms.Daos
         {
             this.sqlWrapper = sqlWrapper;
         }
-        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistory(int id)
+        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryById(int id)
         {
             var query = $"SELECT [Id]" +
             $", [LearningManagementSystem].[dbo].[Course].[CourseId]" +

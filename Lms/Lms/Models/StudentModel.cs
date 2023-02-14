@@ -2,7 +2,6 @@
 {
     public class StudentModel
     {
-
         public int StudentId { get; set; }
         public string StudentFirstName { get; set; }
         public string StudentLastName { get; set; }
