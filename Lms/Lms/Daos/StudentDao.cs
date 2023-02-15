@@ -56,9 +56,9 @@ namespace Lms.Daos
         {
             var query = $"SELECT * FROM Student WHERE StudentId = {id}";
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                var student = await connection.QueryFirstOrDefaultAsync<StudentModel>(query);
+                var student = await sqlWrapper.QueryFirstOrDefaultAsync<StudentModel>(query);
                 return student;
             }
         }
@@ -80,9 +80,9 @@ namespace Lms.Daos
             parameters.Add("StudentStatus", updateRequest.StudentStatus, DbType.String);
             parameters.Add("TotalPassCourses", updateRequest.TotalPassCourses, DbType.Int32);
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query, parameters);
+                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
             }
         }
 
@@ -91,9 +91,9 @@ namespace Lms.Daos
         {
             var query = $"DELETE FROM Student WHERE StudentId = {id}";
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                await connection.ExecuteAsync(query);
+                await sqlWrapper.ExecuteAsync(query);
             }
         }
     }
