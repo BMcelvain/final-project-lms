@@ -42,14 +42,14 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudentEnrollmentByStudentFirstName_ReturnsOKStatusCode()
+        public async Task GetStudentEnrollmentByStudentLastName_ReturnsOKStatusCode()
         {
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
 
             // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentFirstName("test");
+            var result = await sut.GetStudentEnrollmentHistoryByStudentLastName("test");
 
             // Assert
             Assert.IsNotNull(result);
@@ -57,18 +57,19 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudentEnrollmentByStudentFirstName_ThrowsExceptionOnError()
+        public async Task GetStudentEnrollmentByStudentLastName_ThrowsExceptionOnError()
         {
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
 
             // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentFirstName("test");
+            var result = await sut.GetStudentEnrollmentHistoryByStudentLastName("test");
 
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
+
     }
 }
