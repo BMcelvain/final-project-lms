@@ -15,6 +15,7 @@ namespace Lms.Daos
         {
             this.sqlWrapper = sqlWrapper;
         }
+
         public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryById(int id)
         {
             var query = $"SELECT [Id]" +
@@ -47,13 +48,12 @@ namespace Lms.Daos
             $" INNER JOIN[LearningManagementSystem].[dbo].[Student] ON[LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = {id}";
 
-            using (var connection = sqlWrapper.CreateConnection())
+            using (sqlWrapper.CreateConnection())
             {
-                var studentHistory = await connection.QueryAsync<StudentEnrollmentModel>(query);
+                var studentHistory = await sqlWrapper.QueryAsync<StudentEnrollmentModel>(query);
 
                 return studentHistory.ToList();
             }
-
         }
 
         public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryByStudentLastName(string studentLastName)
@@ -94,8 +94,6 @@ namespace Lms.Daos
 
                 return studentHistory.ToList();
             }
-
         }
-
     }
 }
