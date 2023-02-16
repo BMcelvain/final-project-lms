@@ -92,6 +92,5 @@ namespace LMS.UnitTests
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
-
     }
 }
