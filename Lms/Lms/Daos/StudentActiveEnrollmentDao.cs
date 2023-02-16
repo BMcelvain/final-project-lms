@@ -83,8 +83,5 @@ namespace Lms.Daos
                 return studentHistory;
             }
         }
-
     }
 }
-
-
