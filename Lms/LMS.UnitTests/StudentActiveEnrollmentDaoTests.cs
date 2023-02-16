@@ -4,19 +4,16 @@ using Lms.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-
 namespace LMS.UnitTests
 {
     public class StudentActiveEnrollmentDaoTests
     {
-
         [TestMethod]
         public void GetActiveStudents_UsesProperSqlQuery_OneTime()
         {
             //Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            StudentActiveEnrollmentDao sut = new StudentActiveEnrollmentDao(mockSqlWrapper.Object);
-            
+            StudentActiveEnrollmentDao sut = new StudentActiveEnrollmentDao(mockSqlWrapper.Object);          
 
             //Act
             _ = sut.GetActiveStudentEnrollmentByStudentLastName("test");
@@ -46,8 +43,5 @@ namespace LMS.UnitTests
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = 'Test' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'")), Times.Once);
         }
-
-  
-
     }
 }
