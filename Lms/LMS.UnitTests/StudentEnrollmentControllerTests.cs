@@ -4,7 +4,9 @@ using Moq;
 using Lms.Daos;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
+using Lms.Models;
+using System.Collections.Generic;
+using System;
 
 namespace LMS.UnitTests
 {
@@ -17,6 +19,11 @@ namespace LMS.UnitTests
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
+            var mockStudentEnrollment = new List<StudentEnrollmentModel>();
+
+            mockStudentEnrollmentDao
+                .Setup(x => x.GetStudentEnrollmentHistoryById(0))
+                .ReturnsAsync(mockStudentEnrollment);
 
             // Act
             var result = await sut.GetStudentEnrollmentHistoryById(0);
@@ -32,6 +39,11 @@ namespace LMS.UnitTests
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
+            var testException = new Exception("Test Exception");
+
+            mockStudentEnrollmentDao
+                .Setup(x => x.GetStudentEnrollmentHistoryById(0))
+                .Throws(testException);
 
             // Act
             var result = await sut.GetStudentEnrollmentHistoryById(0);
@@ -42,14 +54,19 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudentEnrollmentByStudentFirstName_ReturnsOKStatusCode()
+        public async Task GetStudentEnrollmentByStudentLastName_ReturnsOKStatusCode()
         {
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
+            var mockStudentEnrollment = new List<StudentEnrollmentModel>();
+
+            mockStudentEnrollmentDao
+                .Setup(x => x.GetStudentEnrollmentHistoryByStudentFirstName("test"))
+                .ReturnsAsync(mockStudentEnrollment);
 
             // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentFirstName("test");
+            var result = await sut.GetStudentEnrollmentHistoryByStudentLastName("test");
 
             // Assert
             Assert.IsNotNull(result);
@@ -57,14 +74,19 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudentEnrollmentByStudentFirstName_ThrowsExceptionOnError()
+        public async Task GetStudentEnrollmentByStudentLastName_ThrowsExceptionOnError()
         {
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
+            var testException = new Exception("Test Exception");
+
+            mockStudentEnrollmentDao
+                .Setup(x => x.GetStudentEnrollmentHistoryByStudentFirstName("test"))
+                .Throws(testException);
 
             // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentFirstName("test");
+            var result = await sut.GetStudentEnrollmentHistoryByStudentLastName("test");
 
             // Assert
             Assert.IsNotNull(result);
