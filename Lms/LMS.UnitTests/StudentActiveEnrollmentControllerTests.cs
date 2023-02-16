@@ -5,14 +5,11 @@ using Lms.Daos;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace LMS.UnitTests
 {
     [TestClass]
     public class StudentActiveEnrollmentControllerTests
     {
-        
-
         [TestMethod]
         public async Task GetActiveStudentEnrollmentByStudentLasttName_ReturnsOKStatusCode()
         {
