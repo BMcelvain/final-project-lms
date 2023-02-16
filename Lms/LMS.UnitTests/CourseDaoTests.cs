@@ -7,7 +7,7 @@ using Dapper;
 
 namespace LMS.UnitTests
 {
-    [TestClass] // Every class must have this.
+    [TestClass]
     public class CourseDaoTests
     {
         [TestMethod]
@@ -22,7 +22,7 @@ namespace LMS.UnitTests
             _ = sut.CreateCourse(mockCourse);
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsyncWithParameters(It.Is<string>(sql => sql == "INSERT Course (TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus)VALUES(@TeacherId, @CourseName, @SemesterId, @StartDate, @EndDate, @CourseStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT Course (TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus)VALUES(@TeacherId, @CourseName, @SemesterId, @StartDate, @EndDate, @CourseStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
         [TestMethod]
@@ -79,7 +79,7 @@ namespace LMS.UnitTests
             _ = sut.PartiallyUpdateCourseById(mockCourse);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsyncWithParameters(It.Is<string>(sql => sql == "UPDATE Course SET TeacherId=@TeacherId, CourseName=@CourseName, SemesterId=@SemesterId, StartDate=@StartDate, EndDate=@EndDate, CourseStatus=@CourseStatus WHERE CourseId=@CourseId"), It.IsAny<DynamicParameters>()));
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE Course SET TeacherId=@TeacherId, CourseName=@CourseName, SemesterId=@SemesterId, StartDate=@StartDate, EndDate=@EndDate, CourseStatus=@CourseStatus WHERE CourseId=@CourseId"), It.IsAny<DynamicParameters>()));
         }
 
         [TestMethod]
