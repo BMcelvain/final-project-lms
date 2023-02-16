@@ -2,7 +2,6 @@
 {
     public class StudentActiveEnrollmentModel
     {
-
         public string StudentLastName { get; set; }
         public string StudentFirstName { get; set; }
         public int StudentId { get; set; }
@@ -21,6 +20,5 @@
         public string TeacherPhone { get; set; }
         public string TeacherEmail { get; set; }
         public string TeacherStatus { get; set; }
-
     }
 }
