@@ -56,15 +56,9 @@ namespace Lms.Daos
             }
         }
 
-        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryByStudentFirstName(string studentFirstName)
+        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryByStudentLastName(string studentLastName)
         {
-            var query = $"SELECT [LearningManagementSystem].[dbo].[Student].[StudentFirstName]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentLastName]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentStatus]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" + 
+            var query = $"SELECT [Id]" +
             $", [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
             $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
@@ -82,17 +76,23 @@ namespace Lms.Daos
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherPhone]" +
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherStatus]" +
-            $" FROM [LearningManagementSystem].[dbo].[Student]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog]  ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentFirstName] = '{studentFirstName}'";
+            $", [LearningManagementSystem].[dbo].[Student].[StudentFirstName]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentLastName]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentStatus]" +
+            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
+            $"  FROM[LearningManagementSystem].[dbo].[Student]" +
+            $"  INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog]  ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem]. [dbo].[Student].[StudentId]" +
+            $"  INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
+            $"  INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
+            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = '{studentLastName}'";
 
             using (sqlWrapper.CreateConnection())
             {
                 var studentHistory = await sqlWrapper.QueryAsync<StudentEnrollmentModel>(query);
 
-                return studentHistory;
+                return studentHistory.ToList();
             }
         }
     }
