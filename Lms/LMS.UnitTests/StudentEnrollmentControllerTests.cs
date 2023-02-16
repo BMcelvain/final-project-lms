@@ -62,7 +62,7 @@ namespace LMS.UnitTests
             var mockStudentEnrollment = new List<StudentEnrollmentModel>();
 
             mockStudentEnrollmentDao
-                .Setup(x => x.GetStudentEnrollmentHistoryByStudentFirstName("test"))
+                .Setup(x => x.GetStudentEnrollmentHistoryByStudentLastName("test"))
                 .ReturnsAsync(mockStudentEnrollment);
 
             // Act
@@ -82,7 +82,7 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockStudentEnrollmentDao
-                .Setup(x => x.GetStudentEnrollmentHistoryByStudentFirstName("test"))
+                .Setup(x => x.GetStudentEnrollmentHistoryByStudentLastName("test"))
                 .Throws(testException);
 
             // Act

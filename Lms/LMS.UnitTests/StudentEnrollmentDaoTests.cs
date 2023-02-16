@@ -11,7 +11,7 @@ namespace LMS.UnitTests
     public class StudentEnrollmentDaoTests
     {
         [TestMethod]
-        public async Task GetStudentEnrollmentHistoryById__UsesProperSqlQuery_OneTime()
+        public async Task GetStudentEnrollmentHistoryById_UsesProperSqlQuery_OneTime()
         {   
             // Arrange
             var mockSqlWrapper = new Mock<ISqlWrapper>();
@@ -53,23 +53,17 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudentEnrollmentHistoryByStudentFirstName_UsesProperSqlQuery_OneTime()
+        public async Task GetStudentEnrollmentHistoryByStudentLastName_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             var mockSqlWrapper = new Mock<ISqlWrapper>();
             var sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetStudentEnrollmentHistoryByStudentFirstName("test");
+            _ = sut.GetStudentEnrollmentHistoryByStudentLastName("test");
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == "SELECT [LearningManagementSystem].[dbo].[Student].[StudentFirstName]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentLastName]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentStatus]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == "SELECT [Id]" +
             $", [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
             $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
@@ -87,11 +81,17 @@ namespace LMS.UnitTests
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherPhone]" +
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherStatus]" +
-            $" FROM [LearningManagementSystem].[dbo].[Student]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog]  ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentFirstName] = 'test'")), Times.Once);
+            $", [LearningManagementSystem].[dbo].[Student].[StudentFirstName]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentLastName]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentStatus]" +
+            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
+            $"  FROM[LearningManagementSystem].[dbo].[Student]" +
+            $"  INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog]  ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem]. [dbo].[Student].[StudentId]" +
+            $"  INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
+            $"  INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
+            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = 'test'")), Times.Once);
         }
     }
 }
