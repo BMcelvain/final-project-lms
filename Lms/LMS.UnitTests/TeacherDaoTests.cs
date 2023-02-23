@@ -8,8 +8,7 @@ using Lms.Models;
 
 namespace LMS.UnitTests
 {
-
-    [TestClass] // Every class must have this.
+    [TestClass]
     public class TeacherDaoTests
     {
         [TestMethod]
@@ -100,4 +99,3 @@ namespace LMS.UnitTests
         }
     }
 }
-
