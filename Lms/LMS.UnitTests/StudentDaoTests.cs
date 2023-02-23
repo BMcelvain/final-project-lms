@@ -5,7 +5,6 @@ using Moq;
 using Lms.Models;
 using Dapper;
 
-
 namespace LMS.UnitTests
 {
     [TestClass]
@@ -17,7 +16,6 @@ namespace LMS.UnitTests
         {
             mockSqlWrapper = new Mock<ISqlWrapper>();
         }
-
 
         [TestMethod]
         public void CreateStudentInSql_UsesProperSqlQuery_OneTime()
@@ -33,6 +31,7 @@ namespace LMS.UnitTests
             //Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsyncWithParameters(It.Is<string>(sql => sql == "INSERT Student (StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus, TotalPassCourses)" + $"VALUES(@StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus, @TotalPassCourses)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
+        
         [TestMethod]
         public void GetAllStudentsInSql_UsesProperSqlQuery_OneTime()
         {
@@ -91,6 +90,3 @@ namespace LMS.UnitTests
         }
     }
 }
-
-
-
