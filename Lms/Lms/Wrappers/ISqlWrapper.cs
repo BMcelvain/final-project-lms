@@ -10,8 +10,7 @@ namespace Lms.Wrappers
         IDbConnection CreateConnection();
         Task<List<T>> QueryAsync<T>(string sql);
         Task ExecuteAsync(string sql);
-        Task ExecuteAsync(string sql, DynamicParameters parameters);
-        
+        Task ExecuteAsync(string sql, DynamicParameters parameters);      
         Task<T> QueryFirstOrDefaultAsync<T>(string sql);
     }
 }

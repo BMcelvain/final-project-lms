@@ -7,7 +7,6 @@ namespace Lms.Daos
     public interface IStudentActiveEnrollmentDao
     {
         Task<IEnumerable<StudentActiveEnrollmentModel>> GetActiveStudentEnrollmentByStudentLastName(string studentLastName);
-
         Task<IEnumerable<StudentActiveEnrollmentModel>> GetActiveStudentEnrollmentByStudentPhone(string studentPhone);
     }
 }
