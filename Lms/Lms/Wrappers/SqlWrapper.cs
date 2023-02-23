@@ -46,7 +46,7 @@ namespace Lms.Wrappers
             await this._connection.ExecuteAsync(sql);
         }
 
-        public async Task ExecuteAsyncWithParameters(string sql, DynamicParameters parameters)
+        public async Task ExecuteAsync(string sql, DynamicParameters parameters)
         {
             await this._connection.ExecuteAsync(sql, parameters);
         }

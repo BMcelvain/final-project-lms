@@ -34,7 +34,7 @@ namespace Lms.Daos
 
             using (sqlWrapper.CreateConnection())
             {
-                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
+                await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Lms.Daos
                         $"WHERE StudentId=@StudentId";
 
             var parameters = new DynamicParameters();
-           
+      
             parameters.Add("StudentId", updateRequest.StudentId, DbType.Int32);
             parameters.Add("StudentFirstName", updateRequest.StudentFirstName, DbType.String);
             parameters.Add("StudentLastName", updateRequest.StudentLastName, DbType.String);
@@ -82,7 +82,7 @@ namespace Lms.Daos
 
             using (sqlWrapper.CreateConnection())
             {
-                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
+                await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
 

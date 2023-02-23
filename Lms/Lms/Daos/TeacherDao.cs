@@ -31,10 +31,9 @@ namespace Lms.Daos
             parameters.Add("TeacherEmail", newTeacher?.TeacherEmail, DbType.String);
             parameters.Add("TeacherStatus", newTeacher.TeacherStatus, DbType.String);
 
-
             using (sqlWrapper.CreateConnection())
             {
-                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
+                await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
 
@@ -90,7 +89,7 @@ namespace Lms.Daos
 
             using (sqlWrapper.CreateConnection())
             {
-                await sqlWrapper.ExecuteAsyncWithParameters(query, parameters);
+                await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
 
