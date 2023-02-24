@@ -27,7 +27,7 @@ namespace Lms.Controllers
                 var activeStudentLastNameEnrollments = await studentActiveEnrollmentDao.GetActiveStudentEnrollmentByStudentLastName(studentLastName);
                 if (activeStudentLastNameEnrollments == null)
                 {
-                    return StatusCode(200, "No Student with Active Courses found.");
+                    return StatusCode(404, "No Student with Active Courses found.");
                 }
                 return Ok(activeStudentLastNameEnrollments);
             }
