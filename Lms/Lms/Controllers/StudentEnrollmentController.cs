@@ -23,7 +23,7 @@ namespace Lms.Controllers
         }
 
         [HttpGet]
-        [Route("studentEnrollment/byId/{id}")]
+        [Route("studentEnrollment/byStudentId/{id}")]
         public async Task<IActionResult> GetStudentEnrollmentHistoryById([FromRoute] int id)
         {
             try

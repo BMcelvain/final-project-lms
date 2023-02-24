@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data.SqlTypes;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -25,7 +26,7 @@ namespace Lms.Controllers
             try
             {
                 var activeStudentLastNameEnrollments = await studentActiveEnrollmentDao.GetActiveStudentEnrollmentByStudentLastName(studentLastName);
-                if (activeStudentLastNameEnrollments == null)
+                if (activeStudentLastNameEnrollments.Count() == 0)
                 {
                     return StatusCode(404, "No Student with Active Courses found.");
                 }
@@ -35,7 +36,6 @@ namespace Lms.Controllers
             {
                 return StatusCode(500, e.Message);
             }
-
         }
 
         [HttpGet]
@@ -45,7 +45,7 @@ namespace Lms.Controllers
             try
             {
                 var activeStudentPhoneEnrollments = await studentActiveEnrollmentDao.GetActiveStudentEnrollmentByStudentPhone(studentPhone);
-                if (activeStudentPhoneEnrollments == null) 
+                if (activeStudentPhoneEnrollments.Count() == 0) 
                 {
                     return StatusCode(404, "No Student with Active Courses found.");
                 }

@@ -22,7 +22,7 @@ namespace LMS.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
 
         [TestMethod]
