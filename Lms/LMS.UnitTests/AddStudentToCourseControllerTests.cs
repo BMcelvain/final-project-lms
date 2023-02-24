@@ -23,10 +23,12 @@ namespace LMS.UnitTests
 
             // Act
             var result = await sut.AddStudentToCourse(course);
+          
 
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(OkResult));
+            
         }
 
         [TestMethod]

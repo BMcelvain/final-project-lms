@@ -84,9 +84,6 @@ namespace Lms.Daos
             }
         }
 
-        public Task PartiallyUpdateStudentInCourseByCourseStudentId(int v1, int v2)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }
