@@ -1,5 +1,6 @@
 ﻿using Lms.Daos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Data.SqlTypes;
 using System.Diagnostics;
@@ -26,7 +27,7 @@ namespace Lms.Controllers
             try
             {
                 var activeStudentLastNameEnrollments = await studentActiveEnrollmentDao.GetActiveStudentEnrollmentByStudentLastName(studentLastName);
-                if (activeStudentLastNameEnrollments.Count() == 0)
+                if (activeStudentLastNameEnrollments.IsNullOrEmpty())
                 {
                     return StatusCode(404, "No Student with Active Courses found.");
                 }
@@ -45,7 +46,7 @@ namespace Lms.Controllers
             try
             {
                 var activeStudentPhoneEnrollments = await studentActiveEnrollmentDao.GetActiveStudentEnrollmentByStudentPhone(studentPhone);
-                if (activeStudentPhoneEnrollments.Count() == 0) 
+                if (activeStudentPhoneEnrollments.IsNullOrEmpty()) 
                 {
                     return StatusCode(404, "No Student with Active Courses found.");
                 }
