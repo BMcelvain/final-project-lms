@@ -23,7 +23,7 @@ namespace LMS.UnitTests
             _ = sut.CreateTeacher(mockTeacher);
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsyncWithParameters(It.Is<string>(sql => sql == "INSERT Teacher(TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)VALUES(@TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT Teacher(TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)VALUES(@TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
         [TestMethod]
@@ -80,7 +80,7 @@ namespace LMS.UnitTests
             _ = sut.PartiallyUpdateTeacherById(mockTeacher);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsyncWithParameters(It.Is<string>(sql => sql == "UPDATE Teacher SET TeacherFirstName=@TeacherFirstName, TeacherLastName=@TeacherLastName, " +
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE Teacher SET TeacherFirstName=@TeacherFirstName, TeacherLastName=@TeacherLastName, " +
               $"TeacherPhone=@TeacherPhone, TeacherEmail=@TeacherEmail, TeacherStatus=@TeacherStatus WHERE TeacherId=@TeacherId"), It.IsAny<DynamicParameters>()));
         }
 
