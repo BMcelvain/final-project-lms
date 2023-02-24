@@ -11,7 +11,7 @@ namespace LMS.UnitTests
     public class StudentEnrollmentDaoTests
     {
         [TestMethod]
-        public async Task GetStudentEnrollmentHistoryById_UsesProperSqlQuery_OneTime()
+        public void GetStudentEnrollmentHistoryById_UsesProperSqlQuery_OneTime()
         {   
             // Arrange
             var mockSqlWrapper = new Mock<ISqlWrapper>();
@@ -53,7 +53,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudentEnrollmentHistoryByStudentLastName_UsesProperSqlQuery_OneTime()
+        public void GetStudentEnrollmentHistoryByStudentLastName_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             var mockSqlWrapper = new Mock<ISqlWrapper>();

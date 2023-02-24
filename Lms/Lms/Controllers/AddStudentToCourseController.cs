@@ -17,7 +17,7 @@ namespace Lms.Controllers
         {
             this.addStudentToCourseDao = addStudentToCourseDao;
         }
-
+        
         [HttpPost]
         [Route("addStudentToCourse")]
         public async Task<IActionResult> AddStudentToCourse(AddStudentToCourseModel addStudentToCourse)
