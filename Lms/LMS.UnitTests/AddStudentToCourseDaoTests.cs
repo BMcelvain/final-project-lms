@@ -42,19 +42,21 @@ namespace LMS.UnitTests
         }
 
 
-        //[TestMethod]
-        //public void PartiallyUpdateStudentInCourseByCourseStudentId_UsesProperSqlQuery_OneTime()
-        //{
-        //    // Arrange
-        //    Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-        //    AddStudentToCourseDao sut = new AddStudentToCourseDao(mockSqlWrapper.Object);
+        [TestMethod]
+        public void PartiallyUpdateStudentInCourseByCourseStudentId_UsesProperSqlQuery_OneTime()
+        {
+            // Arrange
+            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
+            AddStudentToCourseDao sut = new AddStudentToCourseDao(mockSqlWrapper.Object);
+            var mockModel = new AddStudentToCourseModel();
 
-        //    // Act
-        //    _ = sut.PartiallyUpdateStudentInCourseByCourseStudentId(1, 1);
+            // Act
+            _ = sut.PartiallyUpdateStudentInCourseByCourseStudentId(mockModel);
 
-        //    // Assert
-        //    mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, SemesterId=@SemesterId, StudentId=@StudentId,EnrollmentDate=@EnrollmentDate, Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId"), It.IsAny<DynamicParameters>()));
-        //}
+            // Assert
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, SemesterId=@SemesterId, StudentId=@StudentId, " +
+                        $"EnrollmentDate=@EnrollmentDate, Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId"), It.IsAny<DynamicParameters>()));
+        }
 
         [TestMethod]
         public void DeleteStudentInCourseByStudentCourseId_UsesProperSqlQuery_OneTime()
