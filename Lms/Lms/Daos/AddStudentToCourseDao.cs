@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Lms.Models;
+using System;
 
 namespace Lms.Daos
 {
@@ -52,19 +53,19 @@ namespace Lms.Daos
         }
 
         // PATCH a student within the Enrollment Log.
-        public async Task PartiallyUpdateStudentInCourseByCourseStudentId(AddStudentToCourseModel addStudentToCourseUpdates)
+        public async Task PartiallyUpdateStudentInCourseByCourseStudentId(AddStudentToCourseModel updateRequest)
         {
             var query = "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, SemesterId=@SemesterId, StudentId=@StudentId, " +
                         $"EnrollmentDate=@EnrollmentDate, Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId";
 
             var parameters = new DynamicParameters();
-            parameters.Add("CourseId", addStudentToCourseUpdates.CourseId, DbType.Int32);
-            parameters.Add("SemesterId", addStudentToCourseUpdates.SemesterId, DbType.Int32);
-            parameters.Add("StudentId", addStudentToCourseUpdates.StudentId, DbType.Int32);
-            parameters.Add("EnrollmentDate", addStudentToCourseUpdates.EnrollmentDate, DbType.String);
-            parameters.Add("Cancelled", addStudentToCourseUpdates.Cancelled, DbType.Boolean);
-            parameters.Add("CancellationReason", addStudentToCourseUpdates?.CancellationReason, DbType.String);
-            parameters.Add("HasPassed", addStudentToCourseUpdates.HasPassed, DbType.Boolean);
+            parameters.Add("CourseId", updateRequest.CourseId, DbType.Int32);
+            parameters.Add("SemesterId", updateRequest.SemesterId, DbType.Int32);
+            parameters.Add("StudentId", updateRequest.StudentId, DbType.Int32);
+            parameters.Add("EnrollmentDate", updateRequest.EnrollmentDate, DbType.String);
+            parameters.Add("Cancelled", updateRequest.Cancelled, DbType.Boolean);
+            parameters.Add("CancellationReason", updateRequest?.CancellationReason, DbType.String);
+            parameters.Add("HasPassed", updateRequest.HasPassed, DbType.Boolean);
 
             using (sqlWrapper.CreateConnection())
             {
@@ -81,6 +82,11 @@ namespace Lms.Daos
             {
                await sqlWrapper.ExecuteAsync(query);
             }
+        }
+
+        public Task PartiallyUpdateStudentInCourseByCourseStudentId(int v1, int v2)
+        {
+            throw new NotImplementedException();
         }
     }
 }
