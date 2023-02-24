@@ -26,7 +26,6 @@
         public string StudentEmail { get; set; }
         public string StudentStatus { get; set; }
         public int TotalPassCourses { get; set; }
-
     }
 }
 

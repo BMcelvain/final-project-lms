@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace LMS.UnitTests
 {
-    [TestClass] // Every class must have this.
+    [TestClass]
     public class CourseControllerTests
     {
         [TestMethod]

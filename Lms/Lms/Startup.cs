@@ -29,6 +29,7 @@ namespace Lms
         {
             services.AddScoped<ISqlWrapper, SqlWrapper>();
             services.AddScoped<ICourseDao, CourseDao>();
+            services.AddScoped<ISemesterDao, SemesterDao>();    
             services.AddScoped<ITeacherDao, TeacherDao>();
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();

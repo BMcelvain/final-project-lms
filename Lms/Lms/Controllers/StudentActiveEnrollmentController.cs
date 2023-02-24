@@ -1,6 +1,8 @@
 ﻿using Lms.Daos;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 
@@ -9,7 +11,7 @@ namespace Lms.Controllers
     [ApiController]
     public class StudentActiveEnrollmentController : ControllerBase
     {
-        private IStudentActiveEnrollmentDao studentActiveEnrollmentDao;
+        private readonly IStudentActiveEnrollmentDao studentActiveEnrollmentDao;
 
         public StudentActiveEnrollmentController(IStudentActiveEnrollmentDao studentActiveEnrollmentDao)
         {
@@ -33,6 +35,7 @@ namespace Lms.Controllers
             {
                 return StatusCode(500, e.Message);
             }
+
         }
 
         [HttpGet]
@@ -42,6 +45,10 @@ namespace Lms.Controllers
             try
             {
                 var activeStudentPhoneEnrollments = await studentActiveEnrollmentDao.GetActiveStudentEnrollmentByStudentPhone(studentPhone);
+                if (activeStudentPhoneEnrollments == null) 
+                {
+                    return StatusCode(404, "No Student with Active Courses found.");
+                }
                 return Ok(activeStudentPhoneEnrollments);
             }
             catch (Exception e)

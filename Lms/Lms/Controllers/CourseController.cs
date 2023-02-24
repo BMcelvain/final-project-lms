@@ -17,7 +17,6 @@ namespace Lms.Controllers
             this.courseDao = courseDao;
         }
 
-
         [HttpPost]
         [Route("courses")]
         public async Task<IActionResult> CreateCourse(CourseModel newCourse)
@@ -57,7 +56,7 @@ namespace Lms.Controllers
                 var course = await courseDao.GetCourseById(id);
                 if (course == null)
                 {
-                    return StatusCode(404);
+                    return NotFound();
                 }
 
                 return Ok(course);

@@ -20,7 +20,7 @@ namespace Lms.Daos
         // POST a new teacher within the Teacher table. 
         public async Task CreateTeacher(TeacherModel newTeacher)
         {
-            var query = "INSERT Teacher (TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)" +
+            var query = "INSERT Teacher(TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)" +
                          $"VALUES(@TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)";
 
             var parameters = new DynamicParameters();
