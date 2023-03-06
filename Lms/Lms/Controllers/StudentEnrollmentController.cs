@@ -51,5 +51,26 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+
+        [HttpGet]
+        [Route("studentActiveEnrollment/byStudentPhone/{studentPhone}")]
+        public async Task<IActionResult> GetActiveStudentEnrollmentByStudentPhone([FromRoute] string studentPhone)
+        {
+            try
+            {
+                var activeStudentPhoneEnrollments = await studentEnrollmentDao.GetActiveStudentEnrollmentByStudentPhone(studentPhone);
+                if (activeStudentPhoneEnrollments.Count() == 0)
+                {
+                    return StatusCode(404, "No Student with Active Courses found.");
+                }
+                return Ok(activeStudentPhoneEnrollments);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
+

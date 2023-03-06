@@ -92,5 +92,35 @@ namespace LMS.UnitTests
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
+
+        [TestMethod]
+        public async Task GetStudentEnrollmentByStudentLasttName_ReturnsOKStatusCode()
+        {
+            // Arrange
+            Mock<IStudentEnrollmentDao> mockStudentActiveEnrollmentDao = new Mock<IStudentEnrollmentDao>();
+            StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentActiveEnrollmentDao.Object);
+
+            // Act
+            var result = await sut.GetActiveStudentEnrollmentByStudentPhone("test");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+        }
+
+        [TestMethod]
+        public async Task GetStudentEnrollmentByStudentPhone_ThrowsExceptionOnError()
+        {
+            // Arrange
+            Mock<IStudentEnrollmentDao> mockStudentActiveEnrollmentDao = new Mock<IStudentEnrollmentDao>();
+            StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentActiveEnrollmentDao.Object);
+
+            // Act
+            var result = await sut.GetActiveStudentEnrollmentByStudentPhone("test");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+        }
     }
 }
