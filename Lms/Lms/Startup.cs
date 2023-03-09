@@ -34,6 +34,7 @@ namespace Lms
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();
 
+
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
