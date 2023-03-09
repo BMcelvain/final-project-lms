@@ -33,7 +33,6 @@ namespace Lms
             services.AddScoped<ITeacherDao, TeacherDao>();
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();
-            services.AddScoped<IAddStudentToCourseDao, AddStudentToCourseDao>();
 
 
             services.AddControllers().AddNewtonsoftJson();
