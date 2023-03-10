@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Lms.APIErrorHandling;
 
 namespace Lms.Controllers
 {
@@ -24,22 +25,12 @@ namespace Lms.Controllers
             try
             {
                 await courseDao.CreateCourse(newCourse);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
 
-        [HttpGet]
-        [Route("courses")]
-        public async Task<IActionResult> GetCourses()
-        {
-            try
-            {
-                var courses = await courseDao.GetCourses();
-                return Ok(courses);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+                return Ok();
             }
             catch (Exception e)
             {
@@ -54,12 +45,17 @@ namespace Lms.Controllers
             try
             {
                 var course = await courseDao.GetCourseById(id);
-                if (course == null)
+                if (!ModelState.IsValid)
                 {
-                    return NotFound();
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
                 }
 
-                return Ok(course);
+                if (course == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                }
+
+                return Ok(new ApiOkResponse(course));
             }
             catch (Exception e)
             {
@@ -74,7 +70,17 @@ namespace Lms.Controllers
             try
             {
                 var courses = await courseDao.GetCourseByStatus(status);
-                return Ok(courses);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
+                if (courses == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Course with status {status} not found."));
+                }
+
+                return Ok(new ApiOkResponse(courses));
             }
             catch (Exception e)
             {
@@ -90,15 +96,20 @@ namespace Lms.Controllers
             {
                 var course = await courseDao.GetCourseById(id);
 
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
                 if (course == null)
                 {
-                    return NotFound();
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
                 }
 
                 courseUpdates.ApplyTo(course);
                 await courseDao.PartiallyUpdateCourseById(course);
 
-                return Ok();
+                return Ok(new ApiOkResponse(course));
             }
             catch (Exception e)
             {
@@ -113,18 +124,101 @@ namespace Lms.Controllers
             try
             {
                 var course = await courseDao.GetCourseById(id);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
                 if (course == null)
                 {
-                    return NotFound();
+                    return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
                 }
 
                 await courseDao.DeleteCourseById(id);
+                return Ok(new ApiOkResponse(course));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("StudentInCourse")]
+        public async Task<IActionResult> StudentInCourse(StudentInCourseModel addStudentInCourse)
+        {
+            try
+            {
+                await courseDao.StudentInCourse(addStudentInCourse);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
                 return Ok();
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
+        }
+
+        [HttpPatch]
+        [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
+        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([FromRoute] int studentId, int courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
+        {
+            try
+            {
+                var addStudentInCourse = await courseDao.GetCourseById(courseId);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
+                if (addStudentInCourse == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Course with id {courseId} not found."));
+                }
+
+                addStudentCourseUpdates.ApplyTo(addStudentInCourse);
+                await courseDao.PartiallyUpdateStudentInCourseByCourseStudentId(addStudentInCourse);
+
+                return Ok(new ApiOkResponse(addStudentInCourse));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("addStudentInCourse/byStudentCourseId/{studentId},{courseId}")]
+        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([FromRoute] int studentId, int courseId)
+        {
+            try
+            {
+                var addStudentInCourse = await courseDao.GetCourseById(courseId);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
+                if (addStudentInCourse == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Course with id {courseId} not found."));
+                }
+
+                await courseDao.DeleteStudentInCourseByStudentCourseId(studentId, courseId);
+                return Ok(new ApiOkResponse(addStudentInCourse));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+
         }
     }
 }

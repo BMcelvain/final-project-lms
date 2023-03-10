@@ -9,6 +9,10 @@ using Lms.Models;
 using System.Drawing.Printing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.JsonPatch;
+using System.Net;
+using Lms.APIErrorHandling;
+using Azure.Core;
+using System.Reflection;
 
 namespace Lms.Controllers
 {
@@ -16,6 +20,7 @@ namespace Lms.Controllers
     public class StudentEnrollmentController : ControllerBase
     {
         private IStudentEnrollmentDao studentEnrollmentDao;
+       
 
         public StudentEnrollmentController(IStudentEnrollmentDao studentEnrollmentDao)
         {
@@ -29,7 +34,18 @@ namespace Lms.Controllers
             try
             {
                 var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryById(id);
-                return Ok(studentEnrollments);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
+                if (studentEnrollments.Count() == 0)
+                {
+                    return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
+                }
+
+                return Ok(new ApiOkResponse(studentEnrollments));
             }
             catch (Exception e)
             {
@@ -41,10 +57,23 @@ namespace Lms.Controllers
         [Route("studentEnrollment/byStudentLastName/{studentLastName}")]
         public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentLastName([FromRoute] string studentLastName)
         {
+
             try
             {
                 var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentLastName(studentLastName);
-                return Ok(studentEnrollments);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
+                if (studentEnrollments.Count() == 0)
+                {
+                    return NotFound(new ApiResponse(404, $"Student not found with last name {studentLastName}"));
+                }
+
+                return Ok(new ApiOkResponse(studentEnrollments));
+
             }
             catch (Exception e)
             {

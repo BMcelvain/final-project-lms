@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Lms.APIErrorHandling;
 
 namespace Lms.Controllers
 {
@@ -25,22 +26,12 @@ namespace Lms.Controllers
             try
             {
                 await teacherDao.CreateTeacher(newTeacher);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
 
-        [HttpGet]
-        [Route("teacher")]
-        public async Task<IActionResult> GetTeachers()
-        {
-            try
-            {
-                var teachers = await teacherDao.GetTeachers();
-                return Ok(teachers);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+                return Ok();
             }
             catch (Exception e)
             {
@@ -55,12 +46,17 @@ namespace Lms.Controllers
             try
             {
                 var teacher = await teacherDao.GetTeacherById(id);
-                if (teacher == null)
+                if (!ModelState.IsValid)
                 {
-                    return StatusCode(404);
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
                 }
 
-                return Ok(teacher);
+                if (teacher == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Teacher with id {id} not found."));
+                }
+
+                return Ok(new ApiOkResponse(teacher));
             }
             catch (Exception e)
             {
@@ -75,7 +71,17 @@ namespace Lms.Controllers
             try
             {
                 var teachers = await teacherDao.GetTeacherByStatus(status);
-                return Ok(teachers);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
+                if (teachers == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Teacher with status {status} not found."));
+                }
+
+                return Ok(new ApiOkResponse(teachers));
             }
             catch (Exception e)
             {
@@ -91,15 +97,20 @@ namespace Lms.Controllers
             {
                 var teacher = await teacherDao.GetTeacherById(id);
 
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
                 if (teacher == null)
                 {
-                    return NotFound();
+                    return NotFound(new ApiResponse(404, $"Teacher with id {id} not found."));
                 }
 
                 teacherUpdates.ApplyTo(teacher);
                 await teacherDao.PartiallyUpdateTeacherById(teacher);
 
-                return Ok();
+                return Ok(new ApiOkResponse(teacher));
             }
             catch (Exception e)
             {
@@ -114,13 +125,18 @@ namespace Lms.Controllers
             try
             {
                 var teacher = await teacherDao.GetTeacherById(id);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
                 if (teacher == null)
                 {
-                    return NotFound();
+                    return NotFound(new ApiResponse(404, $"Teacher with id {id} not found."));
                 }
 
                 await teacherDao.DeleteTeacherById(id);
-                return Ok();
+                return Ok(new ApiOkResponse(teacher));
             }
             catch (Exception e)
             {

@@ -27,20 +27,6 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void GetAllTeachers_UsesProperSqlQuery_OneTime()
-        {
-            //Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            TeacherDao sut = new TeacherDao(mockSqlWrapper.Object);
-
-            //Act
-            _ = sut.GetTeachers();
-
-            //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher")), Times.Once);
-        }
-
-        [TestMethod]
         public void GetTeachersById_UsesProperSqlQuery_OneTime()
         {
             // Arrange

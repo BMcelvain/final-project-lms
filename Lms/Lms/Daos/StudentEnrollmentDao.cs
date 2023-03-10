@@ -29,12 +29,12 @@ namespace Lms.Daos
             $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
             $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
             $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM[LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN[LearningManagementSystem].[dbo].[Course] ON[LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN[LearningManagementSystem].[dbo].[Teacher] ON[LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN[LearningManagementSystem].[dbo].[Student] ON[LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
+            $" FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = {id}";
 
             using (sqlWrapper.CreateConnection())
@@ -56,12 +56,12 @@ namespace Lms.Daos
             $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
             $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
             $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
             $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM[LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN[LearningManagementSystem].[dbo].[Course] ON[LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN[LearningManagementSystem].[dbo].[Teacher] ON[LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN[LearningManagementSystem].[dbo].[Student] ON[LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
+            $" FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = '{studentLastName}'";
 
             using (sqlWrapper.CreateConnection())

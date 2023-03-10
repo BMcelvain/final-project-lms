@@ -31,20 +31,7 @@ namespace LMS.UnitTests
             //Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT Student (StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus, TotalPassCourses)" + $"VALUES(@StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus, @TotalPassCourses)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
-        
-        [TestMethod]
-        public void GetAllStudentsInSql_UsesProperSqlQuery_OneTime()
-        {
-            //Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            StudentDao sut = new StudentDao(mockSqlWrapper.Object);
 
-            //Act
-            _ = sut.GetStudents();
-
-            //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == "SELECT * FROM Student")), Times.Once);
-        }
 
         [TestMethod]
         public void GetStudentsById_UsesProperSqlQuery_OneTime()

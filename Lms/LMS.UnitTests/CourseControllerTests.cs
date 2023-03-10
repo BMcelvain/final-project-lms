@@ -50,40 +50,6 @@ namespace LMS.UnitTests
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
 
-        [TestMethod]
-        public async Task GetCourses_ReturnsOkStatusCode()
-        {
-            // Arrange
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-            CourseController sut = new CourseController(mockCourseDao.Object);
-
-            // Act
-            var result = await sut.GetCourses();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-        }
-
-        [TestMethod]
-        public async Task GetCourses_ThrowsExceptionOnError()
-        {
-            // Arrange
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-            var testException = new Exception("Test Exception");
-            CourseController sut = new CourseController(mockCourseDao.Object);
-
-            mockCourseDao
-                .Setup(x => x.GetCourses())
-                .Throws(testException);
-
-            // Act
-            var result = await sut.GetCourses();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-        }
 
         [TestMethod]
         public async Task GetCoursesById_ReturnsOkStatusCode()
@@ -197,7 +163,7 @@ namespace LMS.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         }
 
         [TestMethod]
@@ -213,7 +179,7 @@ namespace LMS.UnitTests
 
             // Arrange
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
         }
 
         [TestMethod]
@@ -262,7 +228,7 @@ namespace LMS.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         }
 
         [TestMethod]
@@ -277,7 +243,7 @@ namespace LMS.UnitTests
 
             // Assert 
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
         }
 
         [TestMethod]
@@ -294,6 +260,176 @@ namespace LMS.UnitTests
 
             // Act
             var result = await sut.DeleteCourseById(0);
+
+            // Assert 
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+        }
+
+        //---------------Add Student To Course Section-------------- 
+
+        [TestMethod]
+        public async Task StudentInCourse_ReturnsOkStatusCode()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            CourseController sut = new CourseController(mockCourseDao.Object);
+            var course = new StudentInCourseModel();
+
+            // Act
+            var result = await sut.StudentInCourse(course);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(OkResult));
+        }
+
+        [TestMethod]
+        public async Task StudentInCourse_ThrowsException_OnError()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            var testException = new Exception("Test Exception");
+            var testCourse = new StudentInCourseModel();
+
+            mockCourseDao
+                .Setup(x => x.StudentInCourse(It.IsAny<StudentInCourseModel>()))
+                .Throws(testException);
+            CourseController sut = new CourseController(mockCourseDao.Object);
+
+            // Act
+            var result = await sut.StudentInCourse(testCourse);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+        }
+
+
+        //[TestMethod]
+        //public async Task PartiallyUpdateStudentInCourseById_ReturnsOKStatusCode()
+        //{
+        //    //Arrange
+        //    Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+        //    mockCourseDao
+        //        .Setup(x => x.GetCourseById(0))
+        //        .ReturnsAsync(
+        //        new StudentInCourseModel()
+        //        {
+        //            CourseId = 0,
+        //            StudentId = 0,
+        //            EnrollmentDate = "11/11/2022",
+        //            Cancelled = false,
+        //            CancellationReason = "test",
+        //            HasPassed = false
+        //        });
+
+        //    JsonPatchDocument<StudentInCourseModel> testDocument = new JsonPatchDocument<StudentInCourseModel>();
+        //    CourseController sut = new CourseController(mockCourseDao.Object);
+
+        //    //Act
+        //    var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
+
+        //    //Assert
+        //    Assert.IsNotNull(result);
+        //    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        //}
+
+        [TestMethod]
+        public async Task PartiallyUpdateStudentInCourseByCourseStudentId_ReturnsNotFound_WhenGetCourseIdReturnsNull()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            CourseController sut = new CourseController(mockCourseDao.Object);
+            JsonPatchDocument<StudentInCourseModel> testDocument = new JsonPatchDocument<StudentInCourseModel>();
+
+            // Act
+            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
+
+            // Arrange
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        }
+
+        [TestMethod]
+        public async Task PartiallyUpdateStudentInCourseByCourseStudentId_ThrowsExceptionOnError()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            CourseController sut = new CourseController(mockCourseDao.Object);
+            JsonPatchDocument<StudentInCourseModel> testDocument = new JsonPatchDocument<StudentInCourseModel>();
+            var testException = new Exception("Test Exception");
+
+            mockCourseDao
+                .Setup(x => x.GetCourseById(0))
+                .Throws(testException);
+
+            // Act
+            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
+
+            // Arrange
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+        }
+
+        //[TestMethod]
+        //public async Task DeleteStudentInCourseByStudentCourseId_ReturnsOKStatusCode()
+        //{
+        //    // Arrange
+        //    Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+        //    mockCourseDao
+        //        .Setup(x => x.GetCourseById(0))
+        //        .ReturnsAsync(
+        //        new StudentInCourseModel()
+        //        {
+        //            CourseId = 0,
+        //            StudentId = 0,
+        //            EnrollmentDate = "11/11/2022",
+        //            Cancelled = false,
+        //            CancellationReason = "test",
+        //            HasPassed = false
+        //        });
+
+        //    CourseController sut = new CourseController(mockCourseDao.Object);
+
+        //    // Act
+        //    var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
+
+        //    // Assert
+        //    Assert.IsNotNull(result);
+        //    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+
+        //}
+
+        [TestMethod]
+        public async Task DeleteStudentInCourseByIdIdReturnsNull()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            CourseController sut = new CourseController(mockCourseDao.Object);
+
+            // Act
+            var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
+
+            // Assert 
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+        }
+
+        [TestMethod]
+        public async Task DeleteStudentInCourseById_ThrowsExceptionOnError()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            CourseController sut = new CourseController(mockCourseDao.Object);
+            var testException = new Exception("Test Exception");
+
+            mockCourseDao
+                .Setup(x => x.GetCourseById(0))
+                .Throws(testException);
+
+            // Act
+            var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
 
             // Assert 
             Assert.IsNotNull(result);

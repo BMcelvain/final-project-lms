@@ -12,7 +12,6 @@
         public bool HasPassed { get; set; }
         public string EnrollmentDate { get; set; }
         public string TeacherEmail { get; set; }
-        public int StudentId { get; set; }
         public string StudentPhone { get; set; }
         public int TotalPassCourses { get; set; }
     }
