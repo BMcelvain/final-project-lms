@@ -28,8 +28,7 @@ namespace Lms
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ISqlWrapper, SqlWrapper>();
-            services.AddScoped<ICourseDao, CourseDao>();
-            services.AddScoped<ISemesterDao, SemesterDao>();    
+            services.AddScoped<ICourseDao, CourseDao>();  
             services.AddScoped<ITeacherDao, TeacherDao>();
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();

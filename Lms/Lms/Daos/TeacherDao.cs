@@ -37,18 +37,6 @@ namespace Lms.Daos
             }
         }
 
-        // GET all teachers within the Teacher table. 
-        public async Task<IEnumerable<TeacherModel>> GetTeachers()
-        {
-            var query = "SELECT * FROM Teacher";
-
-            using (sqlWrapper.CreateConnection())
-            {
-                var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);
-                return teachers.ToList();
-            }    
-        }
-
         // GET a single teacher (by Id) within the Teacher table.
         public async Task<TeacherModel> GetTeacherById(int id)
         {

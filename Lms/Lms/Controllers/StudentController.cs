@@ -1,4 +1,5 @@
-﻿using Lms.Daos;
+﻿using Lms.APIErrorHandling;
+using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -25,22 +26,12 @@ namespace Lms.Controllers
             try
             {
                 await studentDao.CreateStudent(newStudent);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
 
-        [HttpGet]
-        [Route("student")]
-        public async Task<IActionResult> GetStudents()
-        {
-            try
-            {
-                var student = await studentDao.GetStudents();
-                return Ok(student);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+                return Ok();
             }
             catch (Exception e)
             {
@@ -55,12 +46,18 @@ namespace Lms.Controllers
             try
             {
                 var student = await studentDao.GetStudentById(id);
-                if (student == null)
+
+                if (!ModelState.IsValid)
                 {
-                    return StatusCode(404);
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
                 }
 
-                return Ok(student);
+                if (student == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+                }
+
+                return Ok(new ApiOkResponse(student));
             }
             catch (Exception e)
             {
@@ -76,15 +73,20 @@ namespace Lms.Controllers
             {
                 var student = await studentDao.GetStudentById(id);
 
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
                 if (student == null)
                 {
-                    return NotFound();
+                    return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
                 }
 
                 studentUpdates.ApplyTo(student);
                 await studentDao.PartiallyUpdateStudentById(student);
 
-                return Ok();
+                return Ok(new ApiOkResponse(student));
             }
             catch (Exception e)
             {
@@ -99,13 +101,18 @@ namespace Lms.Controllers
             try
             {
                 var student = await studentDao.GetStudentById(id);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                }
+
                 if (student == null)
                 {
-                    return NotFound();
+                    return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
                 }
 
                 await studentDao.DeleteStudentById(id);
-                return Ok();
+                return Ok(new ApiOkResponse(student));
             }
             catch (Exception e)
             {

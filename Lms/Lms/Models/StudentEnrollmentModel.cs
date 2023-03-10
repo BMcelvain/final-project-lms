@@ -10,7 +10,7 @@
         public string CancellationReason { get; set; }
         public bool HasPassed { get; set; }
         public string TeacherEmail { get; set; }
-        public string StudentEmail { get; set; }
+        public string StudentPhone { get; set; }
         public int TotalPassCourses { get; set; }
     }
 }

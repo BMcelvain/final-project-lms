@@ -50,40 +50,6 @@ namespace LMS.UnitTests
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
 
-        [TestMethod]
-        public async Task GetStudents_ReturnsOkStatusCode()
-        {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-
-            // Act
-            var result = await sut.GetStudents();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-        }
-
-        [TestMethod]
-        public async Task GetStudents_ThrowsExceptionOnError()
-        {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            var testException = new Exception("Test Exception");
-            StudentController sut = new StudentController(mockStudentDao.Object);
-
-            mockStudentDao
-                .Setup(x => x.GetStudents())
-                .Throws(testException);
-
-            // Act
-            var result = await sut.GetStudents();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-        }
 
         [TestMethod]
         public async Task GetStudentsById_ReturnsOkStatusCode()
@@ -162,7 +128,7 @@ namespace LMS.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         }
 
         [TestMethod]
@@ -178,7 +144,7 @@ namespace LMS.UnitTests
 
             // Arrange
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
         }
 
         [TestMethod]
@@ -227,7 +193,7 @@ namespace LMS.UnitTests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
         }
 
         [TestMethod]
@@ -242,7 +208,7 @@ namespace LMS.UnitTests
 
             // Assert 
             Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
         }
 
         [TestMethod]

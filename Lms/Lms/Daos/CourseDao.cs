@@ -38,18 +38,6 @@ namespace Lms.Daos
             }
         }
 
-        // GET all courses within the Course table. 
-        public async Task<IEnumerable<CourseModel>> GetCourses()
-        {
-            var query = "SELECT * FROM Course";
-
-            using (sqlWrapper.CreateConnection())
-            {
-                var courses = await sqlWrapper.QueryAsync<CourseModel>(query);
-
-                return courses.ToList();
-            }
-        }
 
         // GET a single course (by Id) within the Course table.
         public async Task<CourseModel> GetCourseById(int id)
@@ -106,5 +94,59 @@ namespace Lms.Daos
                await sqlWrapper.ExecuteAsync(query);
             }
         }
+        //-------------Add Student in Course Section-----------------------------------------------------------------------------
+        public async Task StudentInCourse(StudentInCourseModel addStudentInCourse)
+        {
+            var query = "INSERT StudentEnrollmentLog (CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed)" +
+                        $"VALUES (@CourseId, @StudentId, @EnrollmentDate, @Cancelled, @CancellationReason, @HasPassed)";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("CourseId", addStudentInCourse.CourseId, DbType.Int32);
+            parameters.Add("StudentId", addStudentInCourse.StudentId, DbType.Int32);
+            parameters.Add("EnrollmentDate", addStudentInCourse.EnrollmentDate, DbType.String);
+            parameters.Add("Cancelled", addStudentInCourse.Cancelled, DbType.Boolean);
+            parameters.Add("CancellationReason", addStudentInCourse?.CancellationReason, DbType.String);
+            parameters.Add("HasPassed", addStudentInCourse.HasPassed, DbType.Boolean);
+
+
+            using (sqlWrapper.CreateConnection())
+            {
+                await sqlWrapper.ExecuteAsync(query, parameters);
+            }
+        }
+
+
+        // PATCH a student within the Enrollment Log.
+        public async Task PartiallyUpdateStudentInCourseByCourseStudentId(StudentInCourseModel updateRequest)
+        {
+            var query = "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, StudentId=@StudentId, " +
+                        $"EnrollmentDate=@EnrollmentDate, Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("CourseId", updateRequest.CourseId, DbType.Int32);
+            parameters.Add("StudentId", updateRequest.StudentId, DbType.Int32);
+            parameters.Add("EnrollmentDate", updateRequest.EnrollmentDate, DbType.String);
+            parameters.Add("Cancelled", updateRequest.Cancelled, DbType.Boolean);
+            parameters.Add("CancellationReason", updateRequest?.CancellationReason, DbType.String);
+            parameters.Add("HasPassed", updateRequest.HasPassed, DbType.Boolean);
+
+            using (sqlWrapper.CreateConnection())
+            {
+                await sqlWrapper.ExecuteAsync(query, parameters);
+            }
+        }
+
+        // DELETE a single course (by Id) within the Student Enrollment Log 
+        public async Task DeleteStudentInCourseByStudentCourseId(int studentId, int courseId)
+        {
+            var query = $"DELETE FROM StudentEnrollmentLog WHERE StudentId = {studentId} AND CourseId = {courseId}";
+
+            using (sqlWrapper.CreateConnection())
+            {
+                await sqlWrapper.ExecuteAsync(query);
+            }
+        }
+
+
     }
 }

@@ -38,19 +38,6 @@ namespace Lms.Daos
             }
         }
 
-        // GET all students within the Student table. 
-        public async Task<IEnumerable<StudentModel>> GetStudents()
-        {
-            var query = "SELECT * FROM Student";
-            
-            using (sqlWrapper.CreateConnection())
-            {
-                var students = await sqlWrapper.QueryAsync<StudentModel>(query);
-
-                return students.ToList();
-            }  
-        }
-
         // GET a single student (by Id) within the Student table.
         public async Task<StudentModel> GetStudentById(int id)
         {
