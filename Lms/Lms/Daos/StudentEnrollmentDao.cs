@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Lms.Models;
+using System.Data;
+using System;
 
 namespace Lms.Daos
 {

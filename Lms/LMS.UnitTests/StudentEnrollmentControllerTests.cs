@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Lms.Models;
 using System.Collections.Generic;
 using System;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace LMS.UnitTests
 {
@@ -98,11 +99,13 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
+
         public async Task GetActiveStudentEnrollmentByStudentPhone_ReturnsOKStatusCode()
         {
             // Arrange
             Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
             StudentEnrollmentController sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
+
 
             // Act
             var result = await sut.GetActiveStudentEnrollmentByStudentPhone("test");
@@ -111,6 +114,7 @@ namespace LMS.UnitTests
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
+
 
         [TestMethod]
         public async Task GetActiveStudentEnrollmentByStudentPhone_ThrowsExceptionOnError()
@@ -126,6 +130,5 @@ namespace LMS.UnitTests
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
-
     }
 }

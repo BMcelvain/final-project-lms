@@ -1,4 +1,5 @@
-﻿using Lms.Daos;
+﻿using Dapper;
+using Lms.Daos;
 using Lms.Models;
 using Lms.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -80,6 +81,7 @@ namespace LMS.UnitTests
 
             //Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
+
             $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
             $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
@@ -112,6 +114,5 @@ namespace LMS.UnitTests
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == "SELECT * FROM StudentEnrollmentLog WHERE CourseId = 1")));
         }
-
     }
 }
