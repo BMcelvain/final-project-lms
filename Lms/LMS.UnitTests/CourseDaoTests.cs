@@ -34,7 +34,7 @@ namespace LMS.UnitTests
             CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetCourseById(1);
+            _ = sut.GetCourseById<CourseModel>(1);
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course WHERE CourseId = 1")));
@@ -91,7 +91,7 @@ namespace LMS.UnitTests
             //Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new();
             CourseDao sut = new(mockSqlWrapper.Object);
-            var mockCourse = new CourseModel();
+            var mockCourse = new StudentInCourseModel();
 
             //Act
             _ = sut.StudentInCourse(mockCourse);
@@ -109,7 +109,7 @@ namespace LMS.UnitTests
                 // Arrange	
                 Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
                 CourseDao sut = new CourseDao(mockSqlWrapper.Object);
-                var mockModel = new CourseModel();
+                var mockModel = new StudentInCourseModel();
 
 
                 // Act

@@ -44,7 +44,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await courseDao.GetCourseById(id);
+                var course = await courseDao.GetCourseById<CourseModel>(id);
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(new ApiBadRequestResponse(ModelState));
@@ -94,7 +94,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await courseDao.GetCourseById(id);
+                var course = await courseDao.GetCourseById<CourseModel>(id);
 
                 if (!ModelState.IsValid)
                 {
@@ -123,7 +123,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await courseDao.GetCourseById(id);
+                var course = await courseDao.GetCourseById<CourseModel>(id);
 
                 if (!ModelState.IsValid)
                 {
@@ -171,7 +171,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var addStudentInCourse = await courseDao.GetCourseById(courseId);
+                var addStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
 
                 if (!ModelState.IsValid)
                 {
@@ -200,7 +200,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var addStudentInCourse = await courseDao.GetCourseById(courseId);
+                var addStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(new ApiBadRequestResponse(ModelState));

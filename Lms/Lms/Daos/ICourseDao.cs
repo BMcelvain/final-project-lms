@@ -8,7 +8,7 @@ namespace Lms.Daos
     {
         Task CreateCourse(CourseModel newCourse);
         Task<IEnumerable<CourseModel>> GetCourseByStatus(string status);
-        Task<CourseModel> GetCourseById(int id);
+        Task<T> GetCourseById<T>(int id);
         Task PartiallyUpdateCourseById(CourseModel updateRequest);
         Task DeleteCourseById(int id);
         Task StudentInCourse(StudentInCourseModel newStudentToCourse);

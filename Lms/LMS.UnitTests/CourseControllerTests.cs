@@ -58,7 +58,7 @@ namespace LMS.UnitTests
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
 
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .ReturnsAsync(
                 new CourseModel()
                 {
@@ -90,7 +90,7 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .Throws(testException);
 
             // Act
@@ -142,7 +142,7 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .ReturnsAsync(
                 new CourseModel()
                 {
@@ -192,7 +192,7 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .Throws(testException);
 
             // Act
@@ -209,7 +209,7 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .ReturnsAsync(
                 new CourseModel()
                 {
@@ -255,7 +255,7 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .Throws(testException);
 
             // Act
@@ -361,7 +361,7 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<StudentInCourseModel>(0))
                 .Throws(testException);
 
             // Act
@@ -425,7 +425,7 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById(0))
+                .Setup(x => x.GetCourseById<CourseModel>(0))
                 .Throws(testException);
 
             // Act

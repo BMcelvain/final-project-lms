@@ -1,7 +1,7 @@
 ﻿namespace Lms.Models
 {
-    public class CourseModel : StudentInCourseModel
-    {
+    public class CourseModel
+    { 
         public int CourseId { get; set; }
         public int TeacherId { get; set; }
         public string CourseName { get; set; }
