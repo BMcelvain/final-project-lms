@@ -25,7 +25,6 @@ namespace LMS.UnitTests
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT Course (TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus)VALUES(@TeacherId, @CourseName, @SemesterId, @StartDate, @EndDate, @CourseStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
-
         [TestMethod]
         public void GetCoursesById_UsesProperSqlQuery_OneTime()
         {
@@ -101,7 +100,6 @@ namespace LMS.UnitTests
               $"VALUES (@CourseId, @StudentId, @EnrollmentDate, @Cancelled, @CancellationReason, @HasPassed)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
-
         [TestMethod]
         public void PartiallyUpdateStudentInCourseByCourseStudentId_UsesProperSqlQuery_OneTime()
         {
@@ -111,16 +109,12 @@ namespace LMS.UnitTests
                 CourseDao sut = new CourseDao(mockSqlWrapper.Object);
                 var mockModel = new StudentInCourseModel();
 
-
                 // Act
                 _ = sut.PartiallyUpdateStudentInCourseByCourseStudentId(mockModel);
-
 
                 // Assert
                 mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, StudentId=@StudentId, " +
                         $"EnrollmentDate=@EnrollmentDate, Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId"), It.IsAny<DynamicParameters>()));
-
-
             }
         }
 
@@ -137,6 +131,5 @@ namespace LMS.UnitTests
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == $"DELETE FROM StudentEnrollmentLog WHERE StudentId = 1 AND CourseId = 1")));
         }
-
     }
 }

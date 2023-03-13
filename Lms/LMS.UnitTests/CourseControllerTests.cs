@@ -50,7 +50,6 @@ namespace LMS.UnitTests
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
 
-
         [TestMethod]
         public async Task GetCoursesById_ReturnsOkStatusCode()
         {
@@ -305,35 +304,34 @@ namespace LMS.UnitTests
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
 
+        [TestMethod]
+        public async Task PartiallyUpdateStudentInCourseById_ReturnsOKStatusCode()
+        {
+            //Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            mockCourseDao
+                .Setup(x => x.GetCourseById<StudentInCourseModel>(0))
+                .ReturnsAsync(
+                new StudentInCourseModel()
+                {
+                    CourseId = 0,
+                    StudentId = 0,
+                    EnrollmentDate = "11/11/2022",
+                    Cancelled = false,
+                    CancellationReason = "test",
+                    HasPassed = false
+                });
 
-        //[TestMethod]
-        //public async Task PartiallyUpdateStudentInCourseById_ReturnsOKStatusCode()
-        //{
-        //    //Arrange
-        //    Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-        //    mockCourseDao
-        //        .Setup(x => x.GetCourseById(0))
-        //        .ReturnsAsync(
-        //        new StudentInCourseModel()
-        //        {
-        //            CourseId = 0,
-        //            StudentId = 0,
-        //            EnrollmentDate = "11/11/2022",
-        //            Cancelled = false,
-        //            CancellationReason = "test",
-        //            HasPassed = false
-        //        });
+            JsonPatchDocument<StudentInCourseModel> testDocument = new JsonPatchDocument<StudentInCourseModel>();
+            CourseController sut = new CourseController(mockCourseDao.Object);
 
-        //    JsonPatchDocument<StudentInCourseModel> testDocument = new JsonPatchDocument<StudentInCourseModel>();
-        //    CourseController sut = new CourseController(mockCourseDao.Object);
+            //Act
+            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
 
-        //    //Act
-        //    var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
-
-        //    //Assert
-        //    Assert.IsNotNull(result);
-        //    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-        //}
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        }
 
         [TestMethod]
         public async Task PartiallyUpdateStudentInCourseByCourseStudentId_ReturnsNotFound_WhenGetCourseIdReturnsNull()
@@ -372,34 +370,34 @@ namespace LMS.UnitTests
             Assert.IsInstanceOfType(result, typeof(ObjectResult));
         }
 
-        //[TestMethod]
-        //public async Task DeleteStudentInCourseByStudentCourseId_ReturnsOKStatusCode()
-        //{
-        //    // Arrange
-        //    Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-        //    mockCourseDao
-        //        .Setup(x => x.GetCourseById(0))
-        //        .ReturnsAsync(
-        //        new StudentInCourseModel()
-        //        {
-        //            CourseId = 0,
-        //            StudentId = 0,
-        //            EnrollmentDate = "11/11/2022",
-        //            Cancelled = false,
-        //            CancellationReason = "test",
-        //            HasPassed = false
-        //        });
+        [TestMethod]
+        public async Task DeleteStudentInCourseByStudentCourseId_ReturnsOKStatusCode()
+        {
+            // Arrange
+            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            mockCourseDao
+                .Setup(x => x.GetCourseById<StudentInCourseModel>(0))
+                .ReturnsAsync(
+                new StudentInCourseModel()
+                {
+                    CourseId = 0,
+                    StudentId = 0,
+                    EnrollmentDate = "11/11/2022",
+                    Cancelled = false,
+                    CancellationReason = "test",
+                    HasPassed = false
+                });
 
-        //    CourseController sut = new CourseController(mockCourseDao.Object);
+            CourseController sut = new CourseController(mockCourseDao.Object);
 
-        //    // Act
-        //    var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
+            // Act
+            var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
 
-        //    // Assert
-        //    Assert.IsNotNull(result);
-        //    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
 
-        //}
+        }
 
         [TestMethod]
         public async Task DeleteStudentInCourseByIdIdReturnsNull()
