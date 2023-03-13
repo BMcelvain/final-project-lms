@@ -18,7 +18,6 @@ namespace Lms.Controllers
             this.studentDao = studentDao;
         }
 
-
         [HttpPost]
         [Route("student")]
         public async Task<IActionResult> CreateStudent(StudentModel newStudent)
@@ -121,4 +120,3 @@ namespace Lms.Controllers
         }
     }
 }
-

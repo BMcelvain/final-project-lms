@@ -75,17 +75,17 @@ namespace Lms.Daos
         public async Task<IEnumerable<StudentEnrollmentModel>> GetActiveStudentEnrollmentByStudentPhone(string studentPhone)
         {
             var query = $"SELECT" +
-           $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-           $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-           $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-           $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-           $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-           $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-           $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-           $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-           $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
-           $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-           $" FROM [LearningManagementSystem].[dbo].[Student]" +
+            $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
+            $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
+            $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
+            $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
+            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
+            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
+            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
+            $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
+            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
+            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
+            $" FROM [LearningManagementSystem].[dbo].[Student]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
@@ -98,24 +98,20 @@ namespace Lms.Daos
 
                 return studentHistory;
             }
-
         }
 
-
-        // GET specific CourseId within the Enrollment Log.
-        public async Task<StudentEnrollmentModel> GetStudentsByCourseId(int courseId) 
+        public async Task<IEnumerable<StudentModel>> GetStudentsInCourseByCourseId(int courseId) 
         {
-            var query = $"SELECT * FROM StudentEnrollmentLog WHERE CourseId = {courseId}";
+            var query = $"SELECT * " +
+            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
+            $"WHERE CourseId = {courseId}";
 
             using (sqlWrapper.CreateConnection())
             {
-                var course = await sqlWrapper.QueryFirstOrDefaultAsync<StudentEnrollmentModel>(query);
+                var course = await sqlWrapper.QueryAsync<StudentModel>(query);
                 return course;
             }
         }
-
     }
-
 }
-
-

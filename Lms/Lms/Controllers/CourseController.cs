@@ -144,7 +144,6 @@ namespace Lms.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("StudentInCourse")]
         public async Task<IActionResult> StudentInCourse(StudentInCourseModel addStudentInCourse)
@@ -195,7 +194,7 @@ namespace Lms.Controllers
         }
 
         [HttpDelete]
-        [Route("addStudentInCourse/byStudentCourseId/{studentId},{courseId}")]
+        [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
         public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([FromRoute] int studentId, int courseId)
         {
             try
