@@ -18,7 +18,6 @@ namespace Lms.Controllers
             this.teacherDao = teacherDao;
         }
 
-
         [HttpPost]
         [Route("teacher")]
         public async Task<IActionResult> CreateTeacher(TeacherModel newTeacher)

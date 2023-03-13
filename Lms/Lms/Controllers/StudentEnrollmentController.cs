@@ -20,7 +20,6 @@ namespace Lms.Controllers
     public class StudentEnrollmentController : ControllerBase
     {
         private IStudentEnrollmentDao studentEnrollmentDao;
-       
 
         public StudentEnrollmentController(IStudentEnrollmentDao studentEnrollmentDao)
         {
@@ -81,7 +80,6 @@ namespace Lms.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("studentActiveEnrollment/byStudentPhone/{studentPhone}")]
         public async Task<IActionResult> GetActiveStudentEnrollmentByStudentPhone([FromRoute] string studentPhone)
@@ -100,6 +98,20 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("studentsInCourse/byCourseId/{courseId}")]
+        public async Task<IActionResult> GetCourseByCourseId([FromRoute] int courseId)
+        {
+            try
+            {
+                var addStudentToCourse = await studentEnrollmentDao.GetStudentsByCourseId(courseId);
+                return Ok(addStudentToCourse);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
-

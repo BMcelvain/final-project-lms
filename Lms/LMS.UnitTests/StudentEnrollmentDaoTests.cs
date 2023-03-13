@@ -97,9 +97,7 @@ namespace LMS.UnitTests
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Semester] ON [LearningManagementSystem].[dbo].[Course].[SemesterId] = [LearningManagementSystem].[dbo].[Semester].[SemesterId]" +
             $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = 'test' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'")), Times.Once);
-        }
-
-       
+        }      
 
         [TestMethod]
         public void GetStudentsByCourseId_UsesProperSqlQuery_OneTime()
@@ -112,7 +110,10 @@ namespace LMS.UnitTests
             _ = sut.GetStudentsByCourseId(1);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == "SELECT * FROM StudentEnrollmentLog WHERE CourseId = 1")));
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * " +
+            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
+            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
+            $"WHERE CourseId = 1")), Times.Once);
         }
     }
 }
