@@ -40,7 +40,7 @@ namespace Lms.Daos
 
 
         // GET a single course (by Id) within the Course table.
-        public async Task<CourseModel> GetCourseById(int id)
+        public async Task<CourseModel> GetCourseById<CourseModel>(int id)
         {
             var query = $"SELECT * FROM Course WHERE CourseId = {id}";
 
