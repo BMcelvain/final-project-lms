@@ -101,11 +101,11 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("studentsInCourse/byCourseId/{courseId}")]
-        public async Task<IActionResult> GetCourseByCourseId([FromRoute] int courseId)
+        public async Task<IActionResult> GetStudentsInCourseByCourseId([FromRoute] int courseId)
         {
             try
             {
-                var addStudentToCourse = await studentEnrollmentDao.GetStudentsByCourseId(courseId);
+                var addStudentToCourse = await studentEnrollmentDao.GetStudentsInCourseByCourseId(courseId);
                 return Ok(addStudentToCourse);
             }
             catch (Exception e)

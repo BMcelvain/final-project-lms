@@ -100,7 +100,7 @@ namespace Lms.Daos
             }
         }
 
-        public async Task<IEnumerable<StudentModel>> GetStudentsByCourseId(int courseId) 
+        public async Task<IEnumerable<StudentModel>> GetStudentsInCourseByCourseId(int courseId) 
         {
             var query = $"SELECT * " +
             $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +

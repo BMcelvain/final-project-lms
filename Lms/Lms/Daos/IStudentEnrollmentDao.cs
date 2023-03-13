@@ -9,6 +9,6 @@ namespace Lms.Daos
         Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryById(int id);
         Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryByStudentLastName(string studentLastName);
         Task<IEnumerable<StudentEnrollmentModel>> GetActiveStudentEnrollmentByStudentPhone(string studentPhone);
-        Task<IEnumerable<StudentModel>> GetStudentsByCourseId(int id);
+        Task<IEnumerable<StudentModel>> GetStudentsInCourseByCourseId(int id);
     }
 }

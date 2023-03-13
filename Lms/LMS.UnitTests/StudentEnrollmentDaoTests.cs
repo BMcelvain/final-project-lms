@@ -100,14 +100,14 @@ namespace LMS.UnitTests
         }      
 
         [TestMethod]
-        public void GetStudentsByCourseId_UsesProperSqlQuery_OneTime()
+        public void GetStudentsInCourseByCourseId_UsesProperSqlQuery_OneTime()
         {
             // Arrange
             Mock<ISqlWrapper> mockSqlWrapper = new();
             StudentEnrollmentDao sut = new(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetStudentsByCourseId(1);
+            _ = sut.GetStudentsInCourseByCourseId(1);
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * " +
