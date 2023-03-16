@@ -37,7 +37,8 @@ namespace LMS.UnitTests
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = 0")), Times.Once);
+            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = 0"+
+            $" ORDER BY HasPassed ASC,CourseName")), Times.Once);
         }
 
         [TestMethod]
@@ -66,7 +67,8 @@ namespace LMS.UnitTests
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = 'test'")), Times.Once);
+            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = 'test'"+
+            $" ORDER BY HasPassed ASC,CourseName")), Times.Once);
         }
 
         [TestMethod]
@@ -96,7 +98,8 @@ namespace LMS.UnitTests
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Semester] ON [LearningManagementSystem].[dbo].[Course].[SemesterId] = [LearningManagementSystem].[dbo].[Semester].[SemesterId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = 'test' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'")), Times.Once);
+            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = 'test' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'"+
+            $" ORDER BY StartDate ASC,CourseName")), Times.Once);
         }      
 
         [TestMethod]
@@ -113,7 +116,8 @@ namespace LMS.UnitTests
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * " +
             $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
-            $"WHERE CourseId = 1")), Times.Once);
+            $"WHERE CourseId = 1"+
+            $"ORDER BY StudentLastName")), Times.Once);
         }
     }
 }

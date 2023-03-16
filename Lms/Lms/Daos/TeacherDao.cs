@@ -52,7 +52,8 @@ namespace Lms.Daos
         //Get teachers by status within the Teacher table
         public async Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status)
         {
-            var query = $"SELECT * FROM Teacher WHERE TeacherStatus = '{status}'";
+            var query = $"SELECT * FROM Teacher WHERE TeacherStatus = '{status}'" +"ORDER BY TeacherLastName ASC";
+            
             using (sqlWrapper.CreateConnection())
             {
                 var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);

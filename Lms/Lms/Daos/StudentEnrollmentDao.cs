@@ -35,7 +35,8 @@ namespace Lms.Daos
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = {id}";
+            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = {id}"+
+            $" ORDER BY HasPassed ASC,CourseName";
 
             using (sqlWrapper.CreateConnection())
             {
@@ -62,7 +63,8 @@ namespace Lms.Daos
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = '{studentLastName}'";
+            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = '{studentLastName}'"+
+            $" ORDER BY HasPassed ASC,CourseName";
 
             using (sqlWrapper.CreateConnection())
             {
@@ -90,7 +92,8 @@ namespace Lms.Daos
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Semester] ON [LearningManagementSystem].[dbo].[Course].[SemesterId] = [LearningManagementSystem].[dbo].[Semester].[SemesterId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = '{studentPhone}' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'";
+            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = '{studentPhone}' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'"+
+            $" ORDER BY StartDate ASC,CourseName";
 
             using (sqlWrapper.CreateConnection())
             {
@@ -105,7 +108,8 @@ namespace Lms.Daos
             var query = $"SELECT * " +
             $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
-            $"WHERE CourseId = {courseId}";
+            $"WHERE CourseId = {courseId}"+
+            $"ORDER BY StudentLastName";
 
             using (sqlWrapper.CreateConnection())
             {

@@ -54,7 +54,9 @@ namespace Lms.Daos
         // GET all courses within the Course table. 
         public async Task<IEnumerable<CourseModel>> GetCourseByStatus(string status)
         {
-            var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'";
+            var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'" +
+                $"ORDER BY StartDate ASC";
+
             using (sqlWrapper.CreateConnection())
             {
                 var courses = await sqlWrapper.QueryAsync<CourseModel>(query);
