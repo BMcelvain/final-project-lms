@@ -94,7 +94,9 @@ namespace Lms.Daos
                await sqlWrapper.ExecuteAsync(query);
             }
         }
+
         //-------------Add Student in Course Section-----------------------------------------------------------------------------
+
         public async Task StudentInCourse(StudentInCourseModel addStudentInCourse)
         {
             var query = "INSERT StudentEnrollmentLog (CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed)" +
@@ -114,7 +116,6 @@ namespace Lms.Daos
                 await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
-
 
         // PATCH a student within the Enrollment Log.
         public async Task PartiallyUpdateStudentInCourseByCourseStudentId(StudentInCourseModel updateRequest)
@@ -146,7 +147,5 @@ namespace Lms.Daos
                 await sqlWrapper.ExecuteAsync(query);
             }
         }
-
-
     }
 }
