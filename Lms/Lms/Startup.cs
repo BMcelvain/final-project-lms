@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Lms.Daos;
 using Lms.Wrappers;
+using Serilog;
+using Lms.APIErrorHandling;
 
 namespace Lms
 {
@@ -45,6 +47,8 @@ namespace Lms
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSerilogRequestLogging();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
