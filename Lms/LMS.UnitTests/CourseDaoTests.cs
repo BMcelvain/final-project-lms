@@ -50,7 +50,7 @@ namespace LMS.UnitTests
             _ = sut.GetCourseByStatus("Active");
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course WHERE CourseStatus = 'Active'")));
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course WHERE CourseStatus = 'Active'" + "ORDER BY StartDate ASC")));
         }
 
         [TestMethod]

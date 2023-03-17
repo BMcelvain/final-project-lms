@@ -54,7 +54,9 @@ namespace Lms.Daos
         // GET all courses within the Course table. 
         public async Task<IEnumerable<CourseModel>> GetCourseByStatus(string status)
         {
-            var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'";
+            var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'" +
+                $"ORDER BY StartDate ASC";
+
             using (sqlWrapper.CreateConnection())
             {
                 var courses = await sqlWrapper.QueryAsync<CourseModel>(query);
@@ -94,7 +96,9 @@ namespace Lms.Daos
                await sqlWrapper.ExecuteAsync(query);
             }
         }
+
         //-------------Add Student in Course Section-----------------------------------------------------------------------------
+
         public async Task StudentInCourse(StudentInCourseModel addStudentInCourse)
         {
             var query = "INSERT StudentEnrollmentLog (CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed)" +
@@ -114,7 +118,6 @@ namespace Lms.Daos
                 await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
-
 
         // PATCH a student within the Enrollment Log.
         public async Task PartiallyUpdateStudentInCourseByCourseStudentId(StudentInCourseModel updateRequest)
@@ -146,7 +149,5 @@ namespace Lms.Daos
                 await sqlWrapper.ExecuteAsync(query);
             }
         }
-
-
     }
 }

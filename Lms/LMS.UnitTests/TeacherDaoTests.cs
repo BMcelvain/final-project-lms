@@ -51,7 +51,7 @@ namespace LMS.UnitTests
             _ = sut.GetTeacherByStatus("Active");
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher WHERE TeacherStatus = 'Active'")));
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher WHERE TeacherStatus = 'Active'" + "ORDER BY TeacherLastName ASC")));
         }
 
         [TestMethod]
