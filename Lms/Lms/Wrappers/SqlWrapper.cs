@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,6 +34,13 @@ namespace Lms.Wrappers
             var result = await this._connection.QueryAsync<T>(sql);
 
             return result.ToList();        
+        }
+
+        public async Task<List<T>> QueryAsync<T>(string sql, object status)
+        {
+            var result = await this._connection.QueryAsync<T>(sql, status);
+
+            return result.ToList();
         }
 
         public async Task<T> QueryFirstOrDefaultAsync<T>(string sql)
