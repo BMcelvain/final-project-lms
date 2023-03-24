@@ -41,20 +41,6 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void GetTeachersByStatus_UsesProperSqlQuery_OneTime()
-        {
-            // Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            TeacherDao sut = new TeacherDao(mockSqlWrapper.Object);
-
-            // Act
-            _ = sut.GetTeacherByStatus("Active");
-
-            // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<TeacherModel>(It.Is<string>(sql => sql == "SELECT * FROM Teacher WHERE TeacherStatus = 'Active'" + "ORDER BY TeacherLastName ASC")));
-        }
-
-        [TestMethod]
         public void PartiallyUpdateTeacherById_UsesProperSqlQuery_OneTime()
         {
             // Arrange

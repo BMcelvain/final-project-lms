@@ -21,10 +21,12 @@ namespace Lms.APIErrorHandling
             {
                 case 200:
                     return "Results were a success.";
+                case 400: 
+                    return "Invalid entry.";
                 case 404:
-                    return "Information not found";
+                    return "Information not found.";
                 case 500:
-                    return "An unhandled error occurred";
+                    return "An unhandled error occurred.";
                 default:
                     return null;
             }

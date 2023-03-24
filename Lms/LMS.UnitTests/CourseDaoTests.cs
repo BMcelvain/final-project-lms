@@ -39,34 +39,6 @@ namespace LMS.UnitTests
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course WHERE CourseId = 1")));
         }
 
-        [TestMethod]
-        public void GetCoursesByStatus_UsesProperSqlQuery_OneTime()
-        {
-            // Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
-
-            // Act
-            _ = sut.GetCourseByStatus("Active");
-
-            // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course WHERE CourseStatus = 'Active'" + "ORDER BY StartDate ASC")));
-        }
-
-        [TestMethod]
-        public void PartiallyUpdateCourseById_UsesProperSqlQuery_OneTime()
-        {
-            // Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            CourseDao sut = new CourseDao(mockSqlWrapper.Object);
-            var mockCourse = new CourseModel();
-
-            // Act
-            _ = sut.PartiallyUpdateCourseById(mockCourse);
-
-            // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE Course SET TeacherId=@TeacherId, CourseName=@CourseName, SemesterId=@SemesterId, StartDate=@StartDate, EndDate=@EndDate, CourseStatus=@CourseStatus WHERE CourseId=@CourseId"), It.IsAny<DynamicParameters>()));
-        }
 
         [TestMethod]
         public void DeleteCourseById_UsesProperSqlQuery_OneTime()

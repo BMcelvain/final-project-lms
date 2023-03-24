@@ -25,11 +25,6 @@ namespace Lms.Controllers
             try
             {
                 await courseDao.CreateCourse(newCourse);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
                 return Ok();
             }
             catch (Exception e)
@@ -45,10 +40,6 @@ namespace Lms.Controllers
             try
             {
                 var course = await courseDao.GetCourseById<CourseModel>(id);
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (course == null)
                 {
@@ -69,11 +60,12 @@ namespace Lms.Controllers
         {
             try
             {
-                var courses = await courseDao.GetCourseByStatus(status);
-                if (!ModelState.IsValid)
+                if(status != "Inactive" && status != "Active")
                 {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
+                    return BadRequest(new ApiResponse(400,"Please enter Active or Inactive status."));
                 }
+
+                var courses = await courseDao.GetCourseByStatus(status);
 
                 if (courses == null)
                 {
@@ -95,11 +87,6 @@ namespace Lms.Controllers
             try
             {
                 var course = await courseDao.GetCourseById<CourseModel>(id);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (course == null)
                 {
@@ -125,11 +112,6 @@ namespace Lms.Controllers
             {
                 var course = await courseDao.GetCourseById<CourseModel>(id);
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
-
                 if (course == null)
                 {
                     return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
@@ -151,11 +133,6 @@ namespace Lms.Controllers
             try
             {
                 await courseDao.StudentInCourse(addStudentInCourse);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
                 return Ok();
             }
             catch (Exception e)
@@ -171,11 +148,6 @@ namespace Lms.Controllers
             try
             {
                 var addStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (addStudentInCourse == null)
                 {
@@ -200,10 +172,6 @@ namespace Lms.Controllers
             try
             {
                 var addStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (addStudentInCourse == null)
                 {

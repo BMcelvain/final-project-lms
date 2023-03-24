@@ -108,7 +108,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
-            var result = await sut.GetCourseByStatus("Test");
+            var result = await sut.GetCourseByStatus("Active");
 
             // Assert
             Assert.IsNotNull(result);

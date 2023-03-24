@@ -7,18 +7,12 @@ namespace Lms.APIErrorHandling
 {
     public class ApiBadRequestResponse : ApiResponse
     {
-        public IEnumerable<string> Errors { get; }
+        public object Errors { get; }
 
-        public ApiBadRequestResponse(ModelStateDictionary modelState)
+        public ApiBadRequestResponse(object errors)
             : base(400)
         {
-            if (modelState.IsValid)
-            {
-                throw new ArgumentException("Invalid entry.", nameof(modelState));
-            }
-
-            Errors = modelState.SelectMany(x => x.Value.Errors)
-                .Select(x => x.ErrorMessage).ToArray();
+            Errors = errors;
         }
     }
 }
