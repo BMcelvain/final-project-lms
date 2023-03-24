@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using Lms.Models;
+using Microsoft.Identity.Client;
 
 namespace Lms.Daos
 {
@@ -54,12 +55,12 @@ namespace Lms.Daos
         // GET all courses within the Course table. 
         public async Task<IEnumerable<CourseModel>> GetCourseByStatus(string status)
         {
-            var query = $"SELECT * FROM Course WHERE CourseStatus = '{status}'" +
-                $"ORDER BY StartDate ASC";
+            var query = "SELECT * FROM Course WHERE CourseStatus = @courseStatus ORDER BY StartDate ASC"; 
+            var courseStatus = new { courseStatus = new DbString { Value = status, IsFixedLength = false, IsAnsi = true } };
 
             using (sqlWrapper.CreateConnection())
             {
-                var courses = await sqlWrapper.QueryAsync<CourseModel>(query);
+                var courses = await sqlWrapper.QueryAsync<CourseModel>(query, courseStatus);
 
                 return courses.ToList();
             }
