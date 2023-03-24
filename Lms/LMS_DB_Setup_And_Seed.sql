@@ -7,17 +7,10 @@ TeacherEmail varchar(255) not NULL,
 TeacherStatus varchar(255) not Null
 );
 
-CREATE TABLE Semester (
-SemesterId int IDENTITY(1,1) PRIMARY KEY,
-Semester varchar(255) not NULL,
-Year varchar(255) not NULL
-);
-
 CREATE TABLE Course (
 CourseId int IDENTITY(1,1) PRIMARY KEY,
 TeacherId int FOREIGN KEY REFERENCES Teacher(TeacherId) ON UPDATE CASCADE,
 CourseName varchar(255) not NULL,
-SemesterId int FOREIGN KEY REFERENCES Semester(SemesterId) ON UPDATE CASCADE,
 StartDate date,
 EndDate date,
 CourseStatus varchar(255),
@@ -35,9 +28,8 @@ TotalPassCourses int,
 
 CREATE TABLE StudentEnrollmentLog (
 Id int IDENTITY(1,1) PRIMARY KEY,
-CourseId int FOREIGN KEY REFERENCES Course(CourseId) ON DELETE NO ACTION,
-SemesterId int FOREIGN KEY REFERENCES Semester(SemesterId) ON DELETE NO ACTION,
-StudentId int FOREIGN KEY REFERENCES Student(StudentId) ON DELETE NO ACTION,
+CourseId int FOREIGN KEY REFERENCES Course(CourseId) ON DELETE CASCADE ON UPDATE CASCADE,
+StudentId int FOREIGN KEY REFERENCES Student(StudentId) ON DELETE CASCADE ON UPDATE CASCADE,
 EnrollmentDate date,
 Cancelled bit,
 CancellationReason varchar(255),
@@ -52,28 +44,22 @@ insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone,
 insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values (5, 'Whitman', 'Ridsdell', '317-376-5914', 'wridsdell4@nymag.com', 'Active');
 SET IDENTITY_INSERT Teacher OFF;
 
-SET IDENTITY_INSERT Semester ON;
-insert into Semester (SemesterId, Semester, Year) values (1, 'Summer', '2021');
-insert into Semester (SemesterId, Semester, Year) values (2, 'Fall', '2021');
-insert into Semester (SemesterId, Semester, Year) values (3, 'Spring', '2022');
-SET IDENTITY_INSERT Semester OFF;
-
 SET IDENTITY_INSERT Course ON
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (1, 4, 'All Group', 1, '7/1/2021', '9/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (2, 2, 'Passwords 101', 1, '7/1/2021', '9/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (3, 5, 'Safety', 1, '7/1/2021', '9/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (4, 3, 'CE Training', 1, '7/1/2021', '9/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (5, 1, 'Loans R Us', 1, '7/1/2021', '9/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (6, 2, 'Book Club', 2, '10/1/2021', '12/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (7, 3, 'Health & Wellbeing', 2, '10/1/2021', '12/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (8, 1, 'Tech for dummies', 2, '10/1/2021', '12/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (9, 5, 'Where is Waldo?', 2, '10/1/2021', '12/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (10, 4, 'Morning Coffee', 2, '10/1/2021', '12/1/2021', 'Inactive');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (11, 2, 'CodeVU', 3, '1/1/2022', '3/1/2022', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (12, 3, 'Top LO Training', 3, '1/1/2022', '3/1/2022', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (13, 1, 'Top LS Training', 3, '1/1/2022', '3/1/2022', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (14, 5, 'LH Training', 3, '1/1/2022', '3/1/2022', 'Active');
-insert into Course (CourseId, TeacherId, CourseName, SemesterId, StartDate, EndDate, CourseStatus) values (15, 4, 'All Group 2', 3, '1/1/2022', '3/1/2022', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (1, 4, 'All Group', '7/1/2021', '9/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (2, 2, 'Passwords 101', '7/1/2021', '9/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (3, 5, 'Safety', '7/1/2021', '9/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (4, 3, 'CE Training', '7/1/2021', '9/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (5, 1, 'Loans R Us', '7/1/2021', '9/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (6, 2, 'Book Club', '10/1/2021', '12/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (7, 3, 'Health & Wellbeing', '10/1/2021', '12/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (8, 1, 'Tech for dummies', '10/1/2021', '12/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (9, 5, 'Where is Waldo?', '10/1/2021', '12/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (10, 4, 'Morning Coffee', '10/1/2021', '12/1/2021', 'Inactive');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (11, 2, 'CodeVU', '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (12, 3, 'Top LO Training', '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (13, 1, 'Top LS Training', '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (14, 5, 'LH Training', '1/1/2022', '3/1/2022', 'Active');
+insert into Course (CourseId, TeacherId, CourseName, StartDate, EndDate, CourseStatus) values (15, 4, 'All Group 2', '1/1/2022', '3/1/2022', 'Inactive');
 SET IDENTITY_INSERT Course OFF;
 
 SET IDENTITY_INSERT Student ON;
@@ -105,79 +91,79 @@ insert into Student (StudentId, StudentFirstName, StudentLastName, StudentPhone,
 SET IDENTITY_INSERT Student OFF;
 
 SET IDENTITY_INSERT StudentEnrollmentLog On;
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (1, 2, 1, 1, '6/8/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (2, 5, 1, 2, '6/14/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (3, 1, 1, 3, '6/1/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (4, 2, 1, 4, '6/2/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (5, 5, 1, 5, '6/1/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (6, 5, 1, 6, '6/10/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (7, 4, 1, 7, '6/14/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (8, 3, 1, 8, '6/26/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (9, 5, 1, 9, '6/6/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (10, 4, 1, 10, '6/1/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (11, 5, 1, 11, '6/12/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (12, 1, 1, 12, '6/29/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (13, 3, 1, 13, '6/18/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (14, 1, 1, 14, '6/5/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (15, 5, 1, 15, '6/17/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (16, 3, 1, 16, '6/16/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (17, 2, 1, 17, '6/11/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (18, 3, 1, 18, '6/19/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (19, 5, 1, 19, '6/24/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (20, 3, 1, 20, '6/10/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (21, 1, 1, 21, '6/17/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (22, 2, 1, 22, '6/22/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (23, 3, 1, 23, '6/10/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (24, 5, 1, 24, '6/6/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (25, 1, 1, 25, '6/25/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (26, 8, 2, 1, '9/19/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (27, 6, 2, 2, '9/14/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (28, 7, 2, 3, '9/27/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (29, 10, 2, 4, '9/28/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (30, 9, 2, 5, '9/13/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (31, 9, 2, 6, '9/12/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (32, 10, 2, 7, '9/10/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (33, 6, 2, 8, '9/8/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (34, 7, 2, 9, '9/22/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (35, 9, 2, 10, '9/10/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (36, 7, 2, 11, '9/5/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (37, 10, 2, 12, '9/29/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (38, 9, 2, 13, '9/1/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (39, 6, 2, 14, '9/22/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (40, 9, 2, 15, '9/27/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (41, 6, 2, 16, '9/2/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (42, 6, 2, 17, '9/12/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (43, 7, 2, 18, '9/4/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (44, 7, 2, 19, '9/28/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (45, 6, 2, 20, '9/25/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (46, 8, 2, 21, '9/26/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (47, 10, 2, 22, '9/11/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (48, 9, 2, 23, '9/22/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (49, 6, 2, 24, '9/27/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (50, 9, 2, 25, '9/21/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (51, 15, 3, 1, '12/8/2021', 1, 'Teacher Inactive', 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (52, 4, 3, 2, '12/20/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (53, 15, 3, 3, '12/14/2021', 1, 'Teacher Inactive', 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (54, 1, 3, 4, '12/2/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (55, 13, 3, 5, '12/12/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (56, 8, 3, 6, '12/9/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (57, 10, 3, 7, '12/4/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (58, 14, 3, 8, '12/18/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (59, 2, 3, 9, '12/3/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (60, 12, 3, 10, '12/2/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (61, 2, 3, 11, '12/22/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (62, 4, 3, 12, '12/18/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (63, 3, 3, 13, '12/17/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (64, 2, 3, 14, '12/31/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (65, 6, 3, 15, '12/12/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (66, 6, 3, 16, '12/25/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (67, 5, 3, 17, '12/17/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (68, 15, 3, 18, '12/9/2021', 1, 'Teacher Inactive', 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (69, 11, 3, 19, '12/28/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (70, 11, 3, 20, '12/6/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (71, 10, 3, 21, '12/6/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (72, 6, 3, 22, '12/3/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (73, 9, 3, 23, '12/22/2021', 0, NULL, 0);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (74, 8, 3, 24, '12/23/2021', 0, NULL, 1);
-insert into StudentEnrollmentLog (Id, CourseId, SemesterId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (75, 4, 3, 25, '12/1/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (1, 2, 1, '6/8/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (2, 5, 2, '6/14/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (3, 1, 3, '6/1/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (4, 2, 4, '6/2/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (5, 5, 5, '6/1/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (6, 5, 6, '6/10/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (7, 4, 7, '6/14/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (8, 3, 8, '6/26/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (9, 5, 9, '6/6/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (10, 4, 10, '6/1/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (11, 5, 11, '6/12/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (12, 1, 12, '6/29/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (13, 3, 13, '6/18/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (14, 1, 14, '6/5/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (15, 5, 15, '6/17/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (16, 3, 16, '6/16/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (17, 2, 17, '6/11/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (18, 3, 18, '6/19/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (19, 5, 19, '6/24/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (20, 3, 20, '6/10/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (21, 1, 21, '6/17/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (22, 2, 22, '6/22/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (23, 3, 23, '6/10/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (24, 5, 24, '6/6/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (25, 1, 25, '6/25/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (26, 8, 1, '9/19/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (27, 6, 2, '9/14/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (28, 7, 3, '9/27/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (29, 10, 4, '9/28/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (30, 9, 5, '9/13/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (31, 9, 6, '9/12/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (32, 10, 7, '9/10/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (33, 6, 8, '9/8/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (34, 7, 9, '9/22/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (35, 9, 10, '9/10/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (36, 7, 11, '9/5/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (37, 10, 12, '9/29/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (38, 9, 13, '9/1/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (39, 6, 14, '9/22/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (40, 9,15, '9/27/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (41, 6, 16, '9/2/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (42, 6, 17, '9/12/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (43, 7, 18, '9/4/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (44, 7, 19, '9/28/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (45, 6, 20, '9/25/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (46, 8, 21, '9/26/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (47, 10, 22, '9/11/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (48, 9, 23, '9/22/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (49, 6, 24, '9/27/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (50, 9, 25, '9/21/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (51, 15, 1, '12/8/2021', 1, 'Teacher Inactive', 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (52, 4, 2, '12/20/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (53, 15, 3, '12/14/2021', 1, 'Teacher Inactive', 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (54, 1, 4, '12/2/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (55, 13, 5, '12/12/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (56, 8, 6, '12/9/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (57, 10, 7, '12/4/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (58, 14, 8, '12/18/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (59, 2, 9, '12/3/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (60, 12, 10, '12/2/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (61, 2, 11, '12/22/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (62, 4, 12, '12/18/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (63, 3, 13, '12/17/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (64, 2, 14, '12/31/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (65, 6, 15, '12/12/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (66, 6, 16, '12/25/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (67, 5, 17, '12/17/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (68, 15, 18, '12/9/2021', 1, 'Teacher Inactive', 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (69, 11, 19, '12/28/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (70, 11, 20, '12/6/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (71, 10, 21, '12/6/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (72, 6, 22, '12/3/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (73, 9, 23, '12/22/2021', 0, NULL, 0);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (74, 8, 24, '12/23/2021', 0, NULL, 1);
+insert into StudentEnrollmentLog (Id, CourseId, StudentId, EnrollmentDate, Cancelled, CancellationReason, HasPassed) values (75, 4, 25, '12/1/2021', 0, NULL, 0);
 SET IDENTITY_INSERT StudentEnrollmentLog OFF;
