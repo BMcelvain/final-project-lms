@@ -90,7 +90,7 @@ namespace Lms.Controllers
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not valid."));
                 }
 
                 courseUpdates.ApplyTo(course);
