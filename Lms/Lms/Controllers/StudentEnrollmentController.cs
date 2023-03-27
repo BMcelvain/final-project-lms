@@ -34,11 +34,6 @@ namespace Lms.Controllers
             {
                 var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryById(id);
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
-
                 if (studentEnrollments.Count() == 0)
                 {
                     return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
@@ -60,11 +55,6 @@ namespace Lms.Controllers
             try
             {
                 var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentLastName(studentLastName);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (studentEnrollments.Count() == 0)
                 {

@@ -25,11 +25,6 @@ namespace Lms.Controllers
             try
             {
                 await teacherDao.CreateTeacher(newTeacher);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
                 return Ok();
             }
             catch (Exception e)
@@ -45,10 +40,6 @@ namespace Lms.Controllers
             try
             {
                 var teacher = await teacherDao.GetTeacherById(id);
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (teacher == null)
                 {
@@ -70,10 +61,6 @@ namespace Lms.Controllers
             try
             {
                 var teachers = await teacherDao.GetTeacherByStatus(status);
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (teachers == null)
                 {
@@ -95,11 +82,6 @@ namespace Lms.Controllers
             try
             {
                 var teacher = await teacherDao.GetTeacherById(id);
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (teacher == null)
                 {
@@ -124,10 +106,6 @@ namespace Lms.Controllers
             try
             {
                 var teacher = await teacherDao.GetTeacherById(id);
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(new ApiBadRequestResponse(ModelState));
-                }
 
                 if (teacher == null)
                 {
