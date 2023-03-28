@@ -35,7 +35,7 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("teacher/{id}")]
-        public async Task<IActionResult> GetTeacherById([FromRoute] int id)
+        public async Task<IActionResult> GetTeacherById([FromRoute] Guid id)
         {
             try
             {
@@ -60,6 +60,11 @@ namespace Lms.Controllers
         {
             try
             {
+                if (status.ToLower() != "inactive" && status.ToLower() != "active")
+                {
+                    return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
+                }
+
                 var teachers = await teacherDao.GetTeacherByStatus(status);
 
                 if (teachers == null)
@@ -77,7 +82,7 @@ namespace Lms.Controllers
 
         [HttpPatch]
         [Route("teacher/{id}")]
-        public async Task<IActionResult> PartiallyUpdateTeacherById([FromRoute] int id, JsonPatchDocument<TeacherModel> teacherUpdates)
+        public async Task<IActionResult> PartiallyUpdateTeacherById([FromRoute] Guid id, JsonPatchDocument<TeacherModel> teacherUpdates)
         {
             try
             {
@@ -101,7 +106,7 @@ namespace Lms.Controllers
 
         [HttpDelete]
         [Route("teacher/{id}")]
-        public async Task<IActionResult> DeleteTeacherById([FromRoute] int id)
+        public async Task<IActionResult> DeleteTeacherById([FromRoute] Guid id)
         {
             try
             {

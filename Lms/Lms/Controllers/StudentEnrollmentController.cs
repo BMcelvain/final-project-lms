@@ -28,7 +28,7 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("studentEnrollment/byStudentId/{id}")]
-        public async Task<IActionResult> GetStudentEnrollmentHistoryById([FromRoute] int id)
+        public async Task<IActionResult> GetStudentEnrollmentHistoryById([FromRoute] Guid id)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("studentsInCourse/byCourseId/{courseId}")]
-        public async Task<IActionResult> GetStudentsInCourseByCourseId([FromRoute] int courseId)
+        public async Task<IActionResult> GetStudentsInCourseByCourseId([FromRoute] Guid courseId)
         {
             try
             {

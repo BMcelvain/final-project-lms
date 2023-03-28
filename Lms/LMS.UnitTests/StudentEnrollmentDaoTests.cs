@@ -4,6 +4,7 @@ using Lms.Models;
 using Lms.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using System;
 using System.Threading.Tasks;
 
 namespace LMS.UnitTests
@@ -19,7 +20,7 @@ namespace LMS.UnitTests
             var sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetStudentEnrollmentHistoryById(0);
+            _ = sut.GetStudentEnrollmentHistoryById(new Guid());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
@@ -49,7 +50,7 @@ namespace LMS.UnitTests
             StudentEnrollmentDao sut = new(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetStudentsInCourseByCourseId(1);
+            _ = sut.GetStudentsInCourseByCourseId(new Guid());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * " +

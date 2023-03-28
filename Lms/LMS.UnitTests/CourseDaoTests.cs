@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Lms.Models;
 using Dapper;
+using System;
 
 namespace LMS.UnitTests
 {
@@ -33,7 +34,7 @@ namespace LMS.UnitTests
             CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetCourseById<CourseModel>(1);
+            _ = sut.GetCourseById<CourseModel>(new Guid());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<CourseModel>(It.Is<string>(sql => sql == "SELECT * FROM Course WHERE CourseId = 1")));
@@ -48,7 +49,7 @@ namespace LMS.UnitTests
             CourseDao sut = new CourseDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.DeleteCourseById(1);
+            _ = sut.DeleteCourseById(new Guid());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "DELETE FROM Course WHERE CourseId = 1")));
@@ -98,7 +99,7 @@ namespace LMS.UnitTests
             CourseDao sut = new(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.DeleteStudentInCourseByStudentCourseId(1, 1);
+            _ = sut.DeleteStudentInCourseByStudentCourseId(new StudentInCourseModel());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == $"DELETE FROM StudentEnrollmentLog WHERE StudentId = 1 AND CourseId = 1")));

@@ -35,15 +35,15 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("courses/byId/{id}")]
-        public async Task<IActionResult> GetCourseById([FromRoute] int id)
+        public async Task<IActionResult> GetCourseById([FromRoute] Guid guid)
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(id);
+                var course = await courseDao.GetCourseById<CourseModel>(guid);
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with id {guid} not found."));
                 }
 
                 return Ok(new ApiOkResponse(course));
@@ -60,7 +60,7 @@ namespace Lms.Controllers
         {
             try
             {
-                if(status != "Inactive" && status != "Active")
+                if(status.ToLower() != "inactive" && status.ToLower() != "active")
                 {
                     return BadRequest(new ApiResponse(400,"Please enter Active or Inactive status."));
                 }
@@ -82,15 +82,15 @@ namespace Lms.Controllers
 
         [HttpPatch]
         [Route("courses/{id}")]
-        public async Task<IActionResult> PartiallyUpdateCourseById([FromRoute]int id, JsonPatchDocument<CourseModel> courseUpdates)
+        public async Task<IActionResult> PartiallyUpdateCourseById([FromRoute] Guid guid, JsonPatchDocument<CourseModel> courseUpdates)
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(id);
+                var course = await courseDao.GetCourseById<CourseModel>(guid);
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not valid."));
+                    return NotFound(new ApiResponse(404, $"Course with id {guid} not valid."));
                 }
 
                 courseUpdates.ApplyTo(course);
@@ -106,18 +106,18 @@ namespace Lms.Controllers
 
         [HttpDelete]
         [Route("courses/{id}")]
-        public async Task<IActionResult> DeleteCourseById([FromRoute] int id)
+        public async Task<IActionResult> DeleteCourseById([FromRoute] Guid guid)
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(id);
+                var course = await courseDao.GetCourseById<CourseModel>(guid);
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
+                    return NotFound(new ApiResponse(404, $"Student not found with id {guid}"));
                 }
 
-                await courseDao.DeleteCourseById(id);
+                await courseDao.DeleteCourseById(guid);
                 return Ok(new ApiOkResponse(course));
             }
             catch (Exception e)
@@ -143,7 +143,7 @@ namespace Lms.Controllers
 
         [HttpPatch]
         [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
-        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([FromRoute] int studentId, int courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
+        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([FromRoute] Guid studentId, Guid courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
         {
             try
             {
@@ -155,6 +155,7 @@ namespace Lms.Controllers
                 }
 
                 addStudentCourseUpdates.ApplyTo(addStudentInCourse);
+                addStudentInCourse.StudentId = studentId;
                 await courseDao.PartiallyUpdateStudentInCourseByCourseStudentId(addStudentInCourse);
 
                 return Ok(new ApiOkResponse(addStudentInCourse));
@@ -167,19 +168,20 @@ namespace Lms.Controllers
 
         [HttpDelete]
         [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
-        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([FromRoute] int studentId, int courseId)
+        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([FromRoute] Guid studentId, Guid courseId)
         {
             try
             {
-                var addStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
+                var deleteStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
 
-                if (addStudentInCourse == null)
+                if (deleteStudentInCourse == null)
                 {
                     return NotFound(new ApiResponse(404, $"Course with id {courseId} not found."));
                 }
 
-                await courseDao.DeleteStudentInCourseByStudentCourseId(studentId, courseId);
-                return Ok(new ApiOkResponse(addStudentInCourse));
+                deleteStudentInCourse.StudentId = studentId;
+                await courseDao.DeleteStudentInCourseByStudentCourseId(deleteStudentInCourse);
+                return Ok(new ApiOkResponse(deleteStudentInCourse));
             }
             catch (Exception e)
             {

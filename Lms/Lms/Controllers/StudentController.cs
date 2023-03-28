@@ -35,7 +35,7 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("student/{id}")]
-        public async Task<IActionResult> GetStudentById([FromRoute] int id)
+        public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Lms.Controllers
 
         [HttpPatch]
         [Route("student/{id}")]
-        public async Task<IActionResult> PartiallyUpdateStudentById([FromRoute] int id, JsonPatchDocument<StudentModel> studentUpdates)
+        public async Task<IActionResult> PartiallyUpdateStudentById([FromRoute] Guid id, JsonPatchDocument<StudentModel> studentUpdates)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace Lms.Controllers
 
         [HttpDelete]
         [Route("student/{id}")]
-        public async Task<IActionResult> DeleteStudentById([FromRoute] int id)
+        public async Task<IActionResult> DeleteStudentById([FromRoute] Guid id)
         {
             try
             {
