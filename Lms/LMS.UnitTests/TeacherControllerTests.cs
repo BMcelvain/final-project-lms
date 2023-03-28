@@ -59,11 +59,11 @@ namespace LMS.UnitTests
             Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
 
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
+                .Setup(x => x.GetTeacherById(new Guid()))
                 .ReturnsAsync(
                 new TeacherModel()
                 {
-                    TeacherId = 0,
+                    TeacherId = new Guid(),
                     TeacherFirstName = "Test",
                     TeacherLastName = "Test",
                     TeacherPhone = "999-99-9999",
@@ -74,7 +74,7 @@ namespace LMS.UnitTests
             TeacherController sut = new TeacherController(mockTeacherDao.Object);
 
             // Act
-            var result = await sut.GetTeacherById(0);
+            var result = await sut.GetTeacherById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -90,11 +90,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
+                .Setup(x => x.GetTeacherById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.GetTeacherById(0);
+            var result = await sut.GetTeacherById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -142,11 +142,11 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
+                .Setup(x => x.GetTeacherById(new Guid()))
                 .ReturnsAsync(
                 new TeacherModel()
                 {
-                    TeacherId = 0,
+                    TeacherId = new Guid(),
                     TeacherFirstName = "Test",
                     TeacherLastName = "Test",
                     TeacherPhone = "999-99-9999",
@@ -158,7 +158,7 @@ namespace LMS.UnitTests
             TeacherController sut = new TeacherController(mockTeacherDao.Object);
 
             // Act
-            var result = await sut.PartiallyUpdateTeacherById(0, testDocument);
+            var result = await sut.PartiallyUpdateTeacherById(new Guid(), testDocument);
 
             // Assert
             Assert.IsNotNull(result);
@@ -174,7 +174,7 @@ namespace LMS.UnitTests
             JsonPatchDocument<TeacherModel> testDocument = new JsonPatchDocument<TeacherModel>();
 
             // Act
-            var result = await sut.PartiallyUpdateTeacherById(0, testDocument);
+            var result = await sut.PartiallyUpdateTeacherById(new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -191,11 +191,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
+                .Setup(x => x.GetTeacherById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.PartiallyUpdateTeacherById(0, testDocument);
+            var result = await sut.PartiallyUpdateTeacherById(new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -208,11 +208,11 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
+                .Setup(x => x.GetTeacherById(new Guid()))
                 .ReturnsAsync(
                 new TeacherModel()
                 {
-                    TeacherId = 0,
+                    TeacherId = new Guid(),
                     TeacherFirstName = "Test",
                     TeacherLastName = "Test",
                     TeacherPhone = "999-99-9999",
@@ -222,7 +222,7 @@ namespace LMS.UnitTests
             TeacherController sut = new TeacherController(mockTeacherDao.Object);
 
             // Act
-            var result = await sut.DeleteTeacherById(0);
+            var result = await sut.DeleteTeacherById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -237,7 +237,7 @@ namespace LMS.UnitTests
             TeacherController sut = new TeacherController(mockTeacherDao.Object);
 
             // Act
-            var result = await sut.DeleteTeacherById(0);
+            var result = await sut.DeleteTeacherById(new Guid());
 
             // Assert 
             Assert.IsNotNull(result);
@@ -253,11 +253,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
+                .Setup(x => x.GetTeacherById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.DeleteTeacherById(0);
+            var result = await sut.DeleteTeacherById(new Guid());
 
             // Assert 
             Assert.IsNotNull(result);

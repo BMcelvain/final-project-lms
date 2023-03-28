@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Lms.Models;
 using Dapper;
+using System;
 
 namespace LMS.UnitTests
 {
@@ -41,7 +42,7 @@ namespace LMS.UnitTests
             StudentDao sut = new StudentDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.GetStudentById(2);
+            _ = sut.GetStudentById(new Guid());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<StudentModel>(It.Is<string>(sql => sql == "SELECT * FROM Student WHERE StudentId = 2")), Times.Once);
@@ -70,7 +71,7 @@ namespace LMS.UnitTests
             StudentDao sut = new StudentDao(mockSqlWrapper.Object);
 
             // Act
-            _ = sut.DeleteStudentById(1);
+            _ = sut.DeleteStudentById(new Guid());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "DELETE FROM Student WHERE StudentId = 1")), Times.Once); ;

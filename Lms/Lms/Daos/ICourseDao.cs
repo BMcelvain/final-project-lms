@@ -1,4 +1,5 @@
 ﻿using Lms.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,11 +9,11 @@ namespace Lms.Daos
     {
         Task CreateCourse(CourseModel newCourse);
         Task<IEnumerable<CourseModel>> GetCourseByStatus(string status);
-        Task<T> GetCourseById<T>(int id);
+        Task<T> GetCourseById<T>(Guid id);
         Task PartiallyUpdateCourseById(CourseModel updateRequest);
-        Task DeleteCourseById(int id);
+        Task DeleteCourseById(Guid id);
         Task StudentInCourse(StudentInCourseModel newStudentToCourse);
         Task PartiallyUpdateStudentInCourseByCourseStudentId(StudentInCourseModel updateRequest);
-        Task DeleteStudentInCourseByStudentCourseId(int studentId, int courseId);
+        Task DeleteStudentInCourseByStudentCourseId(StudentInCourseModel deleteRequest);
     }
 }

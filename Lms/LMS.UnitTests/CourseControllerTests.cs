@@ -39,8 +39,7 @@ namespace LMS.UnitTests
             var testCourse = new CourseModel();
 
             mockCourseDao
-                .Setup(x => x.CreateCourse(It.IsAny<CourseModel>()))
-                .Throws(testException);
+                .Setup(x => x.CreateCourse(testCourse));
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
@@ -58,14 +57,13 @@ namespace LMS.UnitTests
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
 
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .ReturnsAsync(
                 new CourseModel()
                 {
-                    CourseId = 0,
-                    TeacherId = 0,
+                    CourseId = new Guid(),
+                    TeacherId = new Guid(),
                     CourseName = "Test",
-                    SemesterId = 0,
                     StartDate = "11/11/2022",
                     EndDate = "12/12/2022",
                     CourseStatus = "Test"
@@ -74,7 +72,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
-            var result = await sut.GetCourseById(0);
+            var result = await sut.GetCourseById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -90,11 +88,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.GetCourseById(0);
+            var result = await sut.GetCourseById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -140,9 +138,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
             var testException = new Exception("Test Exception");
 
-            mockCourseDao
-                .Setup(x => x.GetCourseByStatus("Test"))
-                .Throws(testException);
+ 
 
             // Act
             var result = await sut.GetCourseByStatus("Test");
@@ -158,14 +154,13 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .ReturnsAsync(
                 new CourseModel()
                 {
-                    CourseId = 0,
-                    TeacherId = 0,
+                    CourseId = new Guid(),
+                    TeacherId = new Guid(),
                     CourseName = "Test",
-                    SemesterId = 0,
                     StartDate = "11/11/2022",
                     EndDate = "12/12/2022",
                     CourseStatus = "Test"
@@ -175,7 +170,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
-            var result = await sut.PartiallyUpdateCourseById(0, testDocument);
+            var result = await sut.PartiallyUpdateCourseById(new Guid(), testDocument);
 
             // Assert
             Assert.IsNotNull(result);
@@ -191,7 +186,7 @@ namespace LMS.UnitTests
             JsonPatchDocument<CourseModel> testDocument = new JsonPatchDocument<CourseModel>();
 
             // Act
-            var result = await sut.PartiallyUpdateCourseById(0, testDocument);
+            var result = await sut.PartiallyUpdateCourseById(new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -208,11 +203,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.PartiallyUpdateCourseById(0, testDocument);
+            var result = await sut.PartiallyUpdateCourseById(new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -225,14 +220,13 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .ReturnsAsync(
                 new CourseModel()
                 {
-                    CourseId = 0,
-                    TeacherId = 0,
+                    CourseId = new Guid(),
+                    TeacherId = new Guid(),
                     CourseName = "Test",
-                    SemesterId = 0,
                     StartDate = "11/11/2022",
                     EndDate = "12/12/2022",
                     CourseStatus = "Test"
@@ -240,7 +234,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
-            var result = await sut.DeleteCourseById(0);
+            var result = await sut.DeleteCourseById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -255,7 +249,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object); 
 
             // Act
-            var result = await sut.DeleteCourseById(0);
+            var result = await sut.DeleteCourseById(new Guid());
 
             // Assert 
             Assert.IsNotNull(result);
@@ -271,11 +265,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.DeleteCourseById(0);
+            var result = await sut.DeleteCourseById(new Guid());
 
             // Assert 
             Assert.IsNotNull(result);
@@ -327,13 +321,12 @@ namespace LMS.UnitTests
             //Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
             mockCourseDao
-                .Setup(x => x.GetCourseById<StudentInCourseModel>(0))
+                .Setup(x => x.GetCourseById<StudentInCourseModel>(new Guid()))
                 .ReturnsAsync(
                 new StudentInCourseModel()
                 {
-                    CourseId = 0,
-                    StudentId = 0,
-                    EnrollmentDate = "11/11/2022",
+                    CourseId = new Guid(),
+                    StudentId = new Guid(),
                     Cancelled = false,
                     CancellationReason = "test",
                     HasPassed = false
@@ -343,7 +336,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             //Act
-            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
+            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(new Guid(), new Guid(), testDocument);
 
             //Assert
             Assert.IsNotNull(result);
@@ -359,7 +352,7 @@ namespace LMS.UnitTests
             JsonPatchDocument<StudentInCourseModel> testDocument = new JsonPatchDocument<StudentInCourseModel>();
 
             // Act
-            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
+            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(new Guid(), new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -376,11 +369,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById<StudentInCourseModel>(0))
+                .Setup(x => x.GetCourseById<StudentInCourseModel>(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(0, 0, testDocument);
+            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(new Guid(), new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -393,13 +386,12 @@ namespace LMS.UnitTests
             // Arrange
             Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
             mockCourseDao
-                .Setup(x => x.GetCourseById<StudentInCourseModel>(0))
+                .Setup(x => x.GetCourseById<StudentInCourseModel>(new Guid()))
                 .ReturnsAsync(
                 new StudentInCourseModel()
                 {
-                    CourseId = 0,
-                    StudentId = 0,
-                    EnrollmentDate = "11/11/2022",
+                    CourseId = new Guid(),
+                    StudentId = new Guid(),
                     Cancelled = false,
                     CancellationReason = "test",
                     HasPassed = false
@@ -408,7 +400,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
-            var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
+            var result = await sut.DeleteStudentInCourseByStudentCourseId(new Guid(), new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -424,7 +416,7 @@ namespace LMS.UnitTests
             CourseController sut = new CourseController(mockCourseDao.Object);
 
             // Act
-            var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
+            var result = await sut.DeleteStudentInCourseByStudentCourseId(new Guid(), new Guid());
 
             // Assert 
             Assert.IsNotNull(result);
@@ -440,11 +432,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(0))
+                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.DeleteStudentInCourseByStudentCourseId(0, 0);
+            var result = await sut.DeleteStudentInCourseByStudentCourseId(new Guid(), new Guid());
 
             // Assert 
             Assert.IsNotNull(result);

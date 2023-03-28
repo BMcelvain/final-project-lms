@@ -23,7 +23,7 @@ namespace LMS.UnitTests
             var mockStudentEnrollment = new List<StudentEnrollmentModel>();
             var mockEnrollment = new StudentEnrollmentModel
             {
-                CourseId = 0,
+                CourseId = new Guid(),
                 Cancelled = false,
                 CancellationReason = "test",
                 HasPassed = false
@@ -31,11 +31,11 @@ namespace LMS.UnitTests
             mockStudentEnrollment.Add(mockEnrollment);
 
             _ = mockStudentEnrollmentDao
-                .Setup(x => x.GetStudentEnrollmentHistoryById(1))
+                .Setup(x => x.GetStudentEnrollmentHistoryById(new Guid()))
                 .ReturnsAsync(mockStudentEnrollment);
 
             // Act
-            var result = await sut.GetStudentEnrollmentHistoryById(1);
+            var result = await sut.GetStudentEnrollmentHistoryById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -51,11 +51,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockStudentEnrollmentDao
-                .Setup(x => x.GetStudentEnrollmentHistoryById(0))
+                .Setup(x => x.GetStudentEnrollmentHistoryById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.GetStudentEnrollmentHistoryById(0);
+            var result = await sut.GetStudentEnrollmentHistoryById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);

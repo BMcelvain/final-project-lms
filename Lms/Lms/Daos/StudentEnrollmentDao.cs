@@ -18,7 +18,7 @@ namespace Lms.Daos
             this.sqlWrapper = sqlWrapper;
         }
 
-        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryById(int id)
+        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryById(Guid id)
         {
             var query = $"SELECT" +
             $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
@@ -35,12 +35,15 @@ namespace Lms.Daos
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = {id}"+
+            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = @StudentId"+
             $" ORDER BY HasPassed ASC,CourseName";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("StudentId", id, DbType.Guid);
 
             using (sqlWrapper.CreateConnection())
             {
-                var studentHistory = await sqlWrapper.QueryAsync<StudentEnrollmentModel>(query);
+                var studentHistory = await sqlWrapper.QueryAsync<StudentEnrollmentModel>(query, parameters);
 
                 return studentHistory.ToList();
             }
@@ -92,7 +95,6 @@ namespace Lms.Daos
             $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Semester] ON [LearningManagementSystem].[dbo].[Course].[SemesterId] = [LearningManagementSystem].[dbo].[Semester].[SemesterId]" +
             $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = @studentPhone AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'"+
             $" ORDER BY StartDate ASC,CourseName";
             var studentPhoneNum = new { studentPhone = new DbString { Value = studentPhone, IsFixedLength =false, IsAnsi = true } };
@@ -105,17 +107,20 @@ namespace Lms.Daos
             }
         }
 
-        public async Task<IEnumerable<StudentModel>> GetStudentsInCourseByCourseId(int courseId) 
+        public async Task<IEnumerable<StudentModel>> GetStudentsInCourseByCourseId(Guid courseId) 
         {
             var query = $"SELECT * " +
-            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
-            $"WHERE CourseId = {courseId}"+
+            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog] " +
+            $"INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] " +
+            $"WHERE CourseId = @CourseId "+
             $"ORDER BY StudentLastName";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("CourseId", courseId, DbType.Guid);
 
             using (sqlWrapper.CreateConnection())
             {
-                var course = await sqlWrapper.QueryAsync<StudentModel>(query);
+                var course = await sqlWrapper.QueryAsync<StudentModel>(query, parameters);
                 return course;
             }
         }

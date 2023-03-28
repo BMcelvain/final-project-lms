@@ -59,11 +59,11 @@ namespace LMS.UnitTests
             Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
 
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
+                .Setup(x => x.GetStudentById(new Guid()))
                 .ReturnsAsync(
                 new StudentModel()
                 {
-                    StudentId = 0,
+                    StudentId = new Guid(),
                     StudentFirstName = "Test",
                     StudentLastName = "Test",
                     StudentPhone = "999-999-9999",
@@ -75,7 +75,7 @@ namespace LMS.UnitTests
             StudentController sut = new StudentController(mockStudentDao.Object);
 
             // Act
-            var result = await sut.GetStudentById(0);
+            var result = await sut.GetStudentById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -91,11 +91,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
+                .Setup(x => x.GetStudentById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.GetStudentById(0);
+            var result = await sut.GetStudentById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -108,11 +108,11 @@ namespace LMS.UnitTests
             // Arrange
             Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
+                .Setup(x => x.GetStudentById(new Guid()))
                 .ReturnsAsync(
                 new StudentModel()
                 {
-                    StudentId = 0,
+                    StudentId = new Guid(),
                     StudentFirstName = "Test",
                     StudentLastName = "Test",
                     StudentPhone = "999-999-9999",
@@ -125,7 +125,7 @@ namespace LMS.UnitTests
             StudentController sut = new StudentController(mockStudentDao.Object);
 
             // Act
-            var result = await sut.PartiallyUpdateStudentById(0, testDocument);
+            var result = await sut.PartiallyUpdateStudentById(new Guid(), testDocument);
 
             // Assert
             Assert.IsNotNull(result);
@@ -141,7 +141,7 @@ namespace LMS.UnitTests
             JsonPatchDocument<StudentModel> testDocument = new JsonPatchDocument<StudentModel>();
 
             // Act
-            var result = await sut.PartiallyUpdateStudentById(0, testDocument);
+            var result = await sut.PartiallyUpdateStudentById(new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -158,11 +158,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
+                .Setup(x => x.GetStudentById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.PartiallyUpdateStudentById(0, testDocument);
+            var result = await sut.PartiallyUpdateStudentById(new Guid(), testDocument);
 
             // Arrange
             Assert.IsNotNull(result);
@@ -175,11 +175,11 @@ namespace LMS.UnitTests
             // Arrange
             Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
+                .Setup(x => x.GetStudentById(new Guid()))
                 .ReturnsAsync(
                 new StudentModel()
                 {
-                    StudentId = 0,
+                    StudentId = new Guid(),
                     StudentFirstName = "Test",
                     StudentLastName = "Test",
                     StudentPhone = "999-999-9999",
@@ -190,7 +190,7 @@ namespace LMS.UnitTests
             StudentController sut = new StudentController(mockStudentDao.Object);
 
             // Act
-            var result = await sut.DeleteStudentById(0);
+            var result = await sut.DeleteStudentById(new Guid());
 
             // Assert
             Assert.IsNotNull(result);
@@ -205,7 +205,7 @@ namespace LMS.UnitTests
             StudentController sut = new StudentController(mockStudentDao.Object);
 
             // Act
-            var result = await sut.DeleteStudentById(0);
+            var result = await sut.DeleteStudentById(new Guid());
 
             // Assert 
             Assert.IsNotNull(result);
@@ -221,11 +221,11 @@ namespace LMS.UnitTests
             var testException = new Exception("Test Exception");
 
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
+                .Setup(x => x.GetStudentById(new Guid()))
                 .Throws(testException);
 
             // Act
-            var result = await sut.DeleteStudentById(0);
+            var result = await sut.DeleteStudentById(new Guid());
 
             // Assert 
             Assert.IsNotNull(result);
