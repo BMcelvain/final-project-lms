@@ -35,15 +35,15 @@ namespace Lms.Controllers
 
         [HttpGet]
         [Route("courses/byId/{id}")]
-        public async Task<IActionResult> GetCourseById([FromRoute] Guid guid)
+        public async Task<IActionResult> GetCourseById([FromRoute] Guid id)
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(guid);
+                var course = await courseDao.GetCourseById<CourseModel>(id);
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {guid} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
                 }
 
                 return Ok(new ApiOkResponse(course));
@@ -82,15 +82,15 @@ namespace Lms.Controllers
 
         [HttpPatch]
         [Route("courses/{id}")]
-        public async Task<IActionResult> PartiallyUpdateCourseById([FromRoute] Guid guid, JsonPatchDocument<CourseModel> courseUpdates)
+        public async Task<IActionResult> PartiallyUpdateCourseById([FromRoute] Guid id, JsonPatchDocument<CourseModel> courseUpdates)
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(guid);
+                var course = await courseDao.GetCourseById<CourseModel>(id);
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {guid} not valid."));
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not valid."));
                 }
 
                 courseUpdates.ApplyTo(course);
@@ -106,18 +106,18 @@ namespace Lms.Controllers
 
         [HttpDelete]
         [Route("courses/{id}")]
-        public async Task<IActionResult> DeleteCourseById([FromRoute] Guid guid)
+        public async Task<IActionResult> DeleteCourseById([FromRoute] Guid id)
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(guid);
+                var course = await courseDao.GetCourseById<CourseModel>(id);
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Student not found with id {guid}"));
+                    return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
                 }
 
-                await courseDao.DeleteCourseById(guid);
+                await courseDao.DeleteCourseById(id);
                 return Ok(new ApiOkResponse(course));
             }
             catch (Exception e)
