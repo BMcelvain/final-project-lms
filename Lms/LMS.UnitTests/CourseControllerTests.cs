@@ -4,99 +4,71 @@ using Moq;
 using Lms.Daos;
 using System.Threading.Tasks;
 using Lms.Models;
+using LMS.UnitTests.Mocks;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.JsonPatch;
+using FluentAssertions;
 
 namespace LMS.UnitTests
 {
+    #nullable disable warnings
     [TestClass]
     public class CourseControllerTests
     {
-
-        [TestMethod]
-        public async Task CreateCourse_ReturnsOkStatusCode()
+        Mock<ICourseDao> mockCourseDao;
+        CourseController sut;
+        CourseModel testCourse;
+        
+        [TestInitialize]
+        public void Initialize()
         {
-            // Arrange
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-            CourseController sut = new CourseController(mockCourseDao.Object);
-            var course = new CourseModel();
-
-            // Act
-            var result = await sut.CreateCourse(course);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkResult));
+            mockCourseDao = MockICourseDao.MockDao();
+            sut = new CourseController(mockCourseDao.Object);
+            testCourse = new CourseModel()
+            {
+                CourseId = new Guid(),
+                TeacherId = new Guid(),
+                CourseName = "Test",
+                StartDate = "01/01/2023",
+                EndDate = "03/01/2023",
+                CourseStatus = "Active"
+            };
         }
 
         [TestMethod]
-        public async Task CreateCourse_ThrowsException_OnError()
+        public async Task CreateCourse_ReturnsOkStatusCode_WhenModelIsValid()
         {
-            // Arrange
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-            var testException = new Exception("Test Exception");
-            var testCourse = new CourseModel();
-
-            mockCourseDao
-                .Setup(x => x.CreateCourse(testCourse));
-            CourseController sut = new CourseController(mockCourseDao.Object);
-
-            // Act
             var result = await sut.CreateCourse(testCourse);
 
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkResult>("Because it ran successfully!");
         }
 
         [TestMethod]
-        public async Task GetCoursesById_ReturnsOkStatusCode()
+        public async Task GetCoursesById_ReturnsOkStatusCode_WhenGuidIsValid()
         {
-            // Arrange
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
+            var guid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
 
-            mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
-                .ReturnsAsync(
-                new CourseModel()
-                {
-                    CourseId = new Guid(),
-                    TeacherId = new Guid(),
-                    CourseName = "Test",
-                    StartDate = "11/11/2022",
-                    EndDate = "12/12/2022",
-                    CourseStatus = "Test"
-                });
+            var result = await sut.GetCourseById(guid);
 
-            CourseController sut = new CourseController(mockCourseDao.Object);
-
-            // Act
-            var result = await sut.GetCourseById(new Guid());
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [TestMethod]
-        public async Task GetCourseById_ThrowsExceptionOnError()
+        [DataRow("0AE43554-0BB1-42B1-94C7-04420A2167A5")]
+        [DataRow("0AE435540BB142B194C704420A2167A5")]
+        [DataRow("(0AE43554-0BB1-42B1-94C7-04420A2167A5)")]
+        [DataRow("{0AE43554-0BB1-42B1-94C7-04420A2167A5}")]
+        public async Task GetCourseById_ThrowsException_WhenGuidIsInvalid(string data)
         {
-            // Arrange
-            Mock<ICourseDao> mockCourseDao = new Mock<ICourseDao>();
-            CourseController sut = new CourseController(mockCourseDao.Object);
-            var testException = new Exception("Test Exception");
+            var guid = new Guid(data);
 
-            mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(new Guid()))
-                .Throws(testException);
+            var result = await sut.GetCourseById(guid);
 
-            // Act
-            var result = await sut.GetCourseById(new Guid());
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));    
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
         }
 
 
