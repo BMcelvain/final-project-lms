@@ -2,9 +2,13 @@
 using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Lms.Controllers
 {
@@ -17,7 +21,7 @@ namespace Lms.Controllers
         {
             this.studentDao = studentDao;
         }
-
+  
         [HttpPost]
         [Route("student")]
         public async Task<IActionResult> CreateStudent(StudentModel newStudent)
@@ -54,28 +58,97 @@ namespace Lms.Controllers
             }
         }
 
+        //[HttpPatch]
+        //[Route("student/{id}")]
+        //public async Task<IActionResult> PartiallyUpdateStudentById([FromRoute] Guid id, JsonPatchDocument<StudentModel> studentUpdates)
+        //{
+        //    try
+        //    {
+        //        var student = await studentDao.GetStudentById(id);
+
+        //        if (student == null)
+        //        {
+        //            return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+        //        }
+
+        //        studentUpdates.ApplyTo(student);
+        //        await studentDao.PartiallyUpdateStudentById(student);
+
+        //        return Ok(new ApiOkResponse(student));
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, e.Message);
+        //    }
+        //}
+
         [HttpPatch]
         [Route("student/{id}")]
-        public async Task<IActionResult> PartiallyUpdateStudentById([FromRoute] Guid id, JsonPatchDocument<StudentModel> studentUpdates)
+        public async Task<IActionResult> PartiallyUpdateStudentById(Guid id, [FromBody] JsonPatchDocument<StudentModel> studentUpdates)
         {
-            try
+            if (studentUpdates == null)
             {
-                var student = await studentDao.GetStudentById(id);
+                return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+            }
 
-                if (student == null)
+            var allowedOperations = new[] { "replace" };
+
+            foreach (Operation<StudentModel> operation in studentUpdates.Operations)
+            {
+                if (!allowedOperations.Contains(operation.op.ToLower()))
                 {
-                    return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+                    return BadRequest(new ApiResponse(400,"Only 'replace' operation is allowed."));
                 }
 
-                studentUpdates.ApplyTo(student);
-                await studentDao.PartiallyUpdateStudentById(student);
+                switch (operation.path.ToLower()) //need to add OKResponses for when it works
+                {
+                    //need to figure out how to exclude numbers in name
+                    case "/studentfirstname":
+                        string StudentFirstName = operation.value?.ToString();
+                        break;
+                    case "/studentlastname":
+                        string StudentLastName = operation.value?.ToString();
+                        break;
+                    case "/studentphone":
+                        string StudentPhone = operation.value?.ToString();
+                        if (!Regex.IsMatch(StudentPhone, @"^\d{3}-\d{3}-\d{4}$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter phone number in a valid format: XXX-XXX-XXXX."));
+                        }
+                        break;
+                    case "/studentemail":
+                        string StudentEmail = operation.value?.ToString();
+                        if (!Regex.IsMatch(StudentEmail, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter an E-Mail in a valid format: example@vu.com."));
+                        }
+                        break;
+                    case "/studentstatus":
+                        string StudentStatus = operation.value?.ToString();
+                        if (StudentStatus != "Inactive" && StudentStatus != "Active")
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
+                        }
+                        break;
+                    case "/totalpasscourses":
+                        string TotalPassCourses = operation.value?.ToString();
+                        break;
+                    default:
+                        return BadRequest(new ApiResponse(500));
+                }
+            }
 
-                return Ok(new ApiOkResponse(student));
-            }
-            catch (Exception e)
+            // process the patch operations
+            var student = await studentDao.GetStudentById(id);
+            if (student == null)
             {
-                return StatusCode(500, e.Message);
+                return NotFound();
             }
+
+            studentUpdates.ApplyTo(student);
+            await studentDao.PartiallyUpdateStudentById(student);
+
+            return NoContent();
         }
 
         [HttpDelete]

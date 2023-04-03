@@ -71,22 +71,6 @@ namespace LMS.UnitTests
             result.Should().BeOfType<NotFoundObjectResult>();
         }
 
-
-        //[TestMethod]
-        //public async Task GetCourseByStatus_Returns_TheCorrectNumber_OfCourses()
-        //{
-        //    // Arrange
-        //    Mock<ICourseDao> mockCourseDao = new(); //
-        //    CourseController sut = new CourseController(mockCourseDao.Object);
-
-        //    // Act
-        //    var result = await sut.GetCourseByStatus("Active");
-
-        //    // Assert
-        //    Assert.IsNotNull(result);
-        //    Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-        //}
-
         [TestMethod]
         public async Task GetCourseByStatus_ReturnsOKStatusCode()
         {
