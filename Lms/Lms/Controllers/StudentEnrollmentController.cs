@@ -26,6 +26,12 @@ namespace Lms.Controllers
             this.studentEnrollmentDao = studentEnrollmentDao;
         }
 
+
+        /// <summary>
+        /// Get Student Enrollment history by Student Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("studentEnrollment/byStudentId/{id}")]
         public async Task<IActionResult> GetStudentEnrollmentHistoryById([FromRoute] Guid id)
@@ -47,6 +53,11 @@ namespace Lms.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Student Enrollment History by Last Name
+        /// </summary>
+        /// <param name="studentLastName"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("studentEnrollment/byStudentLastName/{studentLastName}")]
         public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentLastName([FromRoute] string studentLastName)
@@ -70,6 +81,12 @@ namespace Lms.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get current Student Enrollment in Active Courses
+        /// </summary>
+        /// <param name="studentPhone"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("studentActiveEnrollment/byStudentPhone/{studentPhone}")]
         public async Task<IActionResult> GetActiveStudentEnrollmentByStudentPhone([FromRoute] string studentPhone)
@@ -89,6 +106,12 @@ namespace Lms.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get All Student Enrollment by CourseId
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("studentsInCourse/byCourseId/{courseId}")]
         public async Task<IActionResult> GetStudentsInCourseByCourseId([FromRoute] Guid courseId)

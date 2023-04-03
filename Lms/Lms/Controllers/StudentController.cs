@@ -22,6 +22,11 @@ namespace Lms.Controllers
             this.studentDao = studentDao;
         }
   
+        /// <summary>
+        /// Create New Student
+        /// </summary>
+        /// <param name="newStudent"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("student")]
         public async Task<IActionResult> CreateStudent(StudentModel newStudent)
@@ -37,6 +42,11 @@ namespace Lms.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Student by Using Guid Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
@@ -82,6 +92,12 @@ namespace Lms.Controllers
         //    }
         //}
 
+        /// <summary>
+        /// Replace StudentFirstName, StudentLastName, StudentPhone, StudentEmail,or Student Status
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="studentUpdates"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("student/{id}")]
         public async Task<IActionResult> PartiallyUpdateStudentById(Guid id, [FromBody] JsonPatchDocument<StudentModel> studentUpdates)
@@ -151,6 +167,11 @@ namespace Lms.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Delete Student by Using Guid Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("student/{id}")]
         public async Task<IActionResult> DeleteStudentById([FromRoute] Guid id)
