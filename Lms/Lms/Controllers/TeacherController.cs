@@ -18,6 +18,12 @@ namespace Lms.Controllers
             this.teacherDao = teacherDao;
         }
 
+
+        /// <summary>
+        /// Create Teacher 
+        /// </summary>
+        /// <param name="newTeacher"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("teacher")]
         public async Task<IActionResult> CreateTeacher(TeacherModel newTeacher)
@@ -33,6 +39,12 @@ namespace Lms.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get Teacher by Teacher Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("teacher/{id}")]
         public async Task<IActionResult> GetTeacherById([FromRoute] Guid id)
@@ -54,6 +66,12 @@ namespace Lms.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get Teacher by Active or Inactive Status
+        /// </summary>
+        /// <param name="status"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("teachers/byStatus/{status}")]
         public async Task<IActionResult> GetTeacherByStatus([FromRoute] string status)
@@ -80,6 +98,13 @@ namespace Lms.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Update TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, or TeacherStatus 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="teacherUpdates"></param>
+        /// <returns></returns>
         [HttpPatch]
         [Route("teacher/{id}")]
         public async Task<IActionResult> PartiallyUpdateTeacherById([FromRoute] Guid id, JsonPatchDocument<TeacherModel> teacherUpdates)
@@ -104,6 +129,12 @@ namespace Lms.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Delete Teacher by Teacher Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("teacher/{id}")]
         public async Task<IActionResult> DeleteTeacherById([FromRoute] Guid id)

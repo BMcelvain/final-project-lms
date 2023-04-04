@@ -38,8 +38,8 @@ namespace LMS.UnitTests
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = 0"+
-            $" ORDER BY HasPassed ASC,CourseName")), Times.Once);
+            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = @StudentId" +
+            $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
         [TestMethod]
@@ -53,11 +53,12 @@ namespace LMS.UnitTests
             _ = sut.GetStudentsInCourseByCourseId(new Guid());
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * " +
-            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
-            $"WHERE CourseId = 1"+
-            $"ORDER BY StudentLastName")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == 
+           $"SELECT * " +
+            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog] " +
+            $"INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] " +
+            $"WHERE CourseId = @CourseId " +
+            $"ORDER BY StudentLastName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
     }
 }

@@ -14,6 +14,7 @@ using Lms.Daos;
 using Lms.Wrappers;
 using Serilog;
 using Lms.APIErrorHandling;
+using System.IO;
 
 namespace Lms
 {
@@ -41,6 +42,8 @@ namespace Lms
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS Api", Description = "A CRUD Api for Learning Management System", Version = "v1" });
+                var filePath = Path.Combine(AppContext.BaseDirectory, "Lms.xml");
+                c.IncludeXmlComments(filePath);
             }).AddSwaggerGenNewtonsoftSupport();
         }
 
