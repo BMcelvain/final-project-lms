@@ -28,7 +28,7 @@ namespace Lms.Controllers
 
 
         /// <summary>
-        /// Get Student Enrollment history by Student Id
+        /// Get Student Enrollment History by Student Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -83,7 +83,7 @@ namespace Lms.Controllers
 
 
         /// <summary>
-        /// Get current Student Enrollment in Active Courses
+        /// Get Current Active Student Enrollment
         /// </summary>
         /// <param name="studentPhone"></param>
         /// <returns></returns>

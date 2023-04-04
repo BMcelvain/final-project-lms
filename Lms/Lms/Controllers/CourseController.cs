@@ -98,7 +98,7 @@ namespace Lms.Controllers
 
 
         /// <summary>
-        /// Replace Course Data Field
+        /// Update CourseName, CourseStatus, TeacherId, StartDate, or EndDate
         /// </summary>
         /// <param name="id"></param>
         /// <param name="courseUpdates"></param>

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using System.Text.RegularExpressions;
 using System.Linq;
+using FluentAssertions.Equivalency.Tracing;
 
 namespace Lms.Controllers
 {
@@ -164,7 +165,7 @@ namespace Lms.Controllers
             studentUpdates.ApplyTo(student);
             await studentDao.PartiallyUpdateStudentById(student);
 
-            return NoContent();
+            return Ok(new ApiOkResponse(student));
         }
 
         /// <summary>

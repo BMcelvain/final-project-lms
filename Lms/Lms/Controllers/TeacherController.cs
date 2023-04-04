@@ -100,7 +100,7 @@ namespace Lms.Controllers
 
 
         /// <summary>
-        /// Replace Teacher data fields 
+        /// Update TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, or TeacherStatus 
         /// </summary>
         /// <param name="id"></param>
         /// <param name="teacherUpdates"></param>
