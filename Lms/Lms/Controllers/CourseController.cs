@@ -90,7 +90,7 @@ namespace Lms.Controllers
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not valid."));
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
                 }
 
                 courseUpdates.ApplyTo(course);
@@ -114,7 +114,7 @@ namespace Lms.Controllers
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
+                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
                 }
 
                 await courseDao.DeleteCourseById(id);
