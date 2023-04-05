@@ -1,20 +1,13 @@
 ﻿using Lms.Controllers;
 using Lms.Daos;
 using Lms.Models;
-using Lms.Wrappers;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using System.Collections.Generic;
 using FluentAssertions;
-using LMS.UnitTests.Mocks;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
-using Azure;
-using Lms.APIErrorHandling;
 
 namespace LMS.UnitTests
 {
@@ -32,8 +25,6 @@ namespace LMS.UnitTests
             mockStudentDao = new Mock<IStudentDao>();
             sut = new StudentController(mockStudentDao.Object);
             guid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9");
-
-
         }
 
         //by using initialize and cleanup, we avoid repeat setup and teardown of the code - cleaner

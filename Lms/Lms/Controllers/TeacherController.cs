@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Lms.APIErrorHandling;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Lms.Controllers
 {
@@ -85,7 +86,7 @@ namespace Lms.Controllers
 
                 var teachers = await teacherDao.GetTeacherByStatus(status);
 
-                if (teachers == null)
+                if (teachers.IsNullOrEmpty())
                 {
                     return NotFound(new ApiResponse(404, $"Teacher with status {status} not found."));
                 }

@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-
 using System.Text.RegularExpressions;
 using System.Linq;
-using FluentAssertions.Equivalency.Tracing;
 
 namespace Lms.Controllers
 {
