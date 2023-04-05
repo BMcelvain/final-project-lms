@@ -8,17 +8,23 @@ using System;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
+using FluentAssertions.Equivalency.Tracing;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Lms.Controllers
 {
+
     [ApiController]
+    [Authorize]
     public class StudentController : ControllerBase
     {
-        private IStudentDao studentDao;
 
+        private IStudentDao studentDao;
         public StudentController(IStudentDao studentDao)
         {
             this.studentDao = studentDao;
+            
         }
   
         /// <summary>
@@ -47,9 +53,12 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize("AdminOnly")] //need to figure out how to consider me admin 
+        [ResponseCache(Duration = 60)]
         [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
         {
+
             try
             {
                 var student = await studentDao.GetStudentById(id);
@@ -92,7 +101,7 @@ namespace Lms.Controllers
         //}
 
         /// <summary>
-        /// Replace StudentFirstName, StudentLastName, StudentPhone, StudentEmail,or Student Status
+        /// Update StudentFirstName, StudentLastName, StudentPhone, StudentEmail,or Student Status
         /// </summary>
         /// <param name="id"></param>
         /// <param name="studentUpdates"></param>
@@ -115,7 +124,7 @@ namespace Lms.Controllers
                     return BadRequest(new ApiResponse(400,"Only 'replace' operation is allowed."));
                 }
 
-                switch (operation.path.ToLower()) //need to add OKResponses for when it works
+                switch (operation.path.ToLower())
                 {
                     //need to figure out how to exclude numbers in name
                     case "/studentfirstname":
@@ -145,7 +154,7 @@ namespace Lms.Controllers
                             return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
                         }
                         break;
-                    case "/totalpasscourses":
+                    case "/totalpasscourses": //delete
                         string TotalPassCourses = operation.value?.ToString();
                         break;
                     default:

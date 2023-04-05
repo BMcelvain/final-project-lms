@@ -11,10 +11,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lms.Daos;
+using Lms.Cache;
 using Lms.Wrappers;
 using Serilog;
 using Lms.APIErrorHandling;
 using System.IO;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Lms
 {
@@ -35,6 +40,29 @@ namespace Lms
             services.AddScoped<ITeacherDao, TeacherDao>();
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("Cohort5VU")),
+                        ValidateIssuer = true,
+                        ValidateAudience = true
+                    };
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Role", "admin"));
+            });
+
+            services.AddMemoryCache();
+            services.AddResponseCaching();
+            services.AddScoped<ICacheProvider, MemoryCacheProvider>();
 
             services.AddControllers().AddNewtonsoftJson();
 
@@ -61,12 +89,16 @@ namespace Lms
 
             app.UseRouting();
 
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            app.UseResponseCaching();
         }
     }
 }
