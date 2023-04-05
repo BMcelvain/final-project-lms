@@ -10,4 +10,4 @@ namespace Lms.Models
         public string CancellationReason { get; set; }
         public bool HasPassed { get; set; }
     }
-}
+}                
