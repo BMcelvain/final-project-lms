@@ -79,7 +79,7 @@ namespace Lms.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("teachers/byStatus/{status}")]
+        [Route("teachers/{status}")]
         public async Task<IActionResult> GetTeacherByStatus([FromRoute] string status)
         {
             try
@@ -130,13 +130,7 @@ namespace Lms.Controllers
 
                 switch (operation.path.ToLower())
                 {
-                    case "/teacherid":
-                        string TeacherId = operation.value?.ToString();
-                        if (!Regex.IsMatch(TeacherId, @"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a GUID in a valid format."));
-                        }
-                        break;
+
                     case "/teacherfirstname":
                         string TeacherFirstName = operation.value?.ToString();
                         if (!Regex.IsMatch(TeacherFirstName, @"^[A-Z][a-z]+$"))

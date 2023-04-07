@@ -11,8 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
-
-
+using System.ComponentModel.DataAnnotations;
 
 namespace Lms.Controllers
 {
@@ -52,7 +51,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/byId/{id}")]
+        [Route("courses/{id}")]
         public async Task<IActionResult> GetCourseById([FromRoute] Guid id)
         {
             try
@@ -78,7 +77,7 @@ namespace Lms.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/byStatus/{status}")]
+        [Route("courses/{status}")]
         public async Task<IActionResult> GetCourseByStatus([FromRoute] string status)
         {
             try
@@ -129,13 +128,6 @@ namespace Lms.Controllers
 
                 switch (operation.path.ToLower())
                 {
-                    case "/teacherid":
-                        string TeacherId = operation.value?.ToString();
-                        if (!Regex.IsMatch(TeacherId, @"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a GUID in a valid format."));
-                        }
-                        break;
                     case "/coursename":
                         string CourseName = operation.value?.ToString();
                         if (!Regex.IsMatch(CourseName, @"^[A-Z][A-Za-z]+}$"))
@@ -235,8 +227,8 @@ namespace Lms.Controllers
         /// <param name="addStudentCourseUpdates"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
-        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([FromRoute] Guid studentId, Guid courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
+        [Route("StudentInCourse")]
+        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([Required][FromQuery] Guid studentId, [Required][FromQuery] Guid courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
         {
             try
             {
@@ -266,8 +258,8 @@ namespace Lms.Controllers
         /// <param name="courseId"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
-        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([FromRoute] Guid studentId, Guid courseId)
+        [Route("StudentInCourse")]
+        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([Required][FromQuery] Guid studentId, [Required][FromQuery] Guid courseId)
         {
             try
             {

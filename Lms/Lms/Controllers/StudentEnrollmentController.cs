@@ -34,7 +34,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentEnrollment/byStudentId/{id}")]
+        [Route("studentEnrollment/{id}")]
         public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentId([FromRoute] Guid id)
         {
             try
@@ -60,7 +60,7 @@ namespace Lms.Controllers
         /// <param name="studentLastName"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentEnrollment/byStudentLastName/{studentLastName}")]
+        [Route("studentEnrollment/{studentLastName}")]
         public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentLastName([FromRoute] string studentLastName)
         {
 
@@ -89,7 +89,7 @@ namespace Lms.Controllers
         /// <param name="studentPhone"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentActiveEnrollment/byStudentPhone/{studentPhone}")]
+        [Route("studentActiveEnrollment/{studentPhone}")]
         public async Task<IActionResult> GetActiveStudentEnrollmentByStudentPhone([FromRoute] string studentPhone)
         {
             try
@@ -114,7 +114,7 @@ namespace Lms.Controllers
         /// <param name="courseId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentsInCourse/byCourseId/{courseId}")]
+        [Route("studentsInCourse/{courseId}")]
         public async Task<IActionResult> GetStudentsInCourseByCourseId([FromRoute] Guid courseId)
         {
             try

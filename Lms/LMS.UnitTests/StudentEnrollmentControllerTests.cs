@@ -155,7 +155,7 @@ namespace LMS.UnitTests
         public async Task GetActiveStudentEnrollmentByStudentPhone_InvalidPhone_ThrowsExceptionOnError()
         {
             // Arrange
-            string invalidPhoneNumber = "123-777-222 ext. 153";
+            string invalidPhoneNumber = "123-777-222";
 
             // Act
             var result = await sut.GetActiveStudentEnrollmentByStudentPhone(invalidPhoneNumber);

@@ -53,9 +53,9 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize("AdminOnly")] //need to figure out how to consider me admin 
+        //[Authorize("AdminOnly")] //need to figure out how to consider me admin
         [ResponseCache(Duration = 60)]
-        [Route("student/byId/{id}")]
+        [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
         {
 
