@@ -172,12 +172,12 @@ namespace Lms.Controllers
             return Ok(new ApiOkResponse(course));
         }
 
-            /// <summary>
-            /// Delete Course by Guid Id
-            /// </summary>
-            /// <param name="id"></param>
-            /// <returns></returns>
-            [HttpDelete]
+        /// <summary>
+        /// Delete Course by Guid Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
         [Route("courses/{id}")]
         public async Task<IActionResult> DeleteCourseById([FromRoute] Guid id)
         {

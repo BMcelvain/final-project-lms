@@ -61,21 +61,21 @@ namespace LMS.UnitTests
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-            $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-            $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-            $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-            $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = @StudentId" +
+            $" [Course].[CourseId]" +
+            $", [Course].[CourseName]" +
+            $", [Course].[StartDate]" +
+            $", [Course].[EndDate]" +
+            $", [StudentEnrollmentLog].[Cancelled]" +
+            $", [StudentEnrollmentLog].[CancellationReason]" +
+            $", [StudentEnrollmentLog].[HasPassed]" +
+            $", [Teacher].[TeacherEmail]" +
+            $", [Student].[StudentPhone]" +
+            $", [Student].[TotalPassCourses]" +
+            $" FROM [StudentEnrollmentLog]" +
+            $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
+            $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
+            $" INNER JOIN [Student] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
+            $" WHERE [StudentEnrollmentLog].[StudentId] = @StudentId" +
             $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
@@ -88,21 +88,21 @@ namespace LMS.UnitTests
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-            $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-            $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-            $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-            $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = @studentLastName" +
+            $" [Course].[CourseId]" +
+            $", [Course].[CourseName]" +
+            $", [Course].[StartDate]" +
+            $", [Course].[EndDate]" +
+            $", [StudentEnrollmentLog].[Cancelled]" +
+            $", [StudentEnrollmentLog].[CancellationReason]" +
+            $", [StudentEnrollmentLog].[HasPassed]" +
+            $", [Teacher].[TeacherEmail]" +
+            $", [Student].[StudentPhone]" +
+            $", [Student].[TotalPassCourses]" +
+            $" FROM [StudentEnrollmentLog]" +
+            $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
+            $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
+            $" INNER JOIN [Student] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
+            $"  WHERE [Student].[StudentLastName] = @studentLastName" +
             $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<object>()), Times.Once);
         }
 
@@ -116,21 +116,21 @@ namespace LMS.UnitTests
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-            $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-            $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-            $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-            $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM [LearningManagementSystem].[dbo].[Student]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = @studentPhone AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active' AND [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled] = 0 AND [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed] IS NULL ORDER BY StartDate ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
+            $" [Course].[CourseId]" +
+            $", [Course].[CourseName]" +
+            $", [Course].[StartDate]" +
+            $", [Course].[EndDate]" +
+            $", [StudentEnrollmentLog].[Cancelled]" +
+            $", [StudentEnrollmentLog].[CancellationReason]" +
+            $", [StudentEnrollmentLog].[HasPassed]" +
+            $", [Teacher].[TeacherEmail]" +
+            $", [Student].[StudentEmail]" +
+            $", [Student].[TotalPassCourses]" +
+            $" FROM [Student]" +
+            $" INNER JOIN [StudentEnrollmentLog] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
+            $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
+            $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
+            $" WHERE [Student].[StudentPhone] = @studentPhone AND [Course].[CourseStatus] = 'Active' AND [StudentEnrollmentLog].[Cancelled] = 0 AND [StudentEnrollmentLog].[HasPassed] IS NULL ORDER BY StartDate ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
         [TestMethod]
@@ -142,8 +142,8 @@ namespace LMS.UnitTests
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql ==
            $"SELECT * " +
-            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog] " +
-            $"INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] " +
+            $"FROM [StudentEnrollmentLog] " +
+            $"INNER JOIN [Student] ON [Student].[StudentId] = [StudentEnrollmentLog].[StudentId] " +
             $"WHERE CourseId = @CourseId " +
             $"ORDER BY StudentLastName"), It.IsAny<DynamicParameters>()), Times.Once);
         }

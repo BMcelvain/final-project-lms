@@ -163,7 +163,7 @@ namespace LMS.UnitTests
             // Act
             var result = await sut.PartiallyUpdateStudentById(studentGuid, studentJsonDocument);
 
-            // Arrange
+            // Assert
             var notFoundResult = result as NotFoundObjectResult;
             var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
 
