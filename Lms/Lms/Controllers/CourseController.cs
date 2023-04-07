@@ -1,17 +1,24 @@
-﻿using Lms.Daos;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading.Tasks;
-using Lms.Models;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using FluentAssertions.Equivalency.Tracing;
 using Lms.APIErrorHandling;
+using Lms.Daos;
+using Lms.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lms.Controllers
 {
     [ApiController]
     public class CourseController : ControllerBase
     {
-        private ICourseDao courseDao;
+        private readonly ICourseDao courseDao;
 
         public CourseController(ICourseDao courseDao)
         {
@@ -44,7 +51,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/byId/{id}")]
+        [Route("courses/{id}")]
         public async Task<IActionResult> GetCourseById([FromRoute] Guid id)
         {
             try
@@ -53,7 +60,7 @@ namespace Lms.Controllers
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
                 }
 
                 return Ok(new ApiOkResponse(course));
@@ -64,14 +71,13 @@ namespace Lms.Controllers
             }
         }
 
-
         /// <summary>
         /// Get Course by Active or Inactive Status
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/byStatus/{status}")]
+        [Route("courses/{status}")]
         public async Task<IActionResult> GetCourseByStatus([FromRoute] string status)
         {
             try
@@ -96,35 +102,74 @@ namespace Lms.Controllers
             }
         }
 
-
         /// <summary>
-        /// Update CourseName, CourseStatus, TeacherId, StartDate, or EndDate
+        /// Update CourseName,CourseStatus, TeacherId, StartDate, or EndDate
         /// </summary>
         /// <param name="id"></param>
         /// <param name="courseUpdates"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("courses/{id}")]
-        public async Task<IActionResult> PartiallyUpdateCourseById([FromRoute] Guid id, JsonPatchDocument<CourseModel> courseUpdates)
+        [Route("course/{id}")]
+        public async Task<IActionResult> PartiallyUpdateCourseById(Guid id, [FromBody] JsonPatchDocument<CourseModel> courseUpdates)
         {
-            try
+            if (courseUpdates == null)
             {
-                var course = await courseDao.GetCourseById<CourseModel>(id);
+                return NotFound(new ApiResponse(404, $"Course with that id not found."));
+            }
 
-                if (course == null)
+            var allowedOperations = new[] { "replace" };
+
+            foreach (Operation<CourseModel> operation in courseUpdates.Operations)
+            {
+                if (!allowedOperations.Contains(operation.op.ToLower()))
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                    return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
                 }
 
-                courseUpdates.ApplyTo(course);
-                await courseDao.PartiallyUpdateCourseById(course);
-
-                return Ok(new ApiOkResponse(course));
+                switch (operation.path.ToLower())
+                {
+                    case "/coursename":
+                        string CourseName = operation.value?.ToString();
+                        if (!Regex.IsMatch(CourseName, @"^[A-Z][A-Za-z]+}$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter Course name starting with capital letter, lowercase for the remaining letters."));
+                        }
+                        break;
+                    case "/startdate":
+                        string StartDate = operation.value?.ToString();
+                        if (!Regex.IsMatch(StartDate, @"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter a date in a valid format: yyyy-mm-dd."));
+                        }
+                        break;
+                    case "/enddate":
+                        string EndDate = operation.value?.ToString();
+                        if (!Regex.IsMatch(EndDate, @"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter a date in a valid format: yyyy-mm-dd."));
+                        }
+                        break;
+                    case "/coursestatus":
+                        string StudentStatus = operation.value?.ToString();
+                        if (StudentStatus != "Inactive" && StudentStatus != "Active")
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
+                        }
+                        break;
+                    default:
+                        return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                }
             }
-            catch (Exception e)
+            var course = await courseDao.GetCourseById<CourseModel>(id);
+            if (course == null)
             {
-                return StatusCode(500, e.Message);
+                return NotFound(new ApiResponse(404, $"Course with that id not found."));
             }
+
+            courseUpdates.ApplyTo(course);
+            await courseDao.PartiallyUpdateCourseById(course);
+
+            return Ok(new ApiOkResponse(course));
         }
 
         /// <summary>
@@ -142,7 +187,7 @@ namespace Lms.Controllers
 
                 if (course == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
                 }
 
                 await courseDao.DeleteCourseById(id);
@@ -182,8 +227,8 @@ namespace Lms.Controllers
         /// <param name="addStudentCourseUpdates"></param>
         /// <returns></returns>
         [HttpPatch]
-        [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
-        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([FromRoute] Guid studentId, Guid courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
+        [Route("StudentInCourse")]
+        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([Required][FromQuery] Guid studentId, [Required][FromQuery] Guid courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
         {
             try
             {
@@ -191,7 +236,7 @@ namespace Lms.Controllers
 
                 if (addStudentInCourse == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {courseId} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
                 }
 
                 addStudentCourseUpdates.ApplyTo(addStudentInCourse);
@@ -213,8 +258,8 @@ namespace Lms.Controllers
         /// <param name="courseId"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("StudentInCourse/byStudentCourseId/{studentId},{courseId}")]
-        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([FromRoute] Guid studentId, Guid courseId)
+        [Route("StudentInCourse")]
+        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([Required][FromQuery] Guid studentId, [Required][FromQuery] Guid courseId)
         {
             try
             {
@@ -222,7 +267,7 @@ namespace Lms.Controllers
 
                 if (deleteStudentInCourse == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Course with id {courseId} not found."));
+                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
                 }
 
                 deleteStudentInCourse.StudentId = studentId;

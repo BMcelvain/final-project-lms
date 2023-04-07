@@ -1,15 +1,17 @@
-﻿using Lms.Wrappers;
+﻿using Dapper;
 using Lms.Daos;
+using Lms.Models;
+using Lms.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Lms.Models;
-using Dapper;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System;
+
 
 namespace LMS.UnitTests
 {
+    #nullable disable
     [TestClass]
     public class CourseDaoTests
     {

@@ -31,6 +31,7 @@ namespace LMS.UnitTests
             sut = new TeacherController(mockTeacherDao.Object);
             teacherGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
             teacherJsonDocument = new JsonPatchDocument<TeacherModel>();
+         
             teachers = new List<TeacherModel>()
             {
                 new TeacherModel()
@@ -110,7 +111,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with that id not found.");
         }
 
         [TestMethod]
@@ -204,7 +205,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with that id not found.");
         }
 
         [TestMethod]
@@ -244,7 +245,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with that id not found.");
         }
     }
 }
