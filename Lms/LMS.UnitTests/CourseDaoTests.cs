@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace LMS.UnitTests
 {
+    #nullable disable warnings
     [TestClass]
     public class CourseDaoTests
     {

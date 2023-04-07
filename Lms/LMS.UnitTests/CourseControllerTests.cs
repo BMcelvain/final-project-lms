@@ -11,6 +11,7 @@ using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
 using Lms.APIErrorHandling;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LMS.UnitTests
 {
@@ -26,12 +27,14 @@ namespace LMS.UnitTests
         JsonPatchDocument<StudentInCourseModel> studentInCourseJsonDocument;
         List<CourseModel> courses;
         StudentInCourseModel studentInCourse;
+        IMemoryCache cache;
 
         [TestInitialize]
         public void Initialize()
         {
             mockCourseDao = new Mock<ICourseDao>();
-            sut = new CourseController(mockCourseDao.Object);
+            cache = new MemoryCache(new MemoryCacheOptions());
+            sut = new CourseController(mockCourseDao.Object, cache);
             courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
             studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B2");
             courseJsonDocument  = new JsonPatchDocument<CourseModel>();
@@ -92,8 +95,14 @@ namespace LMS.UnitTests
             var result = await sut.CreateCourse(courses.First());
 
             // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var courseInApiOkResponse = apiOkResponseInOkResult.Result;
+
             result.Should().NotBeNull();
-            result.Should().BeOfType<OkResult>();
+            result.Should().BeOfType<OkObjectResult>();
+            courseInApiOkResponse.Should().NotBeNull();
+            courseInApiOkResponse.Should().BeEquivalentTo(courses.First());
         }
 
         [TestMethod]
@@ -265,9 +274,17 @@ namespace LMS.UnitTests
             // Act
             var result = await sut.StudentInCourse(studentInCourse);
 
-            // Assert
+            //Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var studentInCourseWithinApiOkResponse = apiOkResponseInOkResult.Result;
+
             result.Should().NotBeNull();
-            result.Should().BeOfType<OkResult>();
+            result.Should().BeOfType<OkObjectResult>();
+            apiOkResponseInOkResult.StatusCode.Should().Be(200);
+            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
+            studentInCourseWithinApiOkResponse.Should().NotBeNull();
+            studentInCourseWithinApiOkResponse.Should().BeEquivalentTo(studentInCourse);
         }
 
         [TestMethod]

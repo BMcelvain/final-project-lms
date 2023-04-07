@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lms.Daos;
-using Lms.Cache;
 using Lms.Wrappers;
 using Serilog;
 using Lms.APIErrorHandling;
@@ -62,7 +61,6 @@ namespace Lms
 
             services.AddMemoryCache();
             services.AddResponseCaching();
-            services.AddScoped<ICacheProvider, MemoryCacheProvider>();
 
             services.AddControllers().AddNewtonsoftJson();
 
