@@ -1,11 +1,12 @@
-﻿using Lms.Wrappers;
+﻿using Dapper;
+using Lms.Models;
+using Lms.Wrappers;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using Lms.Models;
 using System;
+
 
 namespace Lms.Daos
 {

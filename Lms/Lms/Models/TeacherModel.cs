@@ -1,12 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Numerics;
 
 namespace Lms.Models
 {
     public class TeacherModel
     {
         public Guid TeacherId { get; set; }
+
+        [Required]
+        [RegularExpression(@"^[A-Z][A-Za-z]+}$", ErrorMessage = "Please enter first name starting with capital letter, lowercase for the remaining letters.")]
         public string TeacherFirstName { get; set; }
+
+        [Required]
+        [RegularExpression(@"^[A-Z][A-Za-z]+}$", ErrorMessage = "Please enter last name starting with capital letter, lowercase for the remaining letters. Hyphenated last names are acceptable.")]
         public string TeacherLastName { get; set; }
 
         [Required(ErrorMessage = "Please enter phone number in a valid format: e.g. XXX-XXX-XXXX.")]

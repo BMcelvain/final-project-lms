@@ -9,7 +9,7 @@ namespace Lms.Daos
 {
     public class StudentDao : IStudentDao
     {
-        private ISqlWrapper sqlWrapper;
+        private readonly ISqlWrapper sqlWrapper;
 
         public StudentDao(ISqlWrapper sqlWrapper)
         {

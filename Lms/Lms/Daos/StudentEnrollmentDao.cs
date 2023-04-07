@@ -1,11 +1,12 @@
-﻿using Lms.Wrappers;
+﻿using Dapper;
+using Lms.Models;
+using Lms.Wrappers;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using Lms.Models;
-using System.Data;
 using System;
+
 
 namespace Lms.Daos
 {
@@ -18,7 +19,7 @@ namespace Lms.Daos
             this.sqlWrapper = sqlWrapper;
         }
 
-        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryById(Guid id)
+        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistoryByStudentId(Guid id)
         {
             var query = $"SELECT" +
             $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
@@ -95,8 +96,7 @@ namespace Lms.Daos
             $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
             $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = @studentPhone AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'"+
-            $" ORDER BY StartDate ASC,CourseName";
+            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = @studentPhone AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active' AND [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled] = 0 AND [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed] IS NULL ORDER BY StartDate ASC,CourseName";
             var studentPhoneNum = new { studentPhone = new DbString { Value = studentPhone, IsFixedLength =false, IsAnsi = true } };
 
             using (sqlWrapper.CreateConnection())

@@ -1,18 +1,19 @@
-﻿using Lms.Daos;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Lms.Models;
-using System.Drawing.Printing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.JsonPatch;
-using System.Net;
+﻿using Azure.Core;
 using Lms.APIErrorHandling;
-using Azure.Core;
+using Lms.Daos;
+using Lms.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Drawing.Printing;
+using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
+using System;
+
 
 namespace Lms.Controllers
 {
@@ -34,15 +35,15 @@ namespace Lms.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("studentEnrollment/byStudentId/{id}")]
-        public async Task<IActionResult> GetStudentEnrollmentHistoryById([FromRoute] Guid id)
+        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentId([FromRoute] Guid id)
         {
             try
             {
-                var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryById(id);
+                var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentId(id);
 
                 if (studentEnrollments.Count() == 0)
                 {
-                    return NotFound(new ApiResponse(404, $"Student not found with id {id}"));
+                    return NotFound(new ApiResponse(404, $"Student Enrollment with that Student Id not found."));
                 }
 
                 return Ok(new ApiOkResponse(studentEnrollments));
@@ -69,7 +70,7 @@ namespace Lms.Controllers
 
                 if (studentEnrollments.Count() == 0)
                 {
-                    return NotFound(new ApiResponse(404, $"Student not found with last name {studentLastName}"));
+                    return NotFound(new ApiResponse(404, $"Student Enrollment with that Student Last Name not found."));
                 }
 
                 return Ok(new ApiOkResponse(studentEnrollments));
