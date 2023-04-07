@@ -1,17 +1,18 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Lms.Controllers;
-using Moq;
-using Lms.Daos;
-using System.Threading.Tasks;
-using Lms.Models;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using Microsoft.AspNetCore.JsonPatch;
 using FluentAssertions;
+using Lms.APIErrorHandling;
+using Lms.Controllers;
+using Lms.Daos;
+using Lms.Models;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using Lms.APIErrorHandling;
 using Microsoft.Extensions.Caching.Memory;
+using System.Threading.Tasks;
+using System;
 
 namespace LMS.UnitTests
 {
@@ -140,7 +141,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
         }
 
         [TestMethod]
@@ -218,7 +219,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
         }
 
         [TestMethod]
@@ -258,7 +259,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
         }
 
         //---------------Add Student To Course Section-------------- 
@@ -324,7 +325,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
         }
 
         [TestMethod]
@@ -364,7 +365,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with id 0AE43554-0BB1-42B1-94C7-04420A2167A6 not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
         }
     }
 }

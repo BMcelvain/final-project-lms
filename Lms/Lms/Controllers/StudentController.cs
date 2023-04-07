@@ -54,7 +54,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Authorize("AdminOnly")] //need to figure out how to consider me admin 
+        //[Authorize("AdminOnly")] //need to figure out how to consider me admin
         [ResponseCache(Duration = 60)]
         [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
@@ -66,7 +66,7 @@ namespace Lms.Controllers
 
                 if (student == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+                    return NotFound(new ApiResponse(404, $"Student with that id not found."));
                 }
 
                 return Ok(new ApiOkResponse(student));
@@ -77,48 +77,24 @@ namespace Lms.Controllers
             }
         }
 
-        //[HttpPatch]
-        //[Route("student/{id}")]
-        //public async Task<IActionResult> PartiallyUpdateStudentById([FromRoute] Guid id, JsonPatchDocument<StudentModel> studentUpdates)
-        //{
-        //    try
-        //    {
-        //        var student = await studentDao.GetStudentById(id);
-
-        //        if (student == null)
-        //        {
-        //            return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
-        //        }
-
-        //        studentUpdates.ApplyTo(student);
-        //        await studentDao.PartiallyUpdateStudentById(student);
-
-        //        return Ok(new ApiOkResponse(student));
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return StatusCode(500, e.Message);
-        //    }
-        //}
-
         /// <summary>
         /// Update StudentFirstName, StudentLastName, StudentPhone, StudentEmail,or Student Status
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="studentUpdates"></param>
+        /// <param name="updateRequest"></param>
         /// <returns></returns>
         [HttpPatch]
         [Route("student/{id}")]
-        public async Task<IActionResult> PartiallyUpdateStudentById(Guid id, [FromBody] JsonPatchDocument<StudentModel> studentUpdates)
+        public async Task<IActionResult> PartiallyUpdateStudentById(Guid id, [FromBody] JsonPatchDocument<StudentModel> updateRequest)
         {
-            if (studentUpdates == null)
+            if (updateRequest == null)
             {
-                return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+                return NotFound(new ApiResponse(404, $"Student with that id not found."));
             }
 
             var allowedOperations = new[] { "replace" };
 
-            foreach (Operation<StudentModel> operation in studentUpdates.Operations)
+            foreach (Operation<StudentModel> operation in updateRequest.Operations)
             {
                 if (!allowedOperations.Contains(operation.op.ToLower()))
                 {
@@ -127,12 +103,19 @@ namespace Lms.Controllers
 
                 switch (operation.path.ToLower())
                 {
-                    //need to figure out how to exclude numbers in name
                     case "/studentfirstname":
                         string StudentFirstName = operation.value?.ToString();
+                        if (!Regex.IsMatch(StudentFirstName, @"^[A-Z][A-Za-z]+}$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter first name starting with capital letter, lowercase for the remaining letters."));
+                        }
                         break;
                     case "/studentlastname":
                         string StudentLastName = operation.value?.ToString();
+                        if (!Regex.IsMatch(StudentLastName, @"^[A-Z][A-Za-z-]+}$"))
+                        {
+                            return BadRequest(new ApiResponse(400, "Please enter last name starting with capital letter, lowercase for the remaining letters. Hyphenated last names are acceptable."));
+                        }
                         break;
                     case "/studentphone":
                         string StudentPhone = operation.value?.ToString();
@@ -159,7 +142,7 @@ namespace Lms.Controllers
                         string TotalPassCourses = operation.value?.ToString();
                         break;
                     default:
-                        return BadRequest(new ApiResponse(500));
+                        return BadRequest(new ApiResponse(400, "The JSON patch document is missing."));
                 }
             }
 
@@ -167,10 +150,10 @@ namespace Lms.Controllers
             var student = await studentDao.GetStudentById(id);
             if (student == null)
             {
-                return NotFound();
+                return NotFound(new ApiResponse(404, $"Student with that id not found."));
             }
 
-            studentUpdates.ApplyTo(student);
+            updateRequest.ApplyTo(student);
             await studentDao.PartiallyUpdateStudentById(student);
 
             return Ok(new ApiOkResponse(student));
@@ -191,7 +174,7 @@ namespace Lms.Controllers
 
                 if (student == null)
                 {
-                    return NotFound(new ApiResponse(404, $"Student with id {id} not found."));
+                    return NotFound(new ApiResponse(404, $"Student with that id not found."));
                 }
 
                 await studentDao.DeleteStudentById(id);
