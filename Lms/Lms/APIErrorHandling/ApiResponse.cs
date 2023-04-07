@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 
 namespace Lms.APIErrorHandling
 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Linq;
 
 namespace Lms.APIErrorHandling 
@@ -12,6 +13,7 @@ namespace Lms.APIErrorHandling
             : base(200)
         {
             Result = result;
+            Log.Information(result.ToString());
         }
     }
 }

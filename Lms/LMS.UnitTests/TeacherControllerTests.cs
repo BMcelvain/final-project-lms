@@ -5,6 +5,7 @@ using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -19,16 +20,19 @@ namespace LMS.UnitTests
     public class TeacherControllerTests
     {
         Mock<ITeacherDao> mockTeacherDao;
+        IMemoryCache cache;
         TeacherController sut;
         Guid teacherGuid;
         JsonPatchDocument<TeacherModel> teacherJsonDocument;
         List<TeacherModel> teachers;
+        
 
         [TestInitialize]
         public void Initialize()
         {
             mockTeacherDao = new Mock<ITeacherDao>();
-            sut = new TeacherController(mockTeacherDao.Object);
+            cache = new MemoryCache(new MemoryCacheOptions());
+            sut = new TeacherController(mockTeacherDao.Object, cache);
             teacherGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
             teacherJsonDocument = new JsonPatchDocument<TeacherModel>();
          
@@ -72,8 +76,14 @@ namespace LMS.UnitTests
             var result = await sut.CreateTeacher(teachers.First());
 
             // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var teacherInApiOkResponse = apiOkResponseInOkResult.Result;
+
             result.Should().NotBeNull();
-            result.Should().BeOfType<OkResult>();
+            result.Should().BeOfType<OkObjectResult>();
+            teacherInApiOkResponse.Should().NotBeNull();
+            teacherInApiOkResponse.Should().BeEquivalentTo(teachers.First());
         }
 
         [TestMethod]

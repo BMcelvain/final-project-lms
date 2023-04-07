@@ -8,22 +8,27 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Caching.Memory;
+using Serilog;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
-
 
 namespace Lms.Controllers
 {
     [ApiController]
     public class TeacherController : ControllerBase
     {
+        private ITeacherDao teacherDao;
+        private IMemoryCache cache;
         private readonly ITeacherDao teacherDao;
 
-        public TeacherController(ITeacherDao teacherDao)
+        public TeacherController(ITeacherDao teacherDao, IMemoryCache cache)
         {
             this.teacherDao = teacherDao;
+            this.cache = cache;
         }
 
         /// <summary>
@@ -38,7 +43,10 @@ namespace Lms.Controllers
             try
             {
                 await teacherDao.CreateTeacher(newTeacher);
-                return Ok();
+
+                cache.Remove($"teachersKey{newTeacher.TeacherStatus}");
+
+                return Ok(new ApiOkResponse(newTeacher));
             }
             catch (Exception e)
             {
@@ -57,10 +65,26 @@ namespace Lms.Controllers
         {
             try
             {
-                var teacher = await teacherDao.GetTeacherById(id);
-
-                if (teacher == null)
+                if (cache.TryGetValue($"teacherKey{id}", out TeacherModel teacher))
                 {
+                    Log.Information($"Teacher with id {id} found in cache");
+                }
+                else
+                {
+                    Log.Information($"Teacher with id {id} not found in cache. Checking database.");
+
+                    teacher = await teacherDao.GetTeacherById(id);
+                    if (teacher == null)
+                    {
+                        return NotFound(new ApiResponse(404, $"Teacher with id {id} not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"teacherKey{id}", teacher, cacheEntryOptions);
                     return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                 }
 
@@ -89,11 +113,26 @@ namespace Lms.Controllers
                     return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
                 }
 
-                var teachers = await teacherDao.GetTeacherByStatus(status);
-
-                if (teachers.IsNullOrEmpty())
+                if (cache.TryGetValue($"teacherKey{status}", out IEnumerable<TeacherModel> teachers))
                 {
-                    return NotFound(new ApiResponse(404, $"Teacher with status {status} not found."));
+                    Log.Information($"Teachers with status '{status}' fournd in cache");
+                }
+                else
+                {
+                    Log.Information($"Teachers with status '{status}' not found in cache. Checking database.");
+
+                    teachers = await teacherDao.GetTeacherByStatus(status);
+                    if (teachers.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, $"Teacher with status {status} not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"teacherKey{status}", teachers, cacheEntryOptions);
                 }
 
                 return Ok(new ApiOkResponse(teachers));
@@ -169,8 +208,13 @@ namespace Lms.Controllers
                     default:
                         return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
 
+                cache.Remove($"teacherKey{teacher.TeacherId}");
+                cache.Remove($"teachersKey{teacher.TeacherStatus}");
+
+                return Ok(new ApiOkResponse(teacher));
 
                 }
+
             }
 
             // process the patch operations
@@ -206,6 +250,10 @@ namespace Lms.Controllers
                 }
 
                 await teacherDao.DeleteTeacherById(id);
+
+                cache.Remove($"teacherKey{teacher.TeacherId}");
+                cache.Remove($"teachersKey{teacher.TeacherStatus}");
+
                 return Ok(new ApiOkResponse(teacher));
             }
             catch (Exception e)

@@ -5,6 +5,9 @@ using Lms.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Caching.Memory;
+using Serilog;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
@@ -13,16 +16,22 @@ using System.Threading.Tasks;
 using System;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace Lms.Controllers
 {
     [ApiController]
     public class CourseController : ControllerBase
     {
+
+        private ICourseDao courseDao;
+        private IMemoryCache cache;
         private readonly ICourseDao courseDao;
 
-        public CourseController(ICourseDao courseDao)
+
+        public CourseController(ICourseDao courseDao, IMemoryCache cache)
         {
             this.courseDao = courseDao;
+            this.cache = cache;
         }
 
         /// <summary>
@@ -37,7 +46,10 @@ namespace Lms.Controllers
             try
             {
                 await courseDao.CreateCourse(newCourse);
-                return Ok();
+                
+                cache.Remove($"coursesKey{newCourse.CourseStatus}");
+
+                return Ok(new ApiOkResponse(newCourse));
             }
             catch (Exception e)
             {
@@ -56,14 +68,31 @@ namespace Lms.Controllers
         {
             try
             {
-                var course = await courseDao.GetCourseById<CourseModel>(id);
-
-                if (course == null)
+                if (cache.TryGetValue($"courseKey{id}", out CourseModel course))
                 {
+                    Log.Information($"Course with that id found in cache");
+                } 
+                else
+                {
+                    Log.Information($"Course with that id not found in cache. Checking database.");
+
+                    course = await courseDao.GetCourseById<CourseModel>(id);
+                    if (course == null)
+                    {
+                        return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{id}", course, cacheEntryOptions);
                     return NotFound(new ApiResponse(404, $"Course with that id not found."));
+
                 }
 
-                return Ok(new ApiOkResponse(course));
+               return Ok(new ApiOkResponse(course));
             }
             catch (Exception e)
             {
@@ -87,11 +116,26 @@ namespace Lms.Controllers
                     return BadRequest(new ApiResponse(400,"Please enter Active or Inactive status."));
                 }
 
-                var courses = await courseDao.GetCourseByStatus(status);
-
-                if (courses == null)
+                if (cache.TryGetValue($"coursesKey{status}", out IEnumerable<CourseModel> courses))
                 {
-                    return NotFound(new ApiResponse(404, $"Course with status {status} not found."));
+                    Log.Information($"Courses with status '{status}' fournd in cache");
+                } 
+                else
+                {
+                    Log.Information($"Courses with status '{status}' not found in cache. Checking database.");
+
+                    courses = await courseDao.GetCourseByStatus(status);
+                    if(courses == null)
+                    {
+                        return NotFound(new ApiResponse(404, $"Course with status {status} not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"coursesKey{status}", courses, cacheEntryOptions);
                 }
 
                 return Ok(new ApiOkResponse(courses));
@@ -126,6 +170,14 @@ namespace Lms.Controllers
                     return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
                 }
 
+                courseUpdates.ApplyTo(course);
+                await courseDao.PartiallyUpdateCourseById(course);
+
+                cache.Remove($"courseKey{course.CourseId}");
+                cache.Remove($"coursesKey{course.CourseStatus}");
+
+                return Ok(new ApiOkResponse(course));
+
                 switch (operation.path.ToLower())
                 {
                     case "/coursename":
@@ -159,6 +211,7 @@ namespace Lms.Controllers
                     default:
                         return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
                 }
+
             }
             var course = await courseDao.GetCourseById<CourseModel>(id);
             if (course == null)
@@ -191,6 +244,10 @@ namespace Lms.Controllers
                 }
 
                 await courseDao.DeleteCourseById(id);
+
+                cache.Remove($"courseKey{course.CourseId}");
+                cache.Remove($"coursesKey{course.CourseStatus}");
+
                 return Ok(new ApiOkResponse(course));
             }
             catch (Exception e)
@@ -211,7 +268,7 @@ namespace Lms.Controllers
             try
             {
                 await courseDao.StudentInCourse(addStudentInCourse);
-                return Ok();
+                return Ok(new ApiOkResponse(addStudentInCourse));
             }
             catch (Exception e)
             {

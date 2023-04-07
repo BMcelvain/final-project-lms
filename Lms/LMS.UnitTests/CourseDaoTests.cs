@@ -11,7 +11,8 @@ using System;
 
 namespace LMS.UnitTests
 {
-    #nullable disable
+
+    #nullable disable warnings
     [TestClass]
     public class CourseDaoTests
     {
