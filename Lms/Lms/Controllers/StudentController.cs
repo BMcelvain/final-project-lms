@@ -155,6 +155,8 @@ namespace Lms.Controllers
 
             updateRequest.ApplyTo(student);
             await studentDao.PartiallyUpdateStudentById(student);
+            //cache.Remove($"studentKey{student.StudentId}");
+            //cache.Remove($"studentKey{student.StudentStatus}");
 
             return Ok(new ApiOkResponse(student));
         }

@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
-using Lms.APIErrorHandling;
 using Microsoft.Extensions.Caching.Memory;
 using System.Threading.Tasks;
 using System;

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -23,7 +22,7 @@ namespace Lms.Controllers
     public class CourseController : ControllerBase
     {
 
-        private ICourseDao courseDao;
+        //private ICourseDao courseDao;
         private IMemoryCache cache;
         private readonly ICourseDao courseDao;
 
@@ -79,7 +78,7 @@ namespace Lms.Controllers
                     course = await courseDao.GetCourseById<CourseModel>(id);
                     if (course == null)
                     {
-                        return NotFound(new ApiResponse(404, $"Course with id {id} not found."));
+                        return NotFound(new ApiResponse(404, $"Course with that id not found."));
                     }
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -170,14 +169,6 @@ namespace Lms.Controllers
                     return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
                 }
 
-                courseUpdates.ApplyTo(course);
-                await courseDao.PartiallyUpdateCourseById(course);
-
-                cache.Remove($"courseKey{course.CourseId}");
-                cache.Remove($"coursesKey{course.CourseStatus}");
-
-                return Ok(new ApiOkResponse(course));
-
                 switch (operation.path.ToLower())
                 {
                     case "/coursename":
@@ -221,7 +212,8 @@ namespace Lms.Controllers
 
             courseUpdates.ApplyTo(course);
             await courseDao.PartiallyUpdateCourseById(course);
-
+            cache.Remove($"courseKey{course.CourseId}");
+            cache.Remove($"coursesKey{course.CourseStatus}");
             return Ok(new ApiOkResponse(course));
         }
 

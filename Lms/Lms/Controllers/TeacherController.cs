@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace Lms.Controllers
     [ApiController]
     public class TeacherController : ControllerBase
     {
-        private ITeacherDao teacherDao;
+        //private ITeacherDao teacherDao;
         private IMemoryCache cache;
         private readonly ITeacherDao teacherDao;
 
@@ -76,7 +75,7 @@ namespace Lms.Controllers
                     teacher = await teacherDao.GetTeacherById(id);
                     if (teacher == null)
                     {
-                        return NotFound(new ApiResponse(404, $"Teacher with id {id} not found."));
+                        return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                     }
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -208,11 +207,6 @@ namespace Lms.Controllers
                     default:
                         return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
 
-                cache.Remove($"teacherKey{teacher.TeacherId}");
-                cache.Remove($"teachersKey{teacher.TeacherStatus}");
-
-                return Ok(new ApiOkResponse(teacher));
-
                 }
 
             }
@@ -226,6 +220,8 @@ namespace Lms.Controllers
 
             updateRequest.ApplyTo(teacher);
             await teacherDao.PartiallyUpdateTeacherById(teacher);
+            cache.Remove($"teacherKey{teacher.TeacherId}");
+            cache.Remove($"teachersKey{teacher.TeacherStatus}");
 
             return Ok(new ApiOkResponse(teacher));
 
