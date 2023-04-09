@@ -40,7 +40,7 @@ namespace Lms.Daos
         }
 
         // GET a single teacher (by Id) within the Teacher table.
-        public async Task<TeacherModel> GetTeacherById(Guid id)
+        public async Task<TeacherModel> GetTeacherById<TeacherModel>(Guid id)
         {
             var query = $"SELECT * FROM Teacher WHERE TeacherId = @TeacherId";
 

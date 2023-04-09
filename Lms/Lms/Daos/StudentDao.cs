@@ -38,7 +38,7 @@ namespace Lms.Daos
         }
 
         // GET a single student (by Guid) within the Student table.
-        public async Task<StudentModel> GetStudentById(Guid id)
+        public async Task<StudentModel> GetStudentById<StudentModel>(Guid id)
         {
             var query = $"SELECT * FROM Student WHERE StudentId = @StudentId";
 

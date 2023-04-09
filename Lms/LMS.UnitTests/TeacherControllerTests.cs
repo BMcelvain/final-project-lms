@@ -91,7 +91,7 @@ namespace LMS.UnitTests
         {
             // Arrange
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(teacherGuid))
+                .Setup(x => x.GetTeacherById<TeacherModel>(teacherGuid))
                 .ReturnsAsync(teachers.First());
 
             // Act
@@ -183,7 +183,7 @@ namespace LMS.UnitTests
         {
             // Arrange
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(teacherGuid))
+                .Setup(x => x.GetTeacherById<TeacherModel>(teacherGuid))
                 .ReturnsAsync(teachers.First());
 
             // Act
@@ -223,7 +223,7 @@ namespace LMS.UnitTests
         {
             // Arrange
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(teacherGuid))
+                .Setup(x => x.GetTeacherById<TeacherModel>(teacherGuid))
                 .ReturnsAsync(teachers.First());
 
             // Act

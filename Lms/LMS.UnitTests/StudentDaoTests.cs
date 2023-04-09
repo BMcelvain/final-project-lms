@@ -70,7 +70,7 @@ namespace LMS.UnitTests
         public void GetStudentById_UsesProperSqlQuery_OneTime()
         {
             // Act
-            _ = sut.GetStudentById(studentGuid);
+            _ = sut.GetStudentById<StudentModel>(studentGuid);
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * FROM Student WHERE StudentId = @StudentId"), It.IsAny<DynamicParameters>()), Times.Once);

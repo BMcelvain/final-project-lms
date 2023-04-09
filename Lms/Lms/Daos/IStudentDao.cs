@@ -8,7 +8,7 @@ namespace Lms.Daos
     public interface IStudentDao
     {
         Task CreateStudent(StudentModel newStudent);
-        Task<StudentModel> GetStudentById(Guid id);
+        Task<T> GetStudentById<T>(Guid id);
         Task PartiallyUpdateStudentById(StudentModel updateRequest);
         Task DeleteStudentById(Guid id);      
     }

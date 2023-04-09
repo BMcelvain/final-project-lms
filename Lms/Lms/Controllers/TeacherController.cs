@@ -72,7 +72,7 @@ namespace Lms.Controllers
                 {
                     Log.Information($"Teacher with id {id} not found in cache. Checking database.");
 
-                    teacher = await teacherDao.GetTeacherById(id);
+                    teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
                     if (teacher == null)
                     {
                         return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
@@ -212,7 +212,7 @@ namespace Lms.Controllers
             }
 
             // process the patch operations
-            var teacher = await teacherDao.GetTeacherById(id);
+            var teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
             if (teacher == null)
             {
                 return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
@@ -238,7 +238,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var teacher = await teacherDao.GetTeacherById(id);
+                var teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
 
                 if (teacher == null)
                 {

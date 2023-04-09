@@ -11,6 +11,7 @@ using System.Linq;
 using FluentAssertions.Equivalency.Tracing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
+using Serilog;
 
 namespace Lms.Controllers
 {
@@ -19,15 +20,16 @@ namespace Lms.Controllers
     [Authorize]
     public class StudentController : ControllerBase
     {
-
+        private IMemoryCache cache;
         private IStudentDao studentDao;
 
         public StudentController(IStudentDao studentDao)
         {
             this.studentDao = studentDao;
-            
+            this.cache = cache;
+
         }
-  
+
         /// <summary>
         /// Create New Student
         /// </summary>
@@ -40,6 +42,7 @@ namespace Lms.Controllers
             try
             {
                 await studentDao.CreateStudent(newStudent);
+                cache.Remove($"studentKey{newStudent.StudentStatus}");
                 return Ok();
             }
             catch (Exception e)
@@ -62,11 +65,27 @@ namespace Lms.Controllers
 
             try
             {
-                var student = await studentDao.GetStudentById(id);
-
-                if (student == null)
+                if (cache.TryGetValue($"studentKey{id}", out StudentModel student))
                 {
-                    return NotFound(new ApiResponse(404, $"Student with that id not found."));
+                    Log.Information($"Student with that id found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student with that id not found in cache. Checking database.");
+
+                    student = await studentDao.GetStudentById<StudentModel>(id);
+                    if (student == null)
+                    {
+                        return NotFound(new ApiResponse(404, $"Student with that id not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                    .SetSize(1024);
+
+                    cache.Set($"studentKey{id}", student, cacheEntryOptions);
+                    return NotFound(new ApiResponse(404, $"Student ith that id not found."));
                 }
 
                 return Ok(new ApiOkResponse(student));
@@ -76,7 +95,7 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
+ 
         /// <summary>
         /// Update StudentFirstName, StudentLastName, StudentPhone, StudentEmail,or Student Status
         /// </summary>
@@ -147,7 +166,7 @@ namespace Lms.Controllers
             }
 
             // process the patch operations
-            var student = await studentDao.GetStudentById(id);
+            var student = await studentDao.GetStudentById<StudentModel>(id);
             if (student == null)
             {
                 return NotFound(new ApiResponse(404, $"Student with that id not found."));
@@ -155,9 +174,8 @@ namespace Lms.Controllers
 
             updateRequest.ApplyTo(student);
             await studentDao.PartiallyUpdateStudentById(student);
-            //cache.Remove($"studentKey{student.StudentId}");
-            //cache.Remove($"studentKey{student.StudentStatus}");
-
+            cache.Remove($"studentKey{student.StudentId}");
+            cache.Remove($"studentKey{student.StudentStatus}");
             return Ok(new ApiOkResponse(student));
         }
 
@@ -172,7 +190,7 @@ namespace Lms.Controllers
         {
             try
             {
-                var student = await studentDao.GetStudentById(id);
+                var student = await studentDao.GetStudentById<StudentModel>(id);
 
                 if (student == null)
                 {
@@ -180,6 +198,9 @@ namespace Lms.Controllers
                 }
 
                 await studentDao.DeleteStudentById(id);
+
+                cache.Remove($"studentKey{student.StudentId}");
+                cache.Remove($"studentKey{student.StudentStatus}");
                 return Ok(new ApiOkResponse(student));
             }
             catch (Exception e)

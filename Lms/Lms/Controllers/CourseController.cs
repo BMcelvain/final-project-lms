@@ -21,8 +21,6 @@ namespace Lms.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
-
-        //private ICourseDao courseDao;
         private IMemoryCache cache;
         private readonly ICourseDao courseDao;
 
