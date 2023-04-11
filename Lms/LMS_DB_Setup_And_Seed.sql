@@ -31,7 +31,7 @@ CourseId UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Course(CourseId) ON DELETE CASC
 StudentId UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Student(StudentId) ON DELETE CASCADE ON UPDATE CASCADE,
 Cancelled BIT,
 CancellationReason VARCHAR(255),
-HasPassed? BIT
+HasPassed BIT
 );
 
 insert into Teacher (TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus) values ('df51d667-731e-4369-b688-925adf8678a4', 'Maisie', 'Sherwyn', '360-350-8354', 'msherwyn0@mozilla.org', 'Active');
