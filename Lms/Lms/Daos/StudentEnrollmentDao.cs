@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 
-
 namespace Lms.Daos
 {
     public class StudentEnrollmentDao : IStudentEnrollmentDao
@@ -31,7 +30,6 @@ namespace Lms.Daos
             $", [StudentEnrollmentLog].[HasPassed]" +
             $", [Teacher].[TeacherEmail]" +
             $", [Student].[StudentPhone]" +
-            $", [Student].[TotalPassCourses]" +
             $" FROM [StudentEnrollmentLog]" +
             $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
             $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
@@ -62,7 +60,6 @@ namespace Lms.Daos
             $", [StudentEnrollmentLog].[HasPassed]" +
             $", [Teacher].[TeacherEmail]" +
             $", [Student].[StudentPhone]" +
-            $", [Student].[TotalPassCourses]" +
             $" FROM [StudentEnrollmentLog]" +
             $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
             $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
@@ -91,7 +88,6 @@ namespace Lms.Daos
             $", [StudentEnrollmentLog].[HasPassed]" +
             $", [Teacher].[TeacherEmail]" +
             $", [Student].[StudentEmail]" +
-            $", [Student].[TotalPassCourses]" +
             $" FROM [Student]" +
             $" INNER JOIN [StudentEnrollmentLog] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
             $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +

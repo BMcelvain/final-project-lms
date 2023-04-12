@@ -29,13 +29,6 @@ namespace Lms.Wrappers
             return connection;
         }
 
-        public async Task<List<T>> QueryAsync<T>(string sql)
-        {
-            var result = await this._connection.QueryAsync<T>(sql);
-
-            return result.ToList();        
-        }
-
         public async Task<List<T>> QueryAsync<T>(string sql, object status)
         {
             var result = await this._connection.QueryAsync<T>(sql, status);
@@ -43,21 +36,10 @@ namespace Lms.Wrappers
             return result.ToList();
         }
 
-        public async Task<T> QueryFirstOrDefaultAsync<T>(string sql)
-        {
-            var result = await this._connection.QueryFirstOrDefaultAsync<T>(sql);
-            return result;
-        }
-
         public async Task<T> QueryFirstOrDefaultAsync<T>(string sql, DynamicParameters parameters)
         {
             var result = await this._connection.QueryFirstOrDefaultAsync<T>(sql, parameters);
             return result;
-        }
-
-        public async Task ExecuteAsync(string sql)
-        {
-            await this._connection.ExecuteAsync(sql);
         }
 
         public async Task ExecuteAsync(string sql, DynamicParameters parameters)

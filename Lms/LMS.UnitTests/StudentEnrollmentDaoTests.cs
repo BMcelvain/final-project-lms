@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LMS.UnitTests
 {
@@ -52,10 +51,10 @@ namespace LMS.UnitTests
             studentGuid = new Guid();
             studentEnrollment = null;
         }
+
         [TestMethod]
         public void GetStudentEnrollmentHistoryByStudentId_UsesProperSqlQuery_OneTime()
         {   
-
             // Act
             _ = sut.GetStudentEnrollmentHistoryByStudentId(studentGuid);
 
@@ -70,7 +69,6 @@ namespace LMS.UnitTests
             $", [StudentEnrollmentLog].[HasPassed]" +
             $", [Teacher].[TeacherEmail]" +
             $", [Student].[StudentPhone]" +
-            $", [Student].[TotalPassCourses]" +
             $" FROM [StudentEnrollmentLog]" +
             $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
             $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
@@ -78,7 +76,6 @@ namespace LMS.UnitTests
             $" WHERE [StudentEnrollmentLog].[StudentId] = @StudentId" +
             $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
-
 
         [TestMethod]
         public void GetStudentEnrollmentHistoryByStudentLastName_UsesProperSqlQuery_OneTime()
@@ -97,7 +94,6 @@ namespace LMS.UnitTests
             $", [StudentEnrollmentLog].[HasPassed]" +
             $", [Teacher].[TeacherEmail]" +
             $", [Student].[StudentPhone]" +
-            $", [Student].[TotalPassCourses]" +
             $" FROM [StudentEnrollmentLog]" +
             $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
             $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
@@ -106,8 +102,6 @@ namespace LMS.UnitTests
             $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<object>()), Times.Once);
         }
 
-
-        //Table has to be updated Has Pass
         [TestMethod]
         public void GetActiveStudentEnrollmentByStudentPhone_UsesProperSqlQuery_OneTime()
         {
@@ -125,12 +119,11 @@ namespace LMS.UnitTests
             $", [StudentEnrollmentLog].[HasPassed]" +
             $", [Teacher].[TeacherEmail]" +
             $", [Student].[StudentEmail]" +
-            $", [Student].[TotalPassCourses]" +
             $" FROM [Student]" +
             $" INNER JOIN [StudentEnrollmentLog] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
             $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
             $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
-            $" WHERE [Student].[StudentPhone] = @studentPhone AND [Course].[CourseStatus] = 'Active' AND [StudentEnrollmentLog].[Cancelled] = 0 AND [StudentEnrollmentLog].[HasPassed] IS NULL ORDER BY StartDate ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
+            $" WHERE [Student].[StudentPhone] = @studentPhone AND [Course].[CourseStatus] = 'Active' AND [StudentEnrollmentLog].[Cancelled] = 0 AND [StudentEnrollmentLog].[HasPassed] IS NULL ORDER BY StartDate ASC,CourseName"), It.IsAny<Object>()), Times.Once);
         }
 
         [TestMethod]
@@ -147,6 +140,5 @@ namespace LMS.UnitTests
             $"WHERE CourseId = @CourseId " +
             $"ORDER BY StudentLastName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
-
     }
 }

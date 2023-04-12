@@ -8,7 +8,7 @@ namespace Lms.Models
         public Guid CourseId { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z][A-Za-z]+}$", ErrorMessage = "Please enter Course name starting with capital letter, lowercase for the remaining letters.")]
+        [RegularExpression(@"^[A-Z][A-Za-z]+$", ErrorMessage = "Please enter Course name starting with capital letter, lowercase for the remaining letters.")]
         public string CourseName { get; set; }
 
         [Required]
@@ -30,7 +30,6 @@ namespace Lms.Models
         [Required(ErrorMessage = "Please enter phone number in a valid format: XXX-XXX-XXXX.")]
         [Phone]
         public string StudentPhone { get; set; }
-        public int TotalPassCourses { get; set; }
     }
 }
 

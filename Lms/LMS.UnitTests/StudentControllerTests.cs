@@ -5,6 +5,7 @@ using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -12,10 +13,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace LMS.UnitTests
 {
-#nullable disable warnings
+    #nullable disable warnings
     [TestClass]
     public class StudentControllerTests
     {
@@ -25,13 +25,14 @@ namespace LMS.UnitTests
         Guid invalidStudentGuid;
         JsonPatchDocument<StudentModel> studentJsonDocument;
         List<StudentModel> students;
-
+        IMemoryCache cache;
 
         [TestInitialize]
         public void Initialize()
         {
             mockStudentDao = new Mock<IStudentDao>();
-            sut = new StudentController(mockStudentDao.Object);
+            cache = new MemoryCache(new MemoryCacheOptions());
+            sut = new StudentController(mockStudentDao.Object, cache);
             studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9");
             invalidStudentGuid = new Guid("00000000-0000-0000-0000-000000000000");
             studentJsonDocument = new JsonPatchDocument<StudentModel>();
@@ -44,11 +45,9 @@ namespace LMS.UnitTests
                     StudentLastName = "Testing",
                     StudentPhone = "999-999-9999",
                     StudentEmail = "Test@test.com",
-                    StudentStatus = "Test Status",
-                    TotalPassCourses = 3
+                    StudentStatus = "Test Status"
                 }
             };
-    
         }
 
         [TestCleanup]
@@ -64,7 +63,6 @@ namespace LMS.UnitTests
         [TestMethod]
         public async Task CreateStudent_WhenModelIsValid_ReturnsObjectResult()
         {
-
             // Arrange
             mockStudentDao
                 .Setup(x => x.CreateStudent(It.IsAny<StudentModel>()))
@@ -97,9 +95,9 @@ namespace LMS.UnitTests
 
             // Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType<ObjectResult>();
+            result.Should().BeOfType<OkObjectResult>();
 
-            var okResult = result as ObjectResult;
+            var okResult = result as OkObjectResult;
             okResult.Value.Should().NotBeNull(); 
 
             var apiOkResponseInOkResult = okResult.Value as ApiOkResponse; 
@@ -113,7 +111,6 @@ namespace LMS.UnitTests
         [TestMethod]
         public async Task GetStudentById_InvalidGuidId_ReturnsNotFoundResponse()
         {
-
             // Act
             var result = await sut.GetStudentById(studentGuid);
 
@@ -124,7 +121,6 @@ namespace LMS.UnitTests
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
             apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student with that id not found.");
-
         }
 
         [TestMethod]
@@ -163,7 +159,6 @@ namespace LMS.UnitTests
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
             apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student with that id not found.");
-
         }
 
         [TestMethod]
@@ -188,7 +183,6 @@ namespace LMS.UnitTests
             studentInApiOkResponse.Should().NotBeNull();
             studentInApiOkResponse.Should().BeEquivalentTo(students.First());
         }
-    
 
         [TestMethod]
         public async Task DeleteStudentById_ReturnsNotFoundObject_WhenGuidIsInvalid()
@@ -205,10 +199,5 @@ namespace LMS.UnitTests
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
             apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student with that id not found.");
         }
-
     }
 }
-
-
-
-

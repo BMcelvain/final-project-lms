@@ -40,27 +40,7 @@ namespace Lms
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("Cohort5VU")),
-                        ValidateIssuer = true,
-                        ValidateAudience = true
-                    };
-                });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("Role", "admin"));
-            });
-
             services.AddMemoryCache();
-            services.AddResponseCaching();
 
             services.AddControllers().AddNewtonsoftJson();
 
@@ -86,7 +66,6 @@ namespace Lms
             app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS Api V1"));
 
             app.UseRouting();
-
             
             app.UseAuthentication();
             app.UseAuthorization();
@@ -95,8 +74,6 @@ namespace Lms
             {
                 endpoints.MapControllers();
             });
-
-            app.UseResponseCaching();
         }
     }
 }

@@ -8,30 +8,30 @@ using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using System.Linq;
 using Lms.APIErrorHandling;
 using FluentAssertions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LMS.UnitTests
 {
-    #nullable disable
+    #nullable disable warnings
     [TestClass]
     public class StudentEnrollmentControllerTests
     {
-
         Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao;
         StudentEnrollmentController sut;
         Guid testGuid;
         Guid invalidtestGuid;
         JsonPatchDocument<StudentEnrollmentModel> studentEnrollmentJsonDocument;
         List<StudentEnrollmentModel> studentEnrollment;
-
+        IMemoryCache cache;
 
         [TestInitialize]
         public void Initialize()
         {
             mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
-            sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object);
+            cache = new MemoryCache(new MemoryCacheOptions());
+            sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object, cache);
             testGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9");
             invalidtestGuid = new Guid("00000000-0000-0000-0000-000000000000");
             studentEnrollmentJsonDocument = new JsonPatchDocument<StudentEnrollmentModel>();
@@ -49,7 +49,6 @@ namespace LMS.UnitTests
                     HasPassed = false
                 }
             };
-
         }
 
         [TestCleanup]
@@ -95,8 +94,7 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student Enrollment with that Student Id not found.");
-
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment with that Student Id not found.");
         }
 
         [TestMethod]
@@ -132,24 +130,30 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<NotFoundObjectResult>();
             apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student Enrollment with that Student Last Name not found.");
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment for student with that last name not found.");
         }
 
         [TestMethod]
-
         public async Task GetActiveStudentEnrollmentByStudentPhone_ValidPhone_ReturnsOKStatusCode()
         {
             // Arrange
             string validPhoneNumber = "123-456-7890";
+            mockStudentEnrollmentDao
+                .Setup(x => x.GetActiveStudentEnrollmentByStudentPhone(validPhoneNumber))
+                .ReturnsAsync(studentEnrollment);
 
             // Act
             var result = await sut.GetActiveStudentEnrollmentByStudentPhone(validPhoneNumber);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var studentEnrollmentInApiOkResponse = apiOkResponseInOkResult.Result;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            studentEnrollmentInApiOkResponse.Should().NotBeNull();
+            studentEnrollmentInApiOkResponse.Should().BeEquivalentTo(studentEnrollment);
         }
-
 
         [TestMethod]
         public async Task GetActiveStudentEnrollmentByStudentPhone_InvalidPhone_ThrowsExceptionOnError()
@@ -161,8 +165,12 @@ namespace LMS.UnitTests
             var result = await sut.GetActiveStudentEnrollmentByStudentPhone(invalidPhoneNumber);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment for student with that phone number not found.");
         }
     }
 }

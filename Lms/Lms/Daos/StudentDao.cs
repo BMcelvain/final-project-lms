@@ -19,8 +19,8 @@ namespace Lms.Daos
         // POST a new student within the Student table. 
         public async Task CreateStudent(StudentModel newStudent)
         {
-            var query = "INSERT Student (StudentId, StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus, TotalPassCourses)" +
-                         $"VALUES(@StudentId, @StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus, @TotalPassCourses)";
+            var query = "INSERT Student (StudentId, StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus)" +
+                         $"VALUES(@StudentId, @StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus)";
 
             var parameters = new DynamicParameters();
             parameters.Add("StudentId", Guid.NewGuid(), DbType.Guid);
@@ -29,7 +29,6 @@ namespace Lms.Daos
             parameters.Add("StudentPhone ", newStudent.StudentPhone, DbType.String);
             parameters.Add("StudentEmail", newStudent.StudentEmail, DbType.String);
             parameters.Add("StudentStatus", newStudent.StudentStatus, DbType.String);
-            parameters.Add("TotalPassCourses", newStudent.TotalPassCourses, DbType.Int32);
 
             using (sqlWrapper.CreateConnection())
             {
@@ -56,7 +55,7 @@ namespace Lms.Daos
         public async Task PartiallyUpdateStudentById(StudentModel updateRequest)
         {
             var query = "UPDATE Student SET StudentFirstName=@StudentFirstName, StudentLastName=@StudentLastName, " +
-                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus, TotalPassCourses=@TotalPassCourses " +
+                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus " +
                         $"WHERE StudentId=@StudentId";
 
             var parameters = new DynamicParameters();   
@@ -66,7 +65,6 @@ namespace Lms.Daos
             parameters.Add("StudentPhone ", updateRequest.StudentPhone, DbType.String);
             parameters.Add("StudentEmail", updateRequest.StudentEmail, DbType.String);
             parameters.Add("StudentStatus", updateRequest.StudentStatus, DbType.String);
-            parameters.Add("TotalPassCourses", updateRequest.TotalPassCourses, DbType.Int32);
 
             using (sqlWrapper.CreateConnection())
             {
