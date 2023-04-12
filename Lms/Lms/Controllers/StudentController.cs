@@ -8,26 +8,21 @@ using System;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
-using FluentAssertions.Equivalency.Tracing;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 
 namespace Lms.Controllers
 {
-
     [ApiController]
-    [Authorize]
     public class StudentController : ControllerBase
     {
         private IMemoryCache cache;
         private IStudentDao studentDao;
 
-        public StudentController(IStudentDao studentDao)
+        public StudentController(IStudentDao studentDao, IMemoryCache cache)
         {
             this.studentDao = studentDao;
             this.cache = cache;
-
         }
 
         /// <summary>
@@ -42,8 +37,10 @@ namespace Lms.Controllers
             try
             {
                 await studentDao.CreateStudent(newStudent);
+
                 cache.Remove($"studentKey{newStudent.StudentStatus}");
-                return Ok();
+
+                return Ok(new ApiOkResponse(newStudent));
             }
             catch (Exception e)
             {
@@ -57,8 +54,6 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize("AdminOnly")] //need to figure out how to consider me admin
-        [ResponseCache(Duration = 60)]
         [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
         {
@@ -85,7 +80,6 @@ namespace Lms.Controllers
                     .SetSize(1024);
 
                     cache.Set($"studentKey{id}", student, cacheEntryOptions);
-                    return NotFound(new ApiResponse(404, $"Student ith that id not found."));
                 }
 
                 return Ok(new ApiOkResponse(student));
@@ -106,77 +100,82 @@ namespace Lms.Controllers
         [Route("student/{id}")]
         public async Task<IActionResult> PartiallyUpdateStudentById(Guid id, [FromBody] JsonPatchDocument<StudentModel> updateRequest)
         {
-            if (updateRequest == null)
+            try
             {
-                return NotFound(new ApiResponse(404, $"Student with that id not found."));
-            }
-
-            var allowedOperations = new[] { "replace" };
-
-            foreach (Operation<StudentModel> operation in updateRequest.Operations)
-            {
-                if (!allowedOperations.Contains(operation.op.ToLower()))
+                if (updateRequest == null)
                 {
-                    return BadRequest(new ApiResponse(400,"Only 'replace' operation is allowed."));
+                    return NotFound(new ApiResponse(404, $"Student with that id not found."));
                 }
 
-                switch (operation.path.ToLower())
+                var allowedOperations = new[] { "replace" };
+
+                foreach (Operation<StudentModel> operation in updateRequest.Operations)
                 {
-                    case "/studentfirstname":
-                        string StudentFirstName = operation.value?.ToString();
-                        if (!Regex.IsMatch(StudentFirstName, @"^[A-Z][A-Za-z]+}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter first name starting with capital letter, lowercase for the remaining letters."));
-                        }
-                        break;
-                    case "/studentlastname":
-                        string StudentLastName = operation.value?.ToString();
-                        if (!Regex.IsMatch(StudentLastName, @"^[A-Z][A-Za-z-]+}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter last name starting with capital letter, lowercase for the remaining letters. Hyphenated last names are acceptable."));
-                        }
-                        break;
-                    case "/studentphone":
-                        string StudentPhone = operation.value?.ToString();
-                        if (!Regex.IsMatch(StudentPhone, @"^\d{3}-\d{3}-\d{4}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter phone number in a valid format: XXX-XXX-XXXX."));
-                        }
-                        break;
-                    case "/studentemail":
-                        string StudentEmail = operation.value?.ToString();
-                        if (!Regex.IsMatch(StudentEmail, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter an E-Mail in a valid format: example@vu.com."));
-                        }
-                        break;
-                    case "/studentstatus":
-                        string StudentStatus = operation.value?.ToString();
-                        if (StudentStatus != "Inactive" && StudentStatus != "Active")
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
-                        }
-                        break;
-                    case "/totalpasscourses": //delete
-                        string TotalPassCourses = operation.value?.ToString();
-                        break;
-                    default:
-                        return BadRequest(new ApiResponse(400, "The JSON patch document is missing."));
+                    if (!allowedOperations.Contains(operation.op.ToLower()))
+                    {
+                        return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
+                    }
+
+                    switch (operation.path.ToLower())
+                    {
+                        case "/studentfirstname":
+                            string StudentFirstName = operation.value?.ToString();
+                            if (!Regex.IsMatch(StudentFirstName, @"^[A-Z][A-Za-z]+$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter first name starting with capital letter, lowercase for the remaining letters."));
+                            }
+                            break;
+                        case "/studentlastname":
+                            string StudentLastName = operation.value?.ToString();
+                            if (!Regex.IsMatch(StudentLastName, @"^[A-Z][A-Za-z-]+$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter last name starting with capital letter, lowercase for the remaining letters. Hyphenated last names are acceptable."));
+                            }
+                            break;
+                        case "/studentphone":
+                            string StudentPhone = operation.value?.ToString();
+                            if (!Regex.IsMatch(StudentPhone, @"^\d{3}-\d{3}-\d{4}$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter phone number in a valid format: XXX-XXX-XXXX."));
+                            }
+                            break;
+                        case "/studentemail":
+                            string StudentEmail = operation.value?.ToString();
+                            if (!Regex.IsMatch(StudentEmail, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter an E-Mail in a valid format: example@vu.com."));
+                            }
+                            break;
+                        case "/studentstatus":
+                            string StudentStatus = operation.value?.ToString();
+                            if (StudentStatus != "Inactive" && StudentStatus != "Active")
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
+                            }
+                            break;
+                        default:
+                            return BadRequest(new ApiResponse(400, "The JSON patch document is missing."));
+                    }
                 }
-            }
 
-            // process the patch operations
-            var student = await studentDao.GetStudentById<StudentModel>(id);
-            if (student == null)
+                var student = await studentDao.GetStudentById<StudentModel>(id);
+                if (student == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Student with that id not found."));
+                }
+
+                updateRequest.ApplyTo(student);
+                await studentDao.PartiallyUpdateStudentById(student);
+
+                cache.Remove($"studentKey{student.StudentId}");
+                cache.Remove($"studentKey{student.StudentStatus}");
+
+                return Ok(new ApiOkResponse(student));
+            }
+            catch (Exception e)
             {
-                return NotFound(new ApiResponse(404, $"Student with that id not found."));
+                return StatusCode(500, e.Message);
             }
-
-            updateRequest.ApplyTo(student);
-            await studentDao.PartiallyUpdateStudentById(student);
-            cache.Remove($"studentKey{student.StudentId}");
-            cache.Remove($"studentKey{student.StudentStatus}");
-            return Ok(new ApiOkResponse(student));
         }
 
         /// <summary>
@@ -201,6 +200,7 @@ namespace Lms.Controllers
 
                 cache.Remove($"studentKey{student.StudentId}");
                 cache.Remove($"studentKey{student.StudentStatus}");
+
                 return Ok(new ApiOkResponse(student));
             }
             catch (Exception e)

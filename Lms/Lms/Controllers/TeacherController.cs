@@ -1,8 +1,6 @@
-﻿using FluentAssertions.Equivalency.Tracing;
-using Lms.APIErrorHandling;
+﻿using Lms.APIErrorHandling;
 using Lms.Daos;
 using Lms.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +18,8 @@ namespace Lms.Controllers
     [ApiController]
     public class TeacherController : ControllerBase
     {
-        //private ITeacherDao teacherDao;
         private IMemoryCache cache;
-        private readonly ITeacherDao teacherDao;
+        private ITeacherDao teacherDao;
 
         public TeacherController(ITeacherDao teacherDao, IMemoryCache cache)
         {
@@ -84,7 +81,6 @@ namespace Lms.Controllers
                         .SetSize(1024);
 
                     cache.Set($"teacherKey{id}", teacher, cacheEntryOptions);
-                    return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                 }
 
                 return Ok(new ApiOkResponse(teacher));
@@ -94,7 +90,6 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
-
 
         /// <summary>
         /// Get Teacher by Active or Inactive Status
@@ -152,79 +147,83 @@ namespace Lms.Controllers
         [Route("teacher/{id}")]
         public async Task<IActionResult> PartiallyUpdateTeacherById(Guid id, [FromBody] JsonPatchDocument<TeacherModel> updateRequest)
         {
-            if (updateRequest == null)
+            try
             {
-                return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
-            }
-
-            var allowedOperations = new[] { "replace" };
-
-            foreach (Operation<TeacherModel> operation in updateRequest.Operations)
-            {
-                if (!allowedOperations.Contains(operation.op.ToLower()))
+                if (updateRequest == null)
                 {
-                    return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
+                    return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                 }
 
-                switch (operation.path.ToLower())
+                var allowedOperations = new[] { "replace" };
+
+                foreach (Operation<TeacherModel> operation in updateRequest.Operations)
                 {
+                    if (!allowedOperations.Contains(operation.op.ToLower()))
+                    {
+                        return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
+                    }
 
-                    case "/teacherfirstname":
-                        string TeacherFirstName = operation.value?.ToString();
-                        if (!Regex.IsMatch(TeacherFirstName, @"^[A-Z][a-z]+$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a name starting with a capital letter, followed by lowercase letters."));
-                        }
-                        break;
-                    case "/teacherlastname":
-                        string TeacherLastName = operation.value?.ToString();
-                        if (!Regex.IsMatch(TeacherLastName, @"^[A-Z][a-z]+$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a name starting with a capital letter, followed by lowercase letters."));
-                        }
-                        break;
-                    case "/teacherphone":
-                        string TeacherPhone = operation.value?.ToString();
-                        if (!Regex.IsMatch(TeacherPhone, @"^\d{3}-\d{3}-\d{4}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a phone number in a valid format: XXX-XXX-XXXX."));
-                        }
-                        break;
-                    case "/teacheremail":
-                        string TeacherEmail = operation.value?.ToString();
-                        if (!Regex.IsMatch(TeacherEmail, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter an E-Mail in a valid format: example@vu.com."));
-                        }
-                        break;
-                    case "/teacherstatus":
-                        string TeacherStatus = operation.value?.ToString();
-                        if (TeacherStatus != "Inactive" && TeacherStatus != "Active")
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
-                        }
-                        break;
-                    default:
-                        return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                    switch (operation.path.ToLower())
+                    {
 
+                        case "/teacherfirstname":
+                            string TeacherFirstName = operation.value?.ToString();
+                            if (!Regex.IsMatch(TeacherFirstName, @"^[A-Z][a-z]+$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter a name starting with a capital letter, followed by lowercase letters."));
+                            }
+                            break;
+                        case "/teacherlastname":
+                            string TeacherLastName = operation.value?.ToString();
+                            if (!Regex.IsMatch(TeacherLastName, @"^[A-Z][a-z]+$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter a name starting with a capital letter, followed by lowercase letters."));
+                            }
+                            break;
+                        case "/teacherphone":
+                            string TeacherPhone = operation.value?.ToString();
+                            if (!Regex.IsMatch(TeacherPhone, @"^\d{3}-\d{3}-\d{4}$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter a phone number in a valid format: XXX-XXX-XXXX."));
+                            }
+                            break;
+                        case "/teacheremail":
+                            string TeacherEmail = operation.value?.ToString();
+                            if (!Regex.IsMatch(TeacherEmail, @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter an E-Mail in a valid format: example@vu.com."));
+                            }
+                            break;
+                        case "/teacherstatus":
+                            string TeacherStatus = operation.value?.ToString();
+                            if (TeacherStatus != "Inactive" && TeacherStatus != "Active")
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
+                            }
+                            break;
+                        default:
+                            return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                    }
                 }
 
-            }
+                var teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
+                if (teacher == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
+                }
 
-            // process the patch operations
-            var teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
-            if (teacher == null)
+                updateRequest.ApplyTo(teacher);
+                await teacherDao.PartiallyUpdateTeacherById(teacher);
+
+                cache.Remove($"teacherKey{teacher.TeacherId}");
+                cache.Remove($"teachersKey{teacher.TeacherStatus}");
+
+                return Ok(new ApiOkResponse(teacher));
+            }
+            catch (Exception e)
             {
-                return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
+                return StatusCode(500, e.Message);
             }
-
-            updateRequest.ApplyTo(teacher);
-            await teacherDao.PartiallyUpdateTeacherById(teacher);
-            cache.Remove($"teacherKey{teacher.TeacherId}");
-            cache.Remove($"teachersKey{teacher.TeacherStatus}");
-
-            return Ok(new ApiOkResponse(teacher));
-
         }
 
         /// <summary>

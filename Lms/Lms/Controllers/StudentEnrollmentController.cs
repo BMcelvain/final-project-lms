@@ -1,20 +1,14 @@
-﻿using Azure.Core;
-using Lms.APIErrorHandling;
+﻿using Lms.APIErrorHandling;
 using Lms.Daos;
-using Lms.Models;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Threading.Tasks;
 using System;
-
+using Microsoft.Extensions.Caching.Memory;
+using Lms.Models;
+using Serilog;
+using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lms.Controllers
 {
@@ -22,10 +16,12 @@ namespace Lms.Controllers
     public class StudentEnrollmentController : ControllerBase
     {
         private IStudentEnrollmentDao studentEnrollmentDao;
+        private IMemoryCache cache;
 
-        public StudentEnrollmentController(IStudentEnrollmentDao studentEnrollmentDao)
+        public StudentEnrollmentController(IStudentEnrollmentDao studentEnrollmentDao, IMemoryCache cache)
         {
             this.studentEnrollmentDao = studentEnrollmentDao;
+            this.cache = cache;
         }
 
         /// <summary>
@@ -34,19 +30,34 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentEnrollment/{id}")]
-        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentId([FromRoute] Guid id)
+        [Route("studentEnrollment/byStudentId")]
+        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentId([Required][FromQuery] Guid id)
         {
             try
             {
-                var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentId(id);
-
-                if (studentEnrollments.Count() == 0)
+                if (cache.TryGetValue($"enrollmentKey{id}", out IEnumerable<StudentEnrollmentModel> studentEnrollments))
                 {
-                    return NotFound(new ApiResponse(404, $"Student Enrollment with that Student Id not found."));
+                    Log.Information($"Student enrollment for student with that id found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student enrollment for student with that id not found in cache. Checking database.");
+
+                    studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentId(id);
+                    if (studentEnrollments.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, $"Student enrollment with that Student Id not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{id}", studentEnrollments, cacheEntryOptions);
                 }
 
-                return Ok(new ApiOkResponse(studentEnrollments));
+                return Ok(new ApiOkResponse(studentEnrollments));       
             }
             catch (Exception e)
             {
@@ -60,28 +71,40 @@ namespace Lms.Controllers
         /// <param name="studentLastName"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentEnrollment/{studentLastName}")]
-        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentLastName([FromRoute] string studentLastName)
+        [Route("studentEnrollment/byStudentLastName")]
+        public async Task<IActionResult> GetStudentEnrollmentHistoryByStudentLastName([Required][FromQuery] string studentLastName)
         {
-
             try
             {
-                var studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentLastName(studentLastName);
-
-                if (studentEnrollments.Count() == 0)
+                if (cache.TryGetValue($"enrollmentKey{studentLastName}", out IEnumerable<StudentEnrollmentModel> studentEnrollments))
                 {
-                    return NotFound(new ApiResponse(404, $"Student Enrollment with that Student Last Name not found."));
+                    Log.Information($"Student enrollment for student with that last name found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student enrollment for student with that last name not found in cache. Checking database.");
+
+                    studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistoryByStudentLastName(studentLastName);
+                    if (studentEnrollments.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, $"Student enrollment for student with that last name not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{studentLastName}", studentEnrollments, cacheEntryOptions);
                 }
 
                 return Ok(new ApiOkResponse(studentEnrollments));
-
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
             }
         }
-
 
         /// <summary>
         /// Get Current Active Student Enrollment
@@ -89,17 +112,34 @@ namespace Lms.Controllers
         /// <param name="studentPhone"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentActiveEnrollment/{studentPhone}")]
-        public async Task<IActionResult> GetActiveStudentEnrollmentByStudentPhone([FromRoute] string studentPhone)
+        [Route("studentActiveEnrollment")]
+        public async Task<IActionResult> GetActiveStudentEnrollmentByStudentPhone([Required][FromQuery] string studentPhone)
         {
             try
             {
-                var activeStudentPhoneEnrollments = await studentEnrollmentDao.GetActiveStudentEnrollmentByStudentPhone(studentPhone);
-                if (activeStudentPhoneEnrollments.Count() == 0)
+                if (cache.TryGetValue($"enrollmentKey{studentPhone}", out IEnumerable<StudentEnrollmentModel> studentEnrollments))
                 {
-                    return StatusCode(404, "No Student with Active Courses found.");
+                    Log.Information($"Student enrollment for student with that phone number found in cache");
                 }
-                return Ok(activeStudentPhoneEnrollments);
+                else
+                {
+                    Log.Information($"Student enrollment for student with that phone number not found in cache. Checking database.");
+
+                    studentEnrollments = await studentEnrollmentDao.GetActiveStudentEnrollmentByStudentPhone(studentPhone);
+                    if (studentEnrollments.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, "Student enrollment for student with that phone number not found."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{studentPhone}", studentEnrollments, cacheEntryOptions);
+                }
+
+                return Ok(new ApiOkResponse(studentEnrollments));
             }
             catch (Exception e)
             {
@@ -107,20 +147,40 @@ namespace Lms.Controllers
             }
         }
 
-
         /// <summary>
         /// Get All Student Enrollment by CourseId
         /// </summary>
         /// <param name="courseId"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("studentsInCourse/{courseId}")]
-        public async Task<IActionResult> GetStudentsInCourseByCourseId([FromRoute] Guid courseId)
+        [Route("studentsInCourse")]
+        public async Task<IActionResult> GetStudentsInCourseByCourseId([Required][FromQuery] Guid courseId)
         {
             try
             {
-                var addStudentToCourse = await studentEnrollmentDao.GetStudentsInCourseByCourseId(courseId);
-                return Ok(addStudentToCourse);
+                if (cache.TryGetValue($"enrollmentKey{courseId}", out IEnumerable<StudentModel> studentsInCourse))
+                {
+                    Log.Information($"Student Enrollment for student with that id found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student Enrollment for student with that id not found in cache. Checking database.");
+
+                    studentsInCourse = await studentEnrollmentDao.GetStudentsInCourseByCourseId(courseId);
+                    if (studentsInCourse.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, "No students found in a course with that id. The course may have not students."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{courseId}", studentsInCourse, cacheEntryOptions);
+                }
+                
+                return Ok(new ApiOkResponse(studentsInCourse));
             }
             catch (Exception e)
             {

@@ -25,7 +25,6 @@ namespace LMS.UnitTests
         Guid teacherGuid;
         JsonPatchDocument<TeacherModel> teacherJsonDocument;
         List<TeacherModel> teachers;
-        
 
         [TestInitialize]
         public void Initialize()

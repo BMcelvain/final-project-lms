@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 
-
 namespace Lms.Daos
 {
     public class TeacherDao : ITeacherDao

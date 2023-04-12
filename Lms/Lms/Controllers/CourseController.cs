@@ -1,8 +1,6 @@
-﻿using FluentAssertions.Equivalency.Tracing;
-using Lms.APIErrorHandling;
+﻿using Lms.APIErrorHandling;
 using Lms.Daos;
 using Lms.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Caching.Memory;
@@ -15,7 +13,6 @@ using System.Threading.Tasks;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace Lms.Controllers
 {
     [ApiController]
@@ -23,7 +20,6 @@ namespace Lms.Controllers
     {
         private IMemoryCache cache;
         private readonly ICourseDao courseDao;
-
 
         public CourseController(ICourseDao courseDao, IMemoryCache cache)
         {
@@ -60,7 +56,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/{id}")]
+        [Route("course/{id}")]
         public async Task<IActionResult> GetCourseById([FromRoute] Guid id)
         {
             try
@@ -85,8 +81,6 @@ namespace Lms.Controllers
                         .SetSize(1024);
 
                     cache.Set($"courseKey{id}", course, cacheEntryOptions);
-                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
-
                 }
 
                return Ok(new ApiOkResponse(course));
@@ -153,66 +147,76 @@ namespace Lms.Controllers
         [Route("course/{id}")]
         public async Task<IActionResult> PartiallyUpdateCourseById(Guid id, [FromBody] JsonPatchDocument<CourseModel> courseUpdates)
         {
-            if (courseUpdates == null)
+            try
             {
-                return NotFound(new ApiResponse(404, $"Course with that id not found."));
-            }
-
-            var allowedOperations = new[] { "replace" };
-
-            foreach (Operation<CourseModel> operation in courseUpdates.Operations)
-            {
-                if (!allowedOperations.Contains(operation.op.ToLower()))
+                if (courseUpdates == null)
                 {
-                    return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
+                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
                 }
 
-                switch (operation.path.ToLower())
+                var allowedOperations = new[] { "replace" };
+
+                foreach (Operation<CourseModel> operation in courseUpdates.Operations)
                 {
-                    case "/coursename":
-                        string CourseName = operation.value?.ToString();
-                        if (!Regex.IsMatch(CourseName, @"^[A-Z][A-Za-z]+}$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter Course name starting with capital letter, lowercase for the remaining letters."));
-                        }
-                        break;
-                    case "/startdate":
-                        string StartDate = operation.value?.ToString();
-                        if (!Regex.IsMatch(StartDate, @"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a date in a valid format: yyyy-mm-dd."));
-                        }
-                        break;
-                    case "/enddate":
-                        string EndDate = operation.value?.ToString();
-                        if (!Regex.IsMatch(EndDate, @"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$"))
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter a date in a valid format: yyyy-mm-dd."));
-                        }
-                        break;
-                    case "/coursestatus":
-                        string StudentStatus = operation.value?.ToString();
-                        if (StudentStatus != "Inactive" && StudentStatus != "Active")
-                        {
-                            return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
-                        }
-                        break;
-                    default:
-                        return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                    if (!allowedOperations.Contains(operation.op.ToLower()))
+                    {
+                        return BadRequest(new ApiResponse(400, "Only 'replace' operation is allowed."));
+                    }
+
+                    switch (operation.path.ToLower())
+                    {
+                        case "/coursename":
+                            string CourseName = operation.value?.ToString();
+                            if (!Regex.IsMatch(CourseName, @"^[A-Z][A-Za-z]+$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter Course name starting with capital letter, lowercase for the remaining letters."));
+                            }
+                            break;
+                        case "/startdate":
+                            string StartDate = operation.value?.ToString();
+                            if (!Regex.IsMatch(StartDate, @"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter a date in a valid format: yyyy-mm-dd."));
+                            }
+                            break;
+                        case "/enddate":
+                            string EndDate = operation.value?.ToString();
+                            if (!Regex.IsMatch(EndDate, @"^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$"))
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter a date in a valid format: yyyy-mm-dd."));
+                            }
+                            break;
+                        case "/coursestatus":
+                            string StudentStatus = operation.value?.ToString();
+                            if (StudentStatus != "Inactive" && StudentStatus != "Active")
+                            {
+                                return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
+                            }
+                            break;
+                        default:
+                            return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                    }
                 }
 
-            }
-            var course = await courseDao.GetCourseById<CourseModel>(id);
-            if (course == null)
-            {
-                return NotFound(new ApiResponse(404, $"Course with that id not found."));
-            }
+                var course = await courseDao.GetCourseById<CourseModel>(id);
 
-            courseUpdates.ApplyTo(course);
-            await courseDao.PartiallyUpdateCourseById(course);
-            cache.Remove($"courseKey{course.CourseId}");
-            cache.Remove($"coursesKey{course.CourseStatus}");
-            return Ok(new ApiOkResponse(course));
+                if (course == null)
+                {
+                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
+                }
+
+                courseUpdates.ApplyTo(course);
+                await courseDao.PartiallyUpdateCourseById(course);
+
+                cache.Remove($"courseKey{course.CourseId}");
+                cache.Remove($"coursesKey{course.CourseStatus}");
+
+                return Ok(new ApiOkResponse(course));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         /// <summary>
@@ -258,6 +262,7 @@ namespace Lms.Controllers
             try
             {
                 await courseDao.StudentInCourse(addStudentInCourse);
+
                 return Ok(new ApiOkResponse(addStudentInCourse));
             }
             catch (Exception e)
@@ -288,6 +293,7 @@ namespace Lms.Controllers
 
                 addStudentCourseUpdates.ApplyTo(addStudentInCourse);
                 addStudentInCourse.StudentId = studentId;
+
                 await courseDao.PartiallyUpdateStudentInCourseByCourseStudentId(addStudentInCourse);
 
                 return Ok(new ApiOkResponse(addStudentInCourse));
@@ -318,7 +324,9 @@ namespace Lms.Controllers
                 }
 
                 deleteStudentInCourse.StudentId = studentId;
+
                 await courseDao.DeleteStudentInCourseByStudentCourseId(deleteStudentInCourse);
+
                 return Ok(new ApiOkResponse(deleteStudentInCourse));
             }
             catch (Exception e)
