@@ -4,120 +4,141 @@ using Lms.Models;
 using Lms.Wrappers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
 namespace LMS.UnitTests
 {
+    #nullable disable
     [TestClass]
     public class StudentEnrollmentDaoTests
     {
-        [TestMethod]
-        public void GetStudentEnrollmentHistoryById_UsesProperSqlQuery_OneTime()
-        {   
-            // Arrange
-            var mockSqlWrapper = new Mock<ISqlWrapper>();
-            var sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
 
+        Mock<ISqlWrapper> mockSqlWrapper;
+        StudentEnrollmentDao sut;
+        Guid courseGuid;
+        Guid studentGuid;
+        List<StudentEnrollmentModel> studentEnrollment;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            mockSqlWrapper = new Mock<ISqlWrapper>();
+            sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
+            courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0");
+            studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A7");
+            studentEnrollment = new List<StudentEnrollmentModel>()
+            {
+                new StudentEnrollmentModel()
+                {
+                    CourseId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0"),
+                    CourseName = "Test",
+                    StartDate = "3/1/2023",
+                    EndDate = "5/30/2023",
+                    Cancelled = false,
+                    CancellationReason = "test cancel",
+                    HasPassed = true
+                }
+            };
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            mockSqlWrapper = null;
+            sut = null;
+            courseGuid = new Guid();
+            studentGuid = new Guid();
+            studentEnrollment = null;
+        }
+
+        [TestMethod]
+        public void GetStudentEnrollmentHistoryByStudentId_UsesProperSqlQuery_OneTime()
+        {   
             // Act
-            _ = sut.GetStudentEnrollmentHistoryById(0);
+            _ = sut.GetStudentEnrollmentHistoryByStudentId(studentGuid);
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-            $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-            $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-            $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-            $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = 0"+
-            $" ORDER BY HasPassed ASC,CourseName")), Times.Once);
+            $" [Course].[CourseId]" +
+            $", [Course].[CourseName]" +
+            $", [Course].[StartDate]" +
+            $", [Course].[EndDate]" +
+            $", [StudentEnrollmentLog].[Cancelled]" +
+            $", [StudentEnrollmentLog].[CancellationReason]" +
+            $", [StudentEnrollmentLog].[HasPassed]" +
+            $", [Teacher].[TeacherEmail]" +
+            $", [Student].[StudentPhone]" +
+            $" FROM [StudentEnrollmentLog]" +
+            $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
+            $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
+            $" INNER JOIN [Student] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
+            $" WHERE [StudentEnrollmentLog].[StudentId] = @StudentId" +
+            $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
         [TestMethod]
         public void GetStudentEnrollmentHistoryByStudentLastName_UsesProperSqlQuery_OneTime()
         {
-            // Arrange
-            var mockSqlWrapper = new Mock<ISqlWrapper>();
-            var sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
-
             // Act
             _ = sut.GetStudentEnrollmentHistoryByStudentLastName("test");
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-            $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-            $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-            $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-            $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-            $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-            $", [LearningManagementSystem].[dbo].[Student].[StudentPhone]" +
-            $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-            $" FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $"  WHERE [LearningManagementSystem].[dbo].[Student].[StudentLastName] = 'test'"+
-            $" ORDER BY HasPassed ASC,CourseName")), Times.Once);
+            $" [Course].[CourseId]" +
+            $", [Course].[CourseName]" +
+            $", [Course].[StartDate]" +
+            $", [Course].[EndDate]" +
+            $", [StudentEnrollmentLog].[Cancelled]" +
+            $", [StudentEnrollmentLog].[CancellationReason]" +
+            $", [StudentEnrollmentLog].[HasPassed]" +
+            $", [Teacher].[TeacherEmail]" +
+            $", [Student].[StudentPhone]" +
+            $" FROM [StudentEnrollmentLog]" +
+            $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
+            $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
+            $" INNER JOIN [Student] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
+            $"  WHERE [Student].[StudentLastName] = @studentLastName" +
+            $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<object>()), Times.Once);
         }
 
         [TestMethod]
-        public void GetActiveStudents_UsesProperSqlQuery_OneTime()
+        public void GetActiveStudentEnrollmentByStudentPhone_UsesProperSqlQuery_OneTime()
         {
-            //Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new Mock<ISqlWrapper>();
-            StudentEnrollmentDao sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
+            // Act
+            _ = sut.GetActiveStudentEnrollmentByStudentPhone("888-888-8888");
 
-            //Act
-            _ = sut.GetActiveStudentEnrollmentByStudentPhone("test");
-
-            //Assert
+            // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-           $" [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-           $", [LearningManagementSystem].[dbo].[Course].[CourseName]" +
-           $", [LearningManagementSystem].[dbo].[Course].[StartDate]" +
-           $", [LearningManagementSystem].[dbo].[Course].[EndDate]" +
-           $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[Cancelled]" +
-           $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CancellationReason]" +
-           $", [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[HasPassed]" +
-           $", [LearningManagementSystem].[dbo].[Teacher].[TeacherEmail]" +
-           $", [LearningManagementSystem].[dbo].[Student].[StudentEmail]" +
-           $", [LearningManagementSystem].[dbo].[Student].[TotalPassCourses]" +
-           $" FROM [LearningManagementSystem].[dbo].[Student]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[StudentEnrollmentLog] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId] = [LearningManagementSystem].[dbo].[Student].[StudentId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Course] ON [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[CourseId] = [LearningManagementSystem].[dbo].[Course].[CourseId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Teacher] ON [LearningManagementSystem].[dbo].[Course].[TeacherId] = [LearningManagementSystem].[dbo].[Teacher].[TeacherId]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Semester] ON [LearningManagementSystem].[dbo].[Course].[SemesterId] = [LearningManagementSystem].[dbo].[Semester].[SemesterId]" +
-            $" WHERE [LearningManagementSystem].[dbo].[Student].[StudentPhone] = 'test' AND [LearningManagementSystem].[dbo].[Course].[CourseStatus] = 'Active'"+
-            $" ORDER BY StartDate ASC,CourseName")), Times.Once);
-        }      
+            $" [Course].[CourseId]" +
+            $", [Course].[CourseName]" +
+            $", [Course].[StartDate]" +
+            $", [Course].[EndDate]" +
+            $", [StudentEnrollmentLog].[Cancelled]" +
+            $", [StudentEnrollmentLog].[CancellationReason]" +
+            $", [StudentEnrollmentLog].[HasPassed]" +
+            $", [Teacher].[TeacherEmail]" +
+            $", [Student].[StudentEmail]" +
+            $" FROM [Student]" +
+            $" INNER JOIN [StudentEnrollmentLog] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
+            $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
+            $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
+            $" WHERE [Student].[StudentPhone] = @studentPhone AND [Course].[CourseStatus] = 'Active' AND [StudentEnrollmentLog].[Cancelled] = 0 AND [StudentEnrollmentLog].[HasPassed] IS NULL ORDER BY StartDate ASC,CourseName"), It.IsAny<Object>()), Times.Once);
+        }
 
         [TestMethod]
         public void GetStudentsInCourseByCourseId_UsesProperSqlQuery_OneTime()
         {
-            // Arrange
-            Mock<ISqlWrapper> mockSqlWrapper = new();
-            StudentEnrollmentDao sut = new(mockSqlWrapper.Object);
-
             // Act
-            _ = sut.GetStudentsInCourseByCourseId(1);
+            _ = sut.GetStudentsInCourseByCourseId(courseGuid);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * " +
-            $"FROM [LearningManagementSystem].[dbo].[StudentEnrollmentLog]" +
-            $" INNER JOIN [LearningManagementSystem].[dbo].[Student] ON [LearningManagementSystem].[dbo].[Student].[StudentId] = [LearningManagementSystem].[dbo].[StudentEnrollmentLog].[StudentId]" +
-            $"WHERE CourseId = 1"+
-            $"ORDER BY StudentLastName")), Times.Once);
+            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql ==
+           $"SELECT * " +
+            $"FROM [StudentEnrollmentLog] " +
+            $"INNER JOIN [Student] ON [Student].[StudentId] = [StudentEnrollmentLog].[StudentId] " +
+            $"WHERE CourseId = @CourseId " +
+            $"ORDER BY StudentLastName"), It.IsAny<DynamicParameters>()), Times.Once);
         }
     }
 }

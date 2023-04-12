@@ -1,4 +1,5 @@
 ﻿using Lms.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,9 +8,9 @@ namespace Lms.Daos
     public interface ITeacherDao
     {
         Task CreateTeacher(TeacherModel newTeacher);
-        Task<TeacherModel> GetTeacherById(int id);
+        Task<T> GetTeacherById<T>(Guid id);
         Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status);
         Task PartiallyUpdateTeacherById(TeacherModel updateRequest);
-        Task DeleteTeacherById(int id);
+        Task DeleteTeacherById(Guid id);
     }
 }

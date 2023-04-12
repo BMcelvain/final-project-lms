@@ -1,268 +1,260 @@
-﻿using Lms.Controllers;
+﻿using FluentAssertions;
+using Lms.APIErrorHandling;
+using Lms.Controllers;
 using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LMS.UnitTests
 {
+    #nullable disable warnings
     [TestClass] 
     public class TeacherControllerTests
     {
-        [TestMethod]
-        public async Task CreateClass_ReturnsOkStatusCode()
+        Mock<ITeacherDao> mockTeacherDao;
+        IMemoryCache cache;
+        TeacherController sut;
+        Guid teacherGuid;
+        JsonPatchDocument<TeacherModel> teacherJsonDocument;
+        List<TeacherModel> teachers;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-            var teacher = new TeacherModel();
-
-            // Act
-            var response = await sut.CreateTeacher(teacher);
-
-            // Assert
-            Assert.IsInstanceOfType(response, typeof(OkResult));
-        }
-
-        [TestMethod]
-        public async Task CreateTeacher_ThrowsException_OnError()
-        {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            var testException = new Exception("Test Exception");
-            var testTeacher = new TeacherModel();
-
-            mockTeacherDao
-                .Setup(x => x.CreateTeacher(It.IsAny<TeacherModel>()))
-                .Throws(testException);
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-
-            // Act
-            var result = await sut.CreateTeacher(testTeacher);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-        }
-
-        [TestMethod]
-        public async Task GetTeachersById_ReturnsOkStatusCode()
-        {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-
-            mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
-                .ReturnsAsync(
+            mockTeacherDao = new Mock<ITeacherDao>();
+            cache = new MemoryCache(new MemoryCacheOptions());
+            sut = new TeacherController(mockTeacherDao.Object, cache);
+            teacherGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
+            teacherJsonDocument = new JsonPatchDocument<TeacherModel>();
+         
+            teachers = new List<TeacherModel>()
+            {
                 new TeacherModel()
                 {
-                    TeacherId = 0,
+                    TeacherId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6"),
                     TeacherFirstName = "Test",
-                    TeacherLastName = "Test",
-                    TeacherPhone = "999-99-9999",
-                    TeacherEmail = "test@test.com",
-                    TeacherStatus = "Test"
-                });
+                    TeacherLastName = "Teacher",
+                    TeacherPhone = "999-999-9999",
+                    TeacherEmail = "teacher@vu.com",
+                    TeacherStatus = "Active"
+                },
+                new TeacherModel()
+                {
+                    TeacherId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A7"),
+                    TeacherFirstName = "Tester",
+                    TeacherLastName = "Substitute",
+                    TeacherPhone = "999-999-9998",
+                    TeacherEmail = "subTeacher@vu.com",
+                    TeacherStatus = "Active"
+                }
+            };
+        }
 
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-
-            // Act
-            var result = await sut.GetTeacherById(0);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        [TestCleanup]
+        public void Cleanup()
+        {
+            mockTeacherDao = null;
+            sut = null;
+            teacherGuid = new Guid();
+            teacherJsonDocument = null;
+            teachers = null;
         }
 
         [TestMethod]
-        public async Task GetTeacherById_ThrowsExceptionOnError()
+        public async Task CreateTeacher_ReturnsOkResponse_WhenModelIsValid()
+        {
+            // Act
+            var result = await sut.CreateTeacher(teachers.First());
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var teacherInApiOkResponse = apiOkResponseInOkResult.Result;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            teacherInApiOkResponse.Should().NotBeNull();
+            teacherInApiOkResponse.Should().BeEquivalentTo(teachers.First());
+        }
+
+        [TestMethod]
+        public async Task GetTeachersById_ReturnsOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-            var testException = new Exception("Test Exception");
-
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
-                .Throws(testException);
+                .Setup(x => x.GetTeacherById<TeacherModel>(teacherGuid))
+                .ReturnsAsync(teachers.First());
 
             // Act
-            var result = await sut.GetTeacherById(0);
+            var result = await sut.GetTeacherById(teacherGuid);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var teacherInApiOkResponse = apiOkResponseInOkResult.Result;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            teacherInApiOkResponse.Should().NotBeNull();
+            teacherInApiOkResponse.Should().BeEquivalentTo(teachers.First());
         }
 
         [TestMethod]
-        public async Task GetTeacherByStatus_ReturnsOKStatusCode()
+        public async Task GetTeacherById_ReturnsNotFoundResponse_WhenGuidIsInvalid()
+        {
+            // Act
+            var result = await sut.GetTeacherById(teacherGuid);
+
+            // Assert
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with that id not found.");
+        }
+
+        [TestMethod]
+        public async Task GetTeacherByStatus_ReturnsOkResponse_WhenStatusIsActive()
         {
             // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
+            mockTeacherDao
+                .Setup(x => x.GetTeacherByStatus("Active"))
+                .ReturnsAsync(teachers);
 
+            // Act
+            var result = await sut.GetTeacherByStatus("Active");
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var teachersInApiOkResponse = apiOkResponseInOkResult.Result;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            apiOkResponseInOkResult.StatusCode.Should().Be(200);
+            teachersInApiOkResponse.Should().BeEquivalentTo(teachers);
+        }
+
+        [TestMethod]
+        public async Task GetTeacherByStatus_ReturnsBadRequestResponse_WhenStatusIsNotActiveOrInactive()
+        {
             // Act
             var result = await sut.GetTeacherByStatus("Test");
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var badRequestResult = result as BadRequestObjectResult;
+            var apiResponseInBadRequestResult = badRequestResult.Value as ApiResponse;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<BadRequestObjectResult>();
+            apiResponseInBadRequestResult.StatusCode.Should().Be(400);
+            apiResponseInBadRequestResult.Message.Should().BeEquivalentTo("Please enter Active or Inactive status.");
         }
 
         [TestMethod]
-        public async Task GetTeacherByStatus_ThrowsExceptionOnError()
+        public async Task GetTeacherByStatus_ReturnsNotFoundResponse_WhenTeacherWithStatusNotFound()
         {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-            var testException = new Exception("Test Exception");
-
-            mockTeacherDao
-                .Setup(x => x.GetTeacherByStatus("Test"))
-                .Throws(testException);
-
             // Act
-            var result = await sut.GetTeacherByStatus("Test");
+            var result = await sut.GetTeacherByStatus("Inactive");
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInBadRequestResult = notFoundResult.Value as ApiResponse;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInBadRequestResult.StatusCode.Should().Be(404);
+            apiResponseInBadRequestResult.Message.Should().BeEquivalentTo("Teacher with status Inactive not found.");
         }
 
         [TestMethod]
-        public async Task PartiallyUpdateTeacherById_ReturnsOKStatusCode()
+        public async Task PartiallyUpdateTeacherById_ReturnsOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
-                .ReturnsAsync(
-                new TeacherModel()
-                {
-                    TeacherId = 0,
-                    TeacherFirstName = "Test",
-                    TeacherLastName = "Test",
-                    TeacherPhone = "999-99-9999",
-                    TeacherEmail = "test@test.com",
-                    TeacherStatus = "Test"
-                });
-
-            JsonPatchDocument<TeacherModel> testDocument = new JsonPatchDocument<TeacherModel>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
+                .Setup(x => x.GetTeacherById<TeacherModel>(teacherGuid))
+                .ReturnsAsync(teachers.First());
 
             // Act
-            var result = await sut.PartiallyUpdateTeacherById(0, testDocument);
+            var result = await sut.PartiallyUpdateTeacherById(teacherGuid, teacherJsonDocument);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var teacherInApiOkResponse = apiOkResponseInOkResult.Result;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            apiOkResponseInOkResult.StatusCode.Should().Be(200);
+            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
+            teacherInApiOkResponse.Should().NotBeNull();
+            teacherInApiOkResponse.Should().BeEquivalentTo(teachers.First());
         }
 
         [TestMethod]
-        public async Task PartiallyUpdateTeacherById_ReturnsNotFound_WhenGetTeacherIdReturnsNull()
+        public async Task PartiallyUpdateTeacherById_ReturnsNotFoundResponse_WhenGuidIsInvalid()
         {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-            JsonPatchDocument<TeacherModel> testDocument = new JsonPatchDocument<TeacherModel>();
-
             // Act
-            var result = await sut.PartiallyUpdateTeacherById(0, testDocument);
+            var result = await sut.PartiallyUpdateTeacherById(teacherGuid, teacherJsonDocument);
 
             // Arrange
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with that id not found.");
         }
 
         [TestMethod]
-        public async Task PartiallyUpdateTeacherById_ThrowsExceptionOnError()
+        public async Task DeleteTeacherById_ReturnsOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-            JsonPatchDocument<TeacherModel> testDocument = new JsonPatchDocument<TeacherModel>();
-            var testException = new Exception("Test Exception");
-
             mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
-                .Throws(testException);
+                .Setup(x => x.GetTeacherById<TeacherModel>(teacherGuid))
+                .ReturnsAsync(teachers.First());
 
             // Act
-            var result = await sut.PartiallyUpdateTeacherById(0, testDocument);
-
-            // Arrange
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-        }
-
-        [TestMethod]
-        public async Task DeleteTeacherById_ReturnsOKStatusCode()
-        {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
-                .ReturnsAsync(
-                new TeacherModel()
-                {
-                    TeacherId = 0,
-                    TeacherFirstName = "Test",
-                    TeacherLastName = "Test",
-                    TeacherPhone = "999-99-9999",
-                    TeacherEmail = "test@test.com",
-                    TeacherStatus = "Test"
-                });
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-
-            // Act
-            var result = await sut.DeleteTeacherById(0);
+            var result = await sut.DeleteTeacherById(teacherGuid);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var teacherInApiOkResponse = apiOkResponseInOkResult.Result;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            apiOkResponseInOkResult.StatusCode.Should().Be(200);
+            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
+            teacherInApiOkResponse.Should().NotBeNull();
+            teacherInApiOkResponse.Should().BeEquivalentTo(teachers.First());
         }
 
         [TestMethod]
-        public async Task DeleteTeacherById_ReturnsNotFound_WhenGetTeacherByIdReturnsNull()
+        public async Task DeleteTeacherById_ReturnsNotFound_WhenGuidIsInvalid()
         {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-
             // Act
-            var result = await sut.DeleteTeacherById(0);
+            var result = await sut.DeleteTeacherById(teacherGuid);
 
             // Assert 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-        }
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
 
-        [TestMethod]
-        public async Task DeleteTeacherById_ThrowsExceptionOnError()
-        {
-            // Arrange
-            Mock<ITeacherDao> mockTeacherDao = new Mock<ITeacherDao>();
-            TeacherController sut = new TeacherController(mockTeacherDao.Object);
-            var testException = new Exception("Test Exception");
-
-            mockTeacherDao
-                .Setup(x => x.GetTeacherById(0))
-                .Throws(testException);
-
-            // Act
-            var result = await sut.DeleteTeacherById(0);
-
-            // Assert 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Teacher with that id not found.");
         }
     }
 }
-

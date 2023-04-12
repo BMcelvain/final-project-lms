@@ -14,6 +14,11 @@ using Lms.Daos;
 using Lms.Wrappers;
 using Serilog;
 using Lms.APIErrorHandling;
+using System.IO;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Lms
 {
@@ -35,12 +40,15 @@ namespace Lms
             services.AddScoped<IStudentDao, StudentDao>();
             services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();
 
+            services.AddMemoryCache();
 
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS Api", Description = "A CRUD Api for Learning Management System", Version = "v1" });
+                var filePath = Path.Combine(AppContext.BaseDirectory, "Lms.xml");
+                c.IncludeXmlComments(filePath);
             }).AddSwaggerGenNewtonsoftSupport();
         }
 
@@ -58,7 +66,8 @@ namespace Lms
             app.UseSwaggerUI(opt => opt.SwaggerEndpoint("/swagger/v1/swagger.json", "LMS Api V1"));
 
             app.UseRouting();
-
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

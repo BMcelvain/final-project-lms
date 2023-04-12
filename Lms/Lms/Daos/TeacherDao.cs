@@ -1,10 +1,11 @@
-﻿using Lms.Wrappers;
+﻿using Dapper;
+using Lms.Models;
+using Lms.Wrappers;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using Lms.Models;
+using System;
 
 namespace Lms.Daos
 {
@@ -20,11 +21,11 @@ namespace Lms.Daos
         // POST a new teacher within the Teacher table. 
         public async Task CreateTeacher(TeacherModel newTeacher)
         {
-            var query = "INSERT Teacher(TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)" +
-                         $"VALUES(@TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)";
+            var query = "INSERT Teacher(TeacherId, TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail,TeacherStatus)" +
+                         $"VALUES(@TeacherId, @TeacherFirstName, @TeacherLastName, @TeacherPhone, @TeacherEmail, @TeacherStatus)";
 
             var parameters = new DynamicParameters();
-            parameters.Add("TeacherId", newTeacher.TeacherId, DbType.Int32);
+            parameters.Add("TeacherId", Guid.NewGuid(), DbType.Guid);
             parameters.Add("TeacherFirstName", newTeacher.TeacherFirstName, DbType.String);
             parameters.Add("TeacherLastName", newTeacher.TeacherLastName, DbType.String);
             parameters.Add("TeacherPhone", newTeacher.TeacherPhone, DbType.String);
@@ -38,13 +39,16 @@ namespace Lms.Daos
         }
 
         // GET a single teacher (by Id) within the Teacher table.
-        public async Task<TeacherModel> GetTeacherById(int id)
+        public async Task<TeacherModel> GetTeacherById<TeacherModel>(Guid id)
         {
-            var query = $"SELECT * FROM Teacher WHERE TeacherId = {id}";
+            var query = $"SELECT * FROM Teacher WHERE TeacherId = @TeacherId";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("TeacherId", id, DbType.Guid);
 
             using (sqlWrapper.CreateConnection())
             {
-                var teacher = await sqlWrapper.QueryFirstOrDefaultAsync<TeacherModel>(query);
+                var teacher = await sqlWrapper.QueryFirstOrDefaultAsync<TeacherModel>(query, parameters);
                 return teacher;
             }
         }
@@ -52,11 +56,12 @@ namespace Lms.Daos
         //Get teachers by status within the Teacher table
         public async Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status)
         {
-            var query = $"SELECT * FROM Teacher WHERE TeacherStatus = '{status}'" +"ORDER BY TeacherLastName ASC";
-            
+            var query = $"SELECT * FROM Teacher WHERE TeacherStatus = @teacherStatus ORDER BY TeacherLastName ASC";
+            var teacherStatus = new { teacherStatus = new DbString { Value = status, IsFixedLength = false, IsAnsi = true } };
+
             using (sqlWrapper.CreateConnection())
             {
-                var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query);
+                var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query, teacherStatus);
 
                 return teachers.ToList();
             }
@@ -69,7 +74,7 @@ namespace Lms.Daos
                         $"TeacherPhone=@TeacherPhone, TeacherEmail=@TeacherEmail, TeacherStatus=@TeacherStatus WHERE TeacherId=@TeacherId";
 
             var parameters = new DynamicParameters();
-            parameters.Add("TeacherId", updateRequest.TeacherId, DbType.Int32);
+            parameters.Add("TeacherId", updateRequest.TeacherId, DbType.Guid);
             parameters.Add("TeacherFirstName", updateRequest.TeacherFirstName, DbType.String);
             parameters.Add("TeacherLastName", updateRequest.TeacherLastName, DbType.String);
             parameters.Add("TeacherPhone", updateRequest.TeacherPhone, DbType.String);
@@ -83,13 +88,16 @@ namespace Lms.Daos
         }
 
         // DELETE a single teacher (by Id) within the Teacher table. 
-        public async Task DeleteTeacherById(int id)
+        public async Task DeleteTeacherById(Guid id)
         {
-            var query = $"DELETE FROM Teacher WHERE TeacherId = {id}";
+            var query = $"DELETE FROM Teacher WHERE TeacherId = @TeacherId";
+            
+            var parameters = new DynamicParameters();
+            parameters.Add("TeacherId", id, DbType.Guid);
 
             using (sqlWrapper.CreateConnection())
             {
-                await sqlWrapper.ExecuteAsync(query);
+                await sqlWrapper.ExecuteAsync(query, parameters);
             }
         }
     }

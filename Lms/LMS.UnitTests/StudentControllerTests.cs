@@ -1,236 +1,203 @@
-﻿using Lms.Controllers;
+﻿using FluentAssertions;
+using Lms.APIErrorHandling;
+using Lms.Controllers;
 using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-
 
 namespace LMS.UnitTests
 {
-    [TestClass] 
+    #nullable disable warnings
+    [TestClass]
     public class StudentControllerTests
     {
-        [TestMethod]
-        public async Task CreateStudent_ReturnsOkStatusCode()
+        Mock<IStudentDao> mockStudentDao;
+        StudentController sut;
+        Guid studentGuid;
+        Guid invalidStudentGuid;
+        JsonPatchDocument<StudentModel> studentJsonDocument;
+        List<StudentModel> students;
+        IMemoryCache cache;
+
+        [TestInitialize]
+        public void Initialize()
         {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-            var student = new StudentModel();
+            mockStudentDao = new Mock<IStudentDao>();
+            cache = new MemoryCache(new MemoryCacheOptions());
+            sut = new StudentController(mockStudentDao.Object, cache);
+            studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9");
+            invalidStudentGuid = new Guid("00000000-0000-0000-0000-000000000000");
+            studentJsonDocument = new JsonPatchDocument<StudentModel>();
+            students = new List<StudentModel>()
+            {
+                new StudentModel()
+                {
+                    StudentId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9"),
+                    StudentFirstName = "Fred",
+                    StudentLastName = "Testing",
+                    StudentPhone = "999-999-9999",
+                    StudentEmail = "Test@test.com",
+                    StudentStatus = "Test Status"
+                }
+            };
+        }
 
-            // Act
-            var response = await sut.CreateStudent(student);
-
-            // Assert
-            Assert.IsInstanceOfType(response, typeof(OkResult));
+        [TestCleanup]
+        public void Cleanup()
+        {
+            mockStudentDao = null;
+            sut = null;
+            studentGuid = new Guid();
+            studentJsonDocument = null;
+            students = null;
         }
 
         [TestMethod]
-        public async Task CreateStudent_ThrowsException_OnError()
+        public async Task CreateStudent_WhenModelIsValid_ReturnsObjectResult()
         {
             // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            var testException = new Exception("Test Exception");
-            var testStudent = new StudentModel();
-
             mockStudentDao
                 .Setup(x => x.CreateStudent(It.IsAny<StudentModel>()))
-                .Throws(testException);
-            StudentController sut = new StudentController(mockStudentDao.Object);
+                .Callback(() => { return; });
 
             // Act
-            var result = await sut.CreateStudent(testStudent);
+            var result = await sut.CreateStudent(students.First());
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var courseInApiOkResponse = apiOkResponseInOkResult.Result;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+            courseInApiOkResponse.Should().NotBeNull();
+            courseInApiOkResponse.Should().BeEquivalentTo(students.First());
         }
 
-
         [TestMethod]
-        public async Task GetStudentsById_ReturnsOkStatusCode()
+        public async Task GetStudentById_ReturnsStudentAndOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
-                .ReturnsAsync(
-                new StudentModel()
-                {
-                    StudentId = 0,
-                    StudentFirstName = "Test",
-                    StudentLastName = "Test",
-                    StudentPhone = "999-999-9999",
-                    StudentEmail = "Test@test.com",
-                    StudentStatus = "Test Status",
-                    TotalPassCourses = 0
-                });
-
-            StudentController sut = new StudentController(mockStudentDao.Object);
+                .Setup(x => x.GetStudentById<StudentModel>(studentGuid))
+                .ReturnsAsync(students.First());
 
             // Act
-            var result = await sut.GetStudentById(0);
+            var result = await sut.GetStudentById(studentGuid);
 
             // Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+
+            var okResult = result as OkObjectResult;
+            okResult.Value.Should().NotBeNull(); 
+
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse; 
+            apiOkResponseInOkResult.Result.Should().NotBeNull(); // 
+
+            var studentInApiOkResponse = apiOkResponseInOkResult.Result as StudentModel;
+            studentInApiOkResponse.Should().NotBeNull(); 
+            studentInApiOkResponse.Should().BeEquivalentTo(students.First()); 
+        }
+
+        [TestMethod]
+        public async Task GetStudentById_InvalidGuidId_ReturnsNotFoundResponse()
+        {
+            // Act
+            var result = await sut.GetStudentById(studentGuid);
+
+            // Assert
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student with that id not found.");
+        }
+
+        [TestMethod]
+        public async Task PartiallyUpdateStudentById_WithValidStudentIdAndUpdates_ReturnsOkObjectResult()
+        {
+            // Arrange
+            mockStudentDao
+                 .Setup(x => x.GetStudentById<StudentModel>(studentGuid))
+                 .ReturnsAsync(students.First());
+            // Act
+            var result = await sut.PartiallyUpdateStudentById(studentGuid, studentJsonDocument);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var studentInApiOkResponse = apiOkResponseInOkResult.Result;
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            apiOkResponseInOkResult.StatusCode.Should().Be(200);
+            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
+            studentInApiOkResponse.Should().NotBeNull();
+            studentInApiOkResponse.Should().BeEquivalentTo(students.First());
         }
 
         [TestMethod]
-        public async Task GetStudentById_ThrowsExceptionOnError()
+        public async Task PartiallyUpdateStudentById_ReturnsInvalidResponse_WhenGuidIsInvalid()
         {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-            var testException = new Exception("Test Exception");
-
-            mockStudentDao
-                .Setup(x => x.GetStudentById(0))
-                .Throws(testException);
-
             // Act
-            var result = await sut.GetStudentById(0);
+            var result = await sut.PartiallyUpdateStudentById(studentGuid, studentJsonDocument);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
+
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student with that id not found.");
         }
 
         [TestMethod]
-        public async Task PartiallyUpdateStudentById_ReturnsOKStatusCode()
+        public async Task DeleteStudentByValidId_ReturnsOKStatusCode()
         {
             // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
             mockStudentDao
-                .Setup(x => x.GetStudentById(0))
-                .ReturnsAsync(
-                new StudentModel()
-                {
-                    StudentId = 0,
-                    StudentFirstName = "Test",
-                    StudentLastName = "Test",
-                    StudentPhone = "999-999-9999",
-                    StudentEmail = "Test@test.com",
-                    StudentStatus = "Test Status",
-                    TotalPassCourses = 0
-                });
-
-            JsonPatchDocument<StudentModel> testDocument = new JsonPatchDocument<StudentModel>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
+                .Setup(x => x.GetStudentById<StudentModel>(studentGuid))
+                .ReturnsAsync(students.First());
 
             // Act
-            var result = await sut.PartiallyUpdateStudentById(0, testDocument);
+            var result = await sut.DeleteStudentById(studentGuid);
 
             // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+            var studentInApiOkResponse = apiOkResponseInOkResult.Result;
             Assert.IsNotNull(result);
             Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+            apiOkResponseInOkResult.StatusCode.Should().Be(200);
+            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
+            studentInApiOkResponse.Should().NotBeNull();
+            studentInApiOkResponse.Should().BeEquivalentTo(students.First());
         }
 
         [TestMethod]
-        public async Task PartiallyUpdateStudentById_ReturnsNotFound_WhenGetStudentIdReturnsNull()
+        public async Task DeleteStudentById_ReturnsNotFoundObject_WhenGuidIsInvalid()
         {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-            JsonPatchDocument<StudentModel> testDocument = new JsonPatchDocument<StudentModel>();
-
             // Act
-            var result = await sut.PartiallyUpdateStudentById(0, testDocument);
-
-            // Arrange
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-        }
-
-        [TestMethod]
-        public async Task PartiallyUpdateStudentById_ThrowsExceptionOnError()
-        {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-            JsonPatchDocument<StudentModel> testDocument = new JsonPatchDocument<StudentModel>();
-            var testException = new Exception("Test Exception");
-
-            mockStudentDao
-                .Setup(x => x.GetStudentById(0))
-                .Throws(testException);
-
-            // Act
-            var result = await sut.PartiallyUpdateStudentById(0, testDocument);
-
-            // Arrange
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-        }
-
-        [TestMethod]
-        public async Task DeleteStudentById_ReturnsOKStatusCode()
-        {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            mockStudentDao
-                .Setup(x => x.GetStudentById(0))
-                .ReturnsAsync(
-                new StudentModel()
-                {
-                    StudentId = 0,
-                    StudentFirstName = "Test",
-                    StudentLastName = "Test",
-                    StudentPhone = "999-999-9999",
-                    StudentEmail = "Test@test.com",
-                    StudentStatus = "Test Status",
-                    TotalPassCourses = 0
-                });
-            StudentController sut = new StudentController(mockStudentDao.Object);
-
-            // Act
-            var result = await sut.DeleteStudentById(0);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-        }
-
-        [TestMethod]
-        public async Task DeleteStudentById_ReturnsNotFound_WhenGetStudentByIdReturnsNull()
-        {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-
-            // Act
-            var result = await sut.DeleteStudentById(0);
+            var result = await sut.DeleteStudentById(invalidStudentGuid);
 
             // Assert 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
-        }
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
 
-        [TestMethod]
-        public async Task DeleteStudentById_ThrowsExceptionOnError()
-        {
-            // Arrange
-            Mock<IStudentDao> mockStudentDao = new Mock<IStudentDao>();
-            StudentController sut = new StudentController(mockStudentDao.Object);
-            var testException = new Exception("Test Exception");
-
-            mockStudentDao
-                .Setup(x => x.GetStudentById(0))
-                .Throws(testException);
-
-            // Act
-            var result = await sut.DeleteStudentById(0);
-
-            // Assert 
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
+            result.Should().NotBeNull();
+            result.Should().BeOfType<NotFoundObjectResult>();
+            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student with that id not found.");
         }
     }
 }
-
-
