@@ -1,7 +1,11 @@
 ﻿using Azure;
+using JWTAuthentication.Authentication;
+using Lms.APIErrorHandling;
+using Lms.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,10 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System;
-using Lms.APIErrorHandling;
-using Microsoft.Extensions.Configuration;
-using Lms.Authentication;
-using JWTAuthentication.Authentication;
+
 
 namespace Lms.Authentication
 {
