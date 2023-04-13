@@ -9,6 +9,7 @@ using Serilog;
 using System.Collections.Generic;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Lms.Controllers
 {
@@ -64,6 +65,52 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        /// <summary>
+        /// Get Student Enrollment History By Filters
+        /// </summary>
+        /// <param name="StudentId"></param>
+        /// <param name="StudentLastName"></param>
+        /// <param name="StudentPhone"></param>
+        /// <param name="StudentStatus"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("studentEnrollment")]
+        public async Task<IActionResult> GetStudentEnrollmentHistory([FromQuery] Guid StudentId, string StudentLastName, string StudentPhone, string StudentStatus)
+        {
+            try
+            {
+                if (cache.TryGetValue($"enrollmentKey{StudentId}", out IEnumerable<StudentEnrollmentModel> studentEnrollments))
+                {
+                    Log.Information($"Student enrollment for student with that id found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student enrollment for student with that id not found in cache. Checking database.");
+
+                    studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistory(StudentId, StudentLastName, StudentPhone, StudentStatus);
+
+                    if (studentEnrollments.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, $"Student enrollment not found. Please check your entries and try again."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{StudentId}", studentEnrollments, cacheEntryOptions);
+                }
+
+                return Ok(new ApiOkResponse(studentEnrollments));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
 
         /// <summary>
         /// Get Student Enrollment History by Last Name

@@ -77,7 +77,7 @@ namespace LMS.UnitTests
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE Student SET StudentFirstName=@StudentFirstName, StudentLastName=@StudentLastName, " +
-                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus, " +
+                        $"StudentPhone=@StudentPhone, StudentEmail=@StudentEmail, StudentStatus=@StudentStatus " +
                         $"WHERE StudentId=@StudentId"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 

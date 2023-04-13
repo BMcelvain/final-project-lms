@@ -175,7 +175,7 @@ namespace Lms.Controllers
                             break;
                         case "/teacherlastname":
                             string TeacherLastName = operation.value?.ToString();
-                            if (!Regex.IsMatch(TeacherLastName, @"^[A-Z][a-z]+$"))
+                            if (!Regex.IsMatch(TeacherLastName, @"^[A-Z][A-Za-z-]+$"))
                             {
                                 return BadRequest(new ApiResponse(400, "Please enter a name starting with a capital letter, followed by lowercase letters."));
                             }

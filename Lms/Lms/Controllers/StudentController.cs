@@ -10,6 +10,10 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
+using Lms.Authentication;
+using Microsoft.AspNetCore.Authorization;
+
+
 
 namespace Lms.Controllers
 {
@@ -54,6 +58,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
         {
