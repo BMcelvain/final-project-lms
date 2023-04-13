@@ -8,7 +8,7 @@ namespace Lms.Models
         public Guid CourseId { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z][A-Za-z]+$", ErrorMessage = "Please enter Course name starting with capital letter, lowercase for the remaining letters.")]
+        [RegularExpression(@"^[A-Z][A-Za-z ]+$", ErrorMessage = "Please enter Course name starting with capital letter, lowercase for the remaining letters.")]
         public string CourseName { get; set; }
 
         [Required]

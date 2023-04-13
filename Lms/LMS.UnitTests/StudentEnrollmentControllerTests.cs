@@ -1,16 +1,17 @@
-﻿using Lms.Controllers;
+﻿using FluentAssertions;
+using Lms.APIErrorHandling;
+using Lms.Controllers;
 using Lms.Daos;
 using Lms.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
-using Lms.APIErrorHandling;
-using FluentAssertions;
-using Microsoft.Extensions.Caching.Memory;
+
 
 namespace LMS.UnitTests
 {
