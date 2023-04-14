@@ -62,116 +62,41 @@ namespace LMS.UnitTests
             studentEnrollment = null;
         }
 
-        [TestMethod]
-        public async Task GetStudentEnrollmentHistoryByStudentId_ValidGuid_ReturnsOKStatusCode()
-        {
-            // Arrange
-            mockStudentEnrollmentDao
-                .Setup(x => x.GetStudentEnrollmentHistoryByStudentId(testGuid))
-                .ReturnsAsync(studentEnrollment);
+        //[TestMethod]
+        //public async Task GetStudentEnrollmentHistoryByStudentId_ValidGuid_ReturnsOKStatusCode()
+        //{
+        //    // Arrange
+        //    mockStudentEnrollmentDao
+        //        .Setup(x => x.GetStudentEnrollmentHistoryByStudentId(testGuid))
+        //        .ReturnsAsync(studentEnrollment);
 
-            // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentId(testGuid);
+        //    // Act
+        //    var result = await sut.GetStudentEnrollmentHistoryByStudentId(testGuid);
 
-            // Assert
-            var okResult = result as OkObjectResult;
-            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-            var studentInApiOkResponse = apiOkResponseInOkResult.Result;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<OkObjectResult>();
-            studentInApiOkResponse.Should().NotBeNull();
-            studentInApiOkResponse.Should().BeEquivalentTo(studentEnrollment);
-        }
+        //    // Assert
+        //    var okResult = result as OkObjectResult;
+        //    var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
+        //    var studentInApiOkResponse = apiOkResponseInOkResult.Result;
+        //    result.Should().NotBeNull();
+        //    result.Should().BeOfType<OkObjectResult>();
+        //    studentInApiOkResponse.Should().NotBeNull();
+        //    studentInApiOkResponse.Should().BeEquivalentTo(studentEnrollment);
+        //}
 
-        [TestMethod]
-        public async Task GetStudentEnrollmentHistoryByStudentId_InvalidGuid_ReturnsNotFoundResponse()
-        {
-            // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentId(testGuid);
+        //[TestMethod]
+        //public async Task GetStudentEnrollmentHistoryByStudentId_InvalidGuid_ReturnsNotFoundResponse()
+        //{
+        //    // Act
+        //    var result = await sut.GetStudentEnrollmentHistoryByStudentId(testGuid);
 
-            // Assert
-            var notFoundResult = result as NotFoundObjectResult;
-            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<NotFoundObjectResult>();
-            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment with that Student Id not found.");
-        }
-
-        [TestMethod]
-        public async Task GetStudentEnrollmentHistoryByStudentLasttName_ValidLastName_ReturnsOKStatusCode()
-        {
-            // Arrange
-            mockStudentEnrollmentDao
-                .Setup(x => x.GetStudentEnrollmentHistoryByStudentLastName("Test"))
-                .ReturnsAsync(studentEnrollment);
-
-            // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentLastName("Test");
-
-            // Assert
-            var okResult = result as OkObjectResult;
-            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-            var studentInApiOkResponse = apiOkResponseInOkResult.Result;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<OkObjectResult>();
-            studentInApiOkResponse.Should().NotBeNull();
-            studentInApiOkResponse.Should().BeEquivalentTo(studentEnrollment);
-        }
-
-        [TestMethod]
-        public async Task GetStudentEnrollmentByStudentLastName_InvalidLastName_ThrowsExceptionOnError()
-        {
-            // Act
-            var result = await sut.GetStudentEnrollmentHistoryByStudentLastName("Test33");
-
-            // Assert
-            var notFoundResult = result as NotFoundObjectResult;
-            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<NotFoundObjectResult>();
-            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment for student with that last name not found.");
-        }
-
-        [TestMethod]
-        public async Task GetActiveStudentEnrollmentByStudentPhone_ValidPhone_ReturnsOKStatusCode()
-        {
-            // Arrange
-            string validPhoneNumber = "123-456-7890";
-            mockStudentEnrollmentDao
-                .Setup(x => x.GetActiveStudentEnrollmentByStudentPhone(validPhoneNumber))
-                .ReturnsAsync(studentEnrollment);
-
-            // Act
-            var result = await sut.GetActiveStudentEnrollmentByStudentPhone(validPhoneNumber);
-
-            // Assert
-            var okResult = result as OkObjectResult;
-            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-            var studentEnrollmentInApiOkResponse = apiOkResponseInOkResult.Result;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<OkObjectResult>();
-            studentEnrollmentInApiOkResponse.Should().NotBeNull();
-            studentEnrollmentInApiOkResponse.Should().BeEquivalentTo(studentEnrollment);
-        }
-
-        [TestMethod]
-        public async Task GetActiveStudentEnrollmentByStudentPhone_InvalidPhone_ThrowsExceptionOnError()
-        {
-            // Arrange
-            string invalidPhoneNumber = "123-777-222";
-
-            // Act
-            var result = await sut.GetActiveStudentEnrollmentByStudentPhone(invalidPhoneNumber);
-
-            // Assert
-            var notFoundResult = result as NotFoundObjectResult;
-            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
-            result.Should().NotBeNull();
-            result.Should().BeOfType<NotFoundObjectResult>();
-            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment for student with that phone number not found.");
-        }
+        //    // Assert
+        //    var notFoundResult = result as NotFoundObjectResult;
+        //    var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
+        //    result.Should().NotBeNull();
+        //    result.Should().BeOfType<NotFoundObjectResult>();
+        //    apiResponseInNotFoundResult.StatusCode.Should().Be(404);
+        //    apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment with that Student Id not found.");
+        //}
+     
     }
 }
