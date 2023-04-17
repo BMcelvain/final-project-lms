@@ -194,7 +194,7 @@ namespace Lms.Controllers
                             }
                             break;
                         default:
-                            return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                            return BadRequest(new ApiResponse(400, "The JSON patch document is missing."));
                     }
                 }
 
