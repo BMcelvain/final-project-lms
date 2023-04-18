@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lms.Controllers
 {
+    [Authorize(Roles = UserRoles.Admin)]
     [ApiController]
     public class StudentController : ControllerBase
     {
@@ -58,7 +59,6 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Authorize(Roles = UserRoles.Admin)]
         [Route("student/{id}")]
         public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
         {
