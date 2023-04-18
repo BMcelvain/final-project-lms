@@ -101,7 +101,7 @@ namespace LMS.UnitTests
             okResult.Value.Should().NotBeNull(); 
 
             var apiOkResponseInOkResult = okResult.Value as ApiOkResponse; 
-            apiOkResponseInOkResult.Result.Should().NotBeNull(); // 
+            apiOkResponseInOkResult.Result.Should().NotBeNull();
 
             var studentInApiOkResponse = apiOkResponseInOkResult.Result as StudentModel;
             studentInApiOkResponse.Should().NotBeNull(); 

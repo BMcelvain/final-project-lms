@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
+using FluentAssertions;
 
 namespace Lms.Controllers
 {
@@ -51,28 +52,32 @@ namespace Lms.Controllers
         }
 
         /// <summary>
-        /// Get Teacher by Teacher Id
+        /// Get Teacher By Filters
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="TeacherId"></param>
+        /// /// <param name="TeacherLastName"></param>
+        /// /// <param name="TeacherPhone"></param>
+        /// /// <param name="TeacherStatus"></param>
         /// <returns></returns>
+
         [HttpGet]
-        [Route("teacher/{id}")]
-        public async Task<IActionResult> GetTeacherById([FromRoute] Guid id)
+        [Route("teacher")]
+        public async Task<IActionResult> GetTeacher([FromQuery] Guid TeacherId, string TeacherLastName, string TeacherPhone, string TeacherStatus)
         {
             try
             {
-                if (cache.TryGetValue($"teacherKey{id}", out TeacherModel teacher))
+                if (cache.TryGetValue($"teacherKey{TeacherId}", out IEnumerable<TeacherModel> teacher))
                 {
-                    Log.Information($"Teacher with id {id} found in cache");
+                    Log.Information($"Teacher with id {TeacherId} found in cache");
                 }
                 else
                 {
-                    Log.Information($"Teacher with id {id} not found in cache. Checking database.");
+                    Log.Information($"Teacher with id {TeacherId} not found in cache. Checking database.");
 
-                    teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
+                    teacher = await teacherDao.GetTeacher(TeacherId, TeacherLastName, TeacherPhone, TeacherStatus);
                     if (teacher == null)
                     {
-                        return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
+                        return NotFound(new ApiResponse(404, $"Teacher not found."));
                     }
 
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -80,7 +85,7 @@ namespace Lms.Controllers
                         .SetSlidingExpiration(TimeSpan.FromSeconds(15))
                         .SetSize(1024);
 
-                    cache.Set($"teacherKey{id}", teacher, cacheEntryOptions);
+                    cache.Set($"teacherKey{TeacherId}", teacher, cacheEntryOptions);
                 }
 
                 return Ok(new ApiOkResponse(teacher));
@@ -92,53 +97,7 @@ namespace Lms.Controllers
         }
 
         /// <summary>
-        /// Get Teacher by Active or Inactive Status
-        /// </summary>
-        /// <param name="status"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("teachers/{status}")]
-        public async Task<IActionResult> GetTeacherByStatus([FromRoute] string status)
-        {
-            try
-            {
-                if (status.ToLower() != "inactive" && status.ToLower() != "active")
-                {
-                    return BadRequest(new ApiResponse(400, "Please enter Active or Inactive status."));
-                }
-
-                if (cache.TryGetValue($"teacherKey{status}", out IEnumerable<TeacherModel> teachers))
-                {
-                    Log.Information($"Teachers with status '{status}' fournd in cache");
-                }
-                else
-                {
-                    Log.Information($"Teachers with status '{status}' not found in cache. Checking database.");
-
-                    teachers = await teacherDao.GetTeacherByStatus(status);
-                    if (teachers.IsNullOrEmpty())
-                    {
-                        return NotFound(new ApiResponse(404, $"Teacher with status {status} not found."));
-                    }
-
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
-                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
-                        .SetSize(1024);
-
-                    cache.Set($"teacherKey{status}", teachers, cacheEntryOptions);
-                }
-
-                return Ok(new ApiOkResponse(teachers));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Update CourseName, CourseStatus, TeacherId, StartDate, or EndDate
+        /// Update TeacherFirstName, TeacherLastName, TeacherPhone, TeacherEmail, TeacherStatus
         /// </summary>
         /// <param name="id"></param>
         /// <param name="updateRequest"></param>
@@ -149,7 +108,7 @@ namespace Lms.Controllers
         {
             try
             {
-                if (updateRequest == null)
+                if (updateRequest == null )
                 {
                     return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                 }
@@ -202,21 +161,35 @@ namespace Lms.Controllers
                             }
                             break;
                         default:
-                            return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                            return BadRequest(new ApiResponse(400, "The JSON patch document is missing."));
                     }
                 }
 
-                var teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
-                if (teacher == null)
+                var teacher = await teacherDao.GetTeacher(id, null, null, null);
+
+                if(teacher == null || !teacher.Any())
                 {
                     return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                 }
 
-                updateRequest.ApplyTo(teacher);
-                await teacherDao.PartiallyUpdateTeacherById(teacher);
+                var teacherToUpdate = teacher.FirstOrDefault();
 
-                cache.Remove($"teacherKey{teacher.TeacherId}");
-                cache.Remove($"teachersKey{teacher.TeacherStatus}");
+                updateRequest.ApplyTo(teacherToUpdate);
+
+                await teacherDao.PartiallyUpdateTeacherById(teacherToUpdate);
+
+                foreach (var teach in teacher)
+                {
+                    if (teach.TeacherId != null)
+                    {
+                        cache.Remove($"teacherKey{teach.TeacherId}");
+                    }
+
+                    if (teach.TeacherStatus != null)
+                    {
+                        cache.Remove($"teachersKey{teach.TeacherStatus}");
+                    }
+                }
 
                 return Ok(new ApiOkResponse(teacher));
             }
@@ -233,21 +206,31 @@ namespace Lms.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("teacher/{id}")]
-        public async Task<IActionResult> DeleteTeacherById([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteTeacherById(Guid id)
         {
             try
             {
-                var teacher = await teacherDao.GetTeacherById<TeacherModel>(id);
+                var teacher = await teacherDao.GetTeacher(id, null, null, null);
 
-                if (teacher == null)
+                if (teacher == null || !teacher.Any())
                 {
                     return NotFound(new ApiResponse(404, $"Teacher with that id not found."));
                 }
 
-                await teacherDao.DeleteTeacherById(id);
+                foreach (var teach in teacher)
+                {
+                    if (teach.TeacherId != null)
+                    {
+                        cache.Remove($"teacherKey{teach.TeacherId}");
+                    }
 
-                cache.Remove($"teacherKey{teacher.TeacherId}");
-                cache.Remove($"teachersKey{teacher.TeacherStatus}");
+                    if (teach.TeacherStatus != null)
+                    {
+                        cache.Remove($"teachersKey{teach.TeacherStatus}");
+                    }
+                }
+
+                await teacherDao.DeleteTeacherById(id);
 
                 return Ok(new ApiOkResponse(teacher));
             }
