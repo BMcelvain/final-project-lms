@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lms.Authentication
 {

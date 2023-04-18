@@ -54,6 +54,30 @@ namespace Lms
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "LMS Api", Description = "A CRUD Api for Learning Management System", Version = "v1" });
                 var filePath = Path.Combine(AppContext.BaseDirectory, "Lms.xml");
                 c.IncludeXmlComments(filePath);
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Please enter JWT Token"
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer",
+                        },
+                        new List<string> ()
+                    }
+                });
             }).AddSwaggerGenNewtonsoftSupport();
 
             // For Entity Framework  
