@@ -7,7 +7,7 @@ namespace Lms.Daos
 {
     public interface IStudentEnrollmentDao
     {
-        Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistory(Guid StudentId,string StudentLastName, string StudentPhone, string StudentStatus, string CourseStatus);
+        Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistory(Guid StudentId,string StudentPhone, string StudentStatus, string Cancelled, string HasPassed);
         Task<IEnumerable<StudentModel>> GetStudentsInCourseByCourseId(Guid id);
     }
 }

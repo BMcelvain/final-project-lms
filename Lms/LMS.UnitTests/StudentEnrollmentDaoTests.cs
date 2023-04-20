@@ -14,20 +14,20 @@ namespace LMS.UnitTests
     public class StudentEnrollmentDaoTests
     {
 
-        Mock<ISqlWrapper> mockSqlWrapper;
-        StudentEnrollmentDao sut;
-        Guid courseGuid;
-        Guid studentGuid;
-        List<StudentEnrollmentModel> studentEnrollment;
+        private Mock<ISqlWrapper> _mockSqlWrapper;
+        private StudentEnrollmentDao _sut;
+        private Guid _courseGuid;
+        private Guid _studentGuid;
+        private List<StudentEnrollmentModel> _studentEnrollment;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockSqlWrapper = new Mock<ISqlWrapper>();
-            sut = new StudentEnrollmentDao(mockSqlWrapper.Object);
-            courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0");
-            studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A7");
-            studentEnrollment = new List<StudentEnrollmentModel>()
+            _mockSqlWrapper = new Mock<ISqlWrapper>();
+            _sut = new StudentEnrollmentDao(_mockSqlWrapper.Object);
+            _courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0");
+            _studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A7");
+            _studentEnrollment = new List<StudentEnrollmentModel>()
             {
                 new StudentEnrollmentModel()
                 {
@@ -45,46 +45,46 @@ namespace LMS.UnitTests
         [TestCleanup]
         public void Cleanup()
         {
-            mockSqlWrapper = null;
-            sut = null;
-            courseGuid = new Guid();
-            studentGuid = new Guid();
-            studentEnrollment = null;
+            _mockSqlWrapper = null;
+            _sut = null;
+            _courseGuid = new Guid();
+            _studentGuid = new Guid();
+            _studentEnrollment = null;
         }
 
-        //[TestMethod]
-        //public void GetStudentEnrollmentHistoryByStudentId_UsesProperSqlQuery_OneTime()
-        //{   
-        //    // Act
-        //    _ = sut.GetStudentEnrollmentHistoryByStudentId(studentGuid);
+        [TestMethod]
+        public void GetStudentEnrollmentHistoryByStudentId_UsesProperSqlQuery_OneTime()
+        {
+            // Act
+            _ = _sut.GetStudentEnrollmentHistory(_studentGuid, null, null, null, null);
 
-        //    // Assert
-        //    mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
-        //    $" [Course].[CourseId]" +
-        //    $", [Course].[CourseName]" +
-        //    $", [Course].[StartDate]" +
-        //    $", [Course].[EndDate]" +
-        //    $", [StudentEnrollmentLog].[Cancelled]" +
-        //    $", [StudentEnrollmentLog].[CancellationReason]" +
-        //    $", [StudentEnrollmentLog].[HasPassed]" +
-        //    $", [Teacher].[TeacherEmail]" +
-        //    $", [Student].[StudentPhone]" +
-        //    $" FROM [StudentEnrollmentLog]" +
-        //    $" INNER JOIN [Course] ON [StudentEnrollmentLog].[CourseId] = [Course].[CourseId]" +
-        //    $" INNER JOIN [Teacher] ON [Course].[TeacherId] = [Teacher].[TeacherId]" +
-        //    $" INNER JOIN [Student] ON [StudentEnrollmentLog].[StudentId] = [Student].[StudentId]" +
-        //    $" WHERE [StudentEnrollmentLog].[StudentId] = @StudentId" +
-        //    $" ORDER BY HasPassed ASC,CourseName"), It.IsAny<DynamicParameters>()), Times.Once);
-        //}
+            // Assert
+            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
+            $"  C.[CourseId]" +
+            $", C.[CourseName]" +
+            $", C.[CourseStatus]" +
+            $", C.[StartDate]" +
+            $", C.[EndDate]" +
+            $", SE.[Cancelled]" +
+            $", SE.[CancellationReason]" +
+            $", SE.[HasPassed]" +
+            $", T.[TeacherEmail]" +
+            $", S.[StudentEmail]" +
+            $" FROM [StudentEnrollmentLog] as SE" +
+            $" INNER JOIN [Course] as C ON SE.[CourseId] = C.[CourseId]" +
+            $" INNER JOIN [Teacher] as T ON C.[TeacherId] = T.[TeacherId]" +
+            $" INNER JOIN [Student] as S ON SE.[StudentId] = S.[StudentId]" +
+            $" WHERE 1=1 AND S.StudentId = @StudentId"), It.IsAny<DynamicParameters>()), Times.Once);
+        }
 
         [TestMethod]
         public void GetStudentsInCourseByCourseId_UsesProperSqlQuery_OneTime()
         {
             // Act
-            _ = sut.GetStudentsInCourseByCourseId(courseGuid);
+            _ = _sut.GetStudentsInCourseByCourseId(_courseGuid);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql ==
+            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql ==
            $"SELECT * " +
             $"FROM [StudentEnrollmentLog] " +
             $"INNER JOIN [Student] ON [Student].[StudentId] = [StudentEnrollmentLog].[StudentId] " +

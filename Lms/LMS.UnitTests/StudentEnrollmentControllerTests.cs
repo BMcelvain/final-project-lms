@@ -19,25 +19,23 @@ namespace LMS.UnitTests
     [TestClass]
     public class StudentEnrollmentControllerTests
     {
-        Mock<IStudentEnrollmentDao> mockStudentEnrollmentDao;
-        StudentEnrollmentController sut;
-        Guid testGuid;
-        Guid invalidtestGuid;
-        JsonPatchDocument<StudentEnrollmentModel> studentEnrollmentJsonDocument;
-        List<StudentEnrollmentModel> studentEnrollment;
-        IMemoryCache cache;
+        private Mock<IStudentEnrollmentDao> _mockStudentEnrollmentDao;
+        private StudentEnrollmentController _sut;
+        private Guid _studentGuid;
+        private Guid _invalidStudentGuid;
+        private List<StudentEnrollmentModel> _studentEnrollment;
+        private IMemoryCache _cache;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
-            cache = new MemoryCache(new MemoryCacheOptions());
-            sut = new StudentEnrollmentController(mockStudentEnrollmentDao.Object, cache);
-            testGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9");
-            invalidtestGuid = new Guid("00000000-0000-0000-0000-000000000000");
-            studentEnrollmentJsonDocument = new JsonPatchDocument<StudentEnrollmentModel>();
+            _mockStudentEnrollmentDao = new Mock<IStudentEnrollmentDao>();
+            _cache = new MemoryCache(new MemoryCacheOptions());
+            _sut = new StudentEnrollmentController(_mockStudentEnrollmentDao.Object, _cache);
+            _studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A9");
+            _invalidStudentGuid = new Guid("00000000-0000-0000-0000-000000000000");
 
-            studentEnrollment = new List<StudentEnrollmentModel>()
+            _studentEnrollment = new List<StudentEnrollmentModel>()
             {
                 new StudentEnrollmentModel()
                 {
@@ -55,48 +53,55 @@ namespace LMS.UnitTests
         [TestCleanup]
         public void Cleanup()
         {
-            mockStudentEnrollmentDao = null;
-            sut = null;
-            testGuid = new Guid();
-            studentEnrollmentJsonDocument = null;
-            studentEnrollment = null;
+            _mockStudentEnrollmentDao = null;
+            _sut = null;
+            _studentGuid = new Guid();
+            _studentEnrollment = null;
         }
 
-        //[TestMethod]
-        //public async Task GetStudentEnrollmentHistoryByStudentId_ValidGuid_ReturnsOKStatusCode()
-        //{
-        //    // Arrange
-        //    mockStudentEnrollmentDao
-        //        .Setup(x => x.GetStudentEnrollmentHistoryByStudentId(testGuid))
-        //        .ReturnsAsync(studentEnrollment);
+        [TestMethod]
+        public async Task GetStudentEnrollment_ReturnsOkResponse_WhenStudentIdFoundInDatabase()
+        {
+            // Arrange
+            _mockStudentEnrollmentDao.Setup(x => x.GetStudentEnrollmentHistory(_studentGuid, null, null, null,null))
+                .ReturnsAsync(_studentEnrollment);
 
-        //    // Act
-        //    var result = await sut.GetStudentEnrollmentHistoryByStudentId(testGuid);
+            // Act
+            var result = await _sut.GetStudentEnrollmentHistory(_studentGuid, null, null, null,null);
 
-        //    // Assert
-        //    var okResult = result as OkObjectResult;
-        //    var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-        //    var studentInApiOkResponse = apiOkResponseInOkResult.Result;
-        //    result.Should().NotBeNull();
-        //    result.Should().BeOfType<OkObjectResult>();
-        //    studentInApiOkResponse.Should().NotBeNull();
-        //    studentInApiOkResponse.Should().BeEquivalentTo(studentEnrollment);
-        //}
+            // Assert
+            var okResult = result as OkObjectResult;
+            var apiOkResponse = okResult.Value as ApiOkResponse;
+            var studentResult = apiOkResponse.Result as List<StudentEnrollmentModel>;
 
-        //[TestMethod]
-        //public async Task GetStudentEnrollmentHistoryByStudentId_InvalidGuid_ReturnsNotFoundResponse()
-        //{
-        //    // Act
-        //    var result = await sut.GetStudentEnrollmentHistoryByStudentId(testGuid);
+            Assert.IsNotNull(okResult);
+            Assert.IsInstanceOfType(okResult, typeof(OkObjectResult));
+            Assert.IsNotNull(apiOkResponse);
+            Assert.AreEqual(_studentEnrollment, apiOkResponse.Result);
+            Assert.IsNotNull(studentResult);
+            CollectionAssert.AreEqual(_studentEnrollment, studentResult);
 
-        //    // Assert
-        //    var notFoundResult = result as NotFoundObjectResult;
-        //    var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
-        //    result.Should().NotBeNull();
-        //    result.Should().BeOfType<NotFoundObjectResult>();
-        //    apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-        //    apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Student enrollment with that Student Id not found.");
-        //}
-     
+           _mockStudentEnrollmentDao.Verify(x => x.GetStudentEnrollmentHistory(_studentGuid, null, null, null, null), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task GetStudentEnrollment_ReturnsNotFoundResponse_WhenStudentGuidIsInvalid()
+        {
+            // Arrange
+            _mockStudentEnrollmentDao.Setup(x => x.GetStudentEnrollmentHistory(_invalidStudentGuid, null, null, null, null))
+                .ReturnsAsync((IEnumerable<StudentEnrollmentModel>)null);
+
+            // Act
+            var result = await _sut.GetStudentEnrollmentHistory(_invalidStudentGuid, null, null, null, null);
+            var notFoundResult = result as NotFoundObjectResult;
+            var apiResponse = notFoundResult.Value as ApiResponse;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsInstanceOfType(result, typeof(NotFoundObjectResult));
+            Assert.AreEqual(404, apiResponse.StatusCode);
+            Assert.AreEqual("Student enrollment not found. Please check your entries and try again.", apiResponse.Message);
+        }
+
     }
 }

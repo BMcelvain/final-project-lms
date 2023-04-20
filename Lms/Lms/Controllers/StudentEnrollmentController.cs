@@ -29,14 +29,14 @@ namespace Lms.Controllers
         /// Get Student Enrollment History By Filters
         /// </summary>
         /// <param name="StudentId"></param>
-        /// <param name="StudentLastName"></param>
         /// <param name="StudentPhone"></param>
         /// <param name="StudentStatus"></param>
-        /// /// <param name="CourseStatus"></param>
+        /// <param name="Cancelled"></param>
+        /// <param name="HasPassed"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("studentEnrollment")]
-        public async Task<IActionResult> GetStudentEnrollmentHistory([FromQuery] Guid StudentId, string StudentLastName, string StudentPhone, string StudentStatus, string CourseStatus)
+        public async Task<IActionResult> GetStudentEnrollmentHistory([FromQuery] Guid StudentId, string StudentPhone, string StudentStatus, string Cancelled, string HasPassed)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace Lms.Controllers
                 {
                     Log.Information($"Student enrollment for student with that id not found in cache. Checking database.");
 
-                    studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistory(StudentId, StudentLastName, StudentPhone, StudentStatus, CourseStatus);
+                    studentEnrollments = await studentEnrollmentDao.GetStudentEnrollmentHistory(StudentId, StudentPhone, StudentStatus, Cancelled, HasPassed);
 
                     if (studentEnrollments.IsNullOrEmpty())
                     {
