@@ -43,7 +43,6 @@ namespace Lms
             services.AddScoped<ICourseDao, CourseDao>();
             services.AddScoped<ITeacherDao, TeacherDao>();
             services.AddScoped<IStudentDao, StudentDao>();
-            services.AddScoped<IStudentEnrollmentDao, StudentEnrollmentDao>();
 
             services.AddMemoryCache();
 

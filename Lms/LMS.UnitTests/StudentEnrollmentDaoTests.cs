@@ -15,7 +15,7 @@ namespace LMS.UnitTests
     {
 
         private Mock<ISqlWrapper> _mockSqlWrapper;
-        private StudentEnrollmentDao _sut;
+        private StudentDao _sut;
         private Guid _courseGuid;
         private Guid _studentGuid;
         private List<StudentEnrollmentModel> _studentEnrollment;
@@ -24,7 +24,7 @@ namespace LMS.UnitTests
         public void Initialize()
         {
             _mockSqlWrapper = new Mock<ISqlWrapper>();
-            _sut = new StudentEnrollmentDao(_mockSqlWrapper.Object);
+            _sut = new StudentDao(_mockSqlWrapper.Object);
             _courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0");
             _studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A7");
             _studentEnrollment = new List<StudentEnrollmentModel>()
@@ -53,10 +53,10 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public void GetStudentEnrollmentHistoryByStudentId_UsesProperSqlQuery_OneTime()
+        public void GetStudentHistoryByStudentId_UsesProperSqlQuery_OneTime()
         {
             // Act
-            _ = _sut.GetStudentEnrollmentHistory(_studentGuid, null, null, null, null);
+            _ = _sut.GetStudentEnrollmentHistory(_studentGuid, null, null, null);
 
             // Assert
             _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql == $"SELECT" +
@@ -84,7 +84,7 @@ namespace LMS.UnitTests
             _ = _sut.GetStudentsInCourseByCourseId(_courseGuid);
 
             // Assert
-            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentModel>(It.Is<string>(sql => sql ==
+            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryAsync<StudentEnrollmentModel>(It.Is<string>(sql => sql ==
            $"SELECT * " +
             $"FROM [StudentEnrollmentLog] " +
             $"INNER JOIN [Student] ON [Student].[StudentId] = [StudentEnrollmentLog].[StudentId] " +
