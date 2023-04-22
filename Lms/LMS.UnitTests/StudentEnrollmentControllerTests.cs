@@ -17,7 +17,7 @@ namespace LMS.UnitTests
 {
 #nullable disable warnings
     [TestClass]
-    public class StudentControllerTests
+    public class StudentEnrollmentControllerTests
     {
         private Mock<IStudentDao> _mockStudentDao;
         private StudentController _sut;
@@ -60,7 +60,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudent_ReturnsOkResponse_WhenStudentIdFoundInDatabase()
+        public async Task GetStudentEnrollmentHistory_ReturnsOkResponse_WhenStudentIdFoundInDatabase()
         {
             // Arrange
             _mockStudentDao.Setup(x => x.GetStudentEnrollmentHistory(_studentGuid, null, null, null))
@@ -85,7 +85,7 @@ namespace LMS.UnitTests
         }
 
         [TestMethod]
-        public async Task GetStudent_ReturnsNotFoundResponse_WhenStudentGuidIsInvalid()
+        public async Task GetStudentEnrollmentHistory_ReturnsNotFoundResponse_WhenStudentGuidIsInvalid()
         {
             // Arrange
             _mockStudentDao.Setup(x => x.GetStudentEnrollmentHistory(_invalidStudentGuid, null, null, null))
