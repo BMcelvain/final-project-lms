@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lms.Authentication
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
@@ -31,6 +30,12 @@ namespace Lms.Authentication
             this.roleManager = roleManager;
             _configuration = configuration;
         }
+
+        /// <summary>
+        /// User or Admin Login
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
 
         [HttpPost]
         [Route("login")]
@@ -71,6 +76,11 @@ namespace Lms.Authentication
             return Unauthorized();
         }
 
+        /// <summary>
+        /// Register User
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("register-user")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterModel model)
@@ -92,6 +102,12 @@ namespace Lms.Authentication
             return Ok(new ApiOkResponse("Success: User created successfully!"));
         }
 
+
+        /// <summary>
+        /// Register Admin
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)

@@ -33,7 +33,7 @@ namespace Lms.Controllers
         /// <param name="newCourse"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("courses")]
+        [Route("course")]
         public async Task<IActionResult> CreateCourse(CourseModel newCourse)
         {
             try
@@ -225,7 +225,7 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("courses")]
+        [Route("course")]
         public async Task<IActionResult> DeleteCourseById([Required][FromQuery] Guid id)
         {
             try
