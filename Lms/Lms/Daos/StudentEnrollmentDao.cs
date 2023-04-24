@@ -60,7 +60,7 @@ namespace Lms.Daos
             }
             if (!string.IsNullOrEmpty(HasPassed))
             {
-                query += " AND HasPassed = @HasPassed";
+                query += " OR HasPassed = @HasPassed";
                 parameters.Add("HasPassed", HasPassed, DbType.String);
             }
 

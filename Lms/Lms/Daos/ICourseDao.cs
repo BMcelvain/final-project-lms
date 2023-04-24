@@ -12,8 +12,6 @@ namespace Lms.Daos
         Task<T> GetCourseById<T>(Guid id);
         Task PartiallyUpdateCourseById(CourseModel updateRequest);
         Task DeleteCourseById(Guid id);
-        Task StudentInCourse(StudentInCourseModel newStudentToCourse);
-        Task PartiallyUpdateStudentInCourseByCourseStudentId(StudentInCourseModel updateRequest);
-        Task DeleteStudentInCourseByStudentCourseId(StudentInCourseModel deleteRequest);
+
     }
 }

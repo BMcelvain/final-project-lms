@@ -15,7 +15,7 @@ namespace Lms.Daos
     {
         private readonly ISqlWrapper sqlWrapper;
 
-        public CourseDao(ISqlWrapper sqlWrapper) 
+        public CourseDao(ISqlWrapper sqlWrapper)
         {
             this.sqlWrapper = sqlWrapper;
         }
@@ -58,7 +58,7 @@ namespace Lms.Daos
         // GET all courses with status of 'inactive' or 'active'. 
         public async Task<IEnumerable<CourseModel>> GetCourseByStatus(string status)
         {
-            var query = "SELECT * FROM Course WHERE CourseStatus = @courseStatus ORDER BY StartDate ASC"; 
+            var query = "SELECT * FROM Course WHERE CourseStatus = @courseStatus ORDER BY StartDate ASC";
             var courseStatus = new { courseStatus = new DbString { Value = status, IsFixedLength = false, IsAnsi = true } };
 
             using (sqlWrapper.CreateConnection())
@@ -96,61 +96,6 @@ namespace Lms.Daos
 
             var parameters = new DynamicParameters();
             parameters.Add("CourseId", id, DbType.Guid);
-
-            using (sqlWrapper.CreateConnection())
-            {
-               await sqlWrapper.ExecuteAsync(query, parameters);
-            }
-        }
-
-        //-------------Add Student in Course Section-----------------------------------------------------------------------------
-
-        public async Task StudentInCourse(StudentInCourseModel addStudentInCourse)
-        {
-            var query = "INSERT StudentEnrollmentLog (Id, StudentId, CourseId, Cancelled, CancellationReason, HasPassed)" +
-                        $"VALUES (@Id, @StudentId, @CourseId, @Cancelled, @CancellationReason, @HasPassed)";
-
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", Guid.NewGuid(), DbType.Guid);
-            parameters.Add("StudentId", addStudentInCourse.StudentId, DbType.Guid);
-            parameters.Add("CourseId", addStudentInCourse.CourseId, DbType.Guid);
-            parameters.Add("Cancelled", addStudentInCourse.Cancelled, DbType.Boolean);
-            parameters.Add("CancellationReason", addStudentInCourse?.CancellationReason, DbType.String);
-            parameters.Add("HasPassed", addStudentInCourse.HasPassed, DbType.Boolean);
-
-            using (sqlWrapper.CreateConnection())
-            {
-                await sqlWrapper.ExecuteAsync(query, parameters);
-            }
-        }
-
-        // PATCH a student within the Enrollment Log.
-        public async Task PartiallyUpdateStudentInCourseByCourseStudentId(StudentInCourseModel updateRequest)
-        {
-            var query = "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, StudentId=@StudentId, " +
-                        $"Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId";
-
-            var parameters = new DynamicParameters();
-            parameters.Add("CourseId", updateRequest.CourseId, DbType.Guid);
-            parameters.Add("StudentId", updateRequest.StudentId, DbType.Guid);
-            parameters.Add("Cancelled", updateRequest.Cancelled, DbType.Boolean);
-            parameters.Add("CancellationReason", updateRequest?.CancellationReason, DbType.String);
-            parameters.Add("HasPassed", updateRequest.HasPassed, DbType.Boolean);
-
-            using (sqlWrapper.CreateConnection())
-            {
-                await sqlWrapper.ExecuteAsync(query, parameters);
-            }
-        }
-
-        // DELETE a single course (by Guid) within the Student Enrollment Log 
-        public async Task DeleteStudentInCourseByStudentCourseId(StudentInCourseModel deleteRequest)
-        {
-            var query = $"DELETE FROM StudentEnrollmentLog WHERE StudentId = @StudentId AND CourseId = @CourseId";
-
-            var parameters = new DynamicParameters();
-            parameters.Add("StudentId", deleteRequest.StudentId, DbType.Guid);
-            parameters.Add("CourseId", deleteRequest.CourseId, DbType.Guid);  
 
             using (sqlWrapper.CreateConnection())
             {

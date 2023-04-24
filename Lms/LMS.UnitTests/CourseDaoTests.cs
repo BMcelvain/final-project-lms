@@ -18,7 +18,6 @@ namespace LMS.UnitTests
         CourseDao sut;
         Guid courseGuid;
         List<CourseModel> courses;
-        StudentInCourseModel studentInCourse;
 
         [TestInitialize]
         public void Initialize()
@@ -38,14 +37,6 @@ namespace LMS.UnitTests
                     CourseStatus = "Active"
                 }
             };
-            studentInCourse = new StudentInCourseModel()
-            {
-                StudentId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0"),
-                CourseId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B1"),
-                Cancelled = false,
-                CancellationReason = null,
-                HasPassed = false
-            };
         }
 
         [TestCleanup]
@@ -55,7 +46,6 @@ namespace LMS.UnitTests
             sut = null;
             courseGuid = new Guid();
             courses = null;
-            studentInCourse = null;
         }
 
         [TestMethod]
@@ -106,40 +96,6 @@ namespace LMS.UnitTests
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "DELETE FROM Course WHERE CourseId = @CourseId"), It.IsAny<DynamicParameters>()), Times.Once);
-        }
-
-        //------Add Student In Course Section -----------
-
-        [TestMethod]
-        public void StudentInCourse_UsesProperSqlQuery_OneTime()
-        {
-            //Act
-            _ = sut.StudentInCourse(studentInCourse);
-
-            //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT StudentEnrollmentLog (Id, StudentId, CourseId, Cancelled, CancellationReason, HasPassed)" +
-                        $"VALUES (@Id, @StudentId, @CourseId, @Cancelled, @CancellationReason, @HasPassed)"), It.IsAny<DynamicParameters>()), Times.Once);
-        }
-
-        [TestMethod]
-        public void PartiallyUpdateStudentInCourseByCourseStudentId_UsesProperSqlQuery_OneTime()
-        {
-            // Act
-            _ = sut.PartiallyUpdateStudentInCourseByCourseStudentId(studentInCourse);
-
-            // Assert     
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE StudentEnrollmentLog SET CourseId=@CourseId, StudentId=@StudentId, " +
-                    $"Cancelled=@Cancelled, CancellationReason=@CancellationReason, HasPassed=@HasPassed WHERE StudentId=@StudentId AND CourseId=@CourseId"), It.IsAny<DynamicParameters>()), Times.Once);
-        }
-
-        [TestMethod]
-        public void DeleteStudentInCourseByStudentCourseId_UsesProperSqlQuery_OneTime()
-        {
-            // Act
-            _ = sut.DeleteStudentInCourseByStudentCourseId(studentInCourse);
-
-            // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == $"DELETE FROM StudentEnrollmentLog WHERE StudentId = @StudentId AND CourseId = @CourseId"), It.IsAny<DynamicParameters>()), Times.Once);
         }
     }
 }

@@ -25,9 +25,7 @@ namespace LMS.UnitTests
         Guid courseGuid;
         Guid studentGuid;
         JsonPatchDocument<CourseModel> courseJsonDocument;
-        JsonPatchDocument<StudentInCourseModel> studentInCourseJsonDocument;
         List<CourseModel> courses;
-        StudentInCourseModel studentInCourse;
         IMemoryCache cache;
 
         [TestInitialize]
@@ -39,7 +37,6 @@ namespace LMS.UnitTests
             courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
             studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B2");
             courseJsonDocument  = new JsonPatchDocument<CourseModel>();
-            studentInCourseJsonDocument = new JsonPatchDocument<StudentInCourseModel>();
             courses = new List<CourseModel>()
             {
                 new CourseModel()
@@ -61,14 +58,6 @@ namespace LMS.UnitTests
                     CourseStatus = "Active"
                 }
             };
-            studentInCourse = new StudentInCourseModel()
-            {
-                StudentId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0"),
-                CourseId = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B1"),
-                Cancelled = false,
-                CancellationReason = null,
-                HasPassed= false
-            };
         }
 
         [TestCleanup]
@@ -79,9 +68,7 @@ namespace LMS.UnitTests
             courseGuid = new Guid();
             studentGuid = new Guid();
             courseJsonDocument = null;
-            studentInCourseJsonDocument = null; 
             courses = null;
-            studentInCourse = null;
         }
 
         [TestMethod]
@@ -253,112 +240,6 @@ namespace LMS.UnitTests
             var result = await sut.DeleteCourseById(courseGuid);
 
             // Assert 
-            var notFoundResult = result as NotFoundObjectResult;
-            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<NotFoundObjectResult>();
-            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
-        }
-
-        //---------------Add Student To Course Section-------------- 
-
-        [TestMethod]
-        public async Task StudentInCourse_ReturnsOkResponse_WhenStudentInCourseModelIsValid()
-        {
-            // Arrange 
-            mockCourseDao
-                .Setup(x => x.StudentInCourse(It.IsAny<StudentInCourseModel>()))
-                .Callback(() => { return; });
-
-            // Act
-            var result = await sut.StudentInCourse(studentInCourse);
-
-            //Assert
-            var okResult = result as OkObjectResult;
-            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-            var studentInCourseWithinApiOkResponse = apiOkResponseInOkResult.Result;
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<OkObjectResult>();
-            apiOkResponseInOkResult.StatusCode.Should().Be(200);
-            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
-            studentInCourseWithinApiOkResponse.Should().NotBeNull();
-            studentInCourseWithinApiOkResponse.Should().BeEquivalentTo(studentInCourse);
-        }
-
-        [TestMethod]
-        public async Task PartiallyUpdateStudentInCourseById_ReturnsStudentInCourseAndOkResponse_WhenStudentCourseGuidsAndJsonDocAreValid()
-        {
-            //Arrange
-            mockCourseDao
-                .Setup(x => x.GetCourseById<StudentInCourseModel>(courseGuid))
-                .ReturnsAsync(studentInCourse);
-
-            //Act
-            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(studentGuid, courseGuid, studentInCourseJsonDocument);
-
-            //Assert
-            var okResult = result as OkObjectResult;
-            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-            var studentInCourseWithinApiOkResponse = apiOkResponseInOkResult.Result;
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<OkObjectResult>();
-            apiOkResponseInOkResult.StatusCode.Should().Be(200);
-            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
-            studentInCourseWithinApiOkResponse.Should().NotBeNull();
-            studentInCourseWithinApiOkResponse.Should().BeEquivalentTo(studentInCourse);
-        }
-
-        [TestMethod]
-        public async Task PartiallyUpdateStudentInCourseByCourseStudentId_ReturnsNotFoundResponse_WhenCourseGuidIsInvalid()
-        {
-            // Act
-            var result = await sut.PartiallyUpdateStudentInCourseByCourseStudentId(studentGuid, courseGuid, studentInCourseJsonDocument);
-
-            // Assert
-            var notFoundResult = result as NotFoundObjectResult;
-            var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<NotFoundObjectResult>();
-            apiResponseInNotFoundResult.StatusCode.Should().Be(404);
-            apiResponseInNotFoundResult.Message.Should().BeEquivalentTo("Course with that id not found.");
-        }
-
-        [TestMethod]
-        public async Task DeleteStudentInCourseByStudentCourseId_ReturnsStudentInCourseAndOkResponse_WhenStudentAndCourseGuidsAreValid()
-        {
-            // Arrange
-            mockCourseDao
-                .Setup(x => x.GetCourseById<StudentInCourseModel>(courseGuid))
-                .ReturnsAsync(studentInCourse);
-
-            // Act
-            var result = await sut.DeleteStudentInCourseByStudentCourseId(studentGuid, courseGuid);
-
-            //Assert
-            var okResult = result as OkObjectResult;
-            var apiOkResponseInOkResult = okResult.Value as ApiOkResponse;
-            var studentInCourseWithinApiOkResponse = apiOkResponseInOkResult.Result;
-
-            result.Should().NotBeNull();
-            result.Should().BeOfType<OkObjectResult>();
-            apiOkResponseInOkResult.StatusCode.Should().Be(200);
-            apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
-            studentInCourseWithinApiOkResponse.Should().NotBeNull();
-            studentInCourseWithinApiOkResponse.Should().BeEquivalentTo(studentInCourse);
-        }
-
-        [TestMethod]
-        public async Task DeleteStudentInCourseByIdId_ReturnsNotFoundResponse_WhenCourseGuidIsInvalid()
-        {
-            // Act
-            var result = await sut.DeleteStudentInCourseByStudentCourseId(studentGuid, courseGuid);
-
-            // Assert
             var notFoundResult = result as NotFoundObjectResult;
             var apiResponseInNotFoundResult = notFoundResult.Value as ApiResponse;
 
