@@ -56,8 +56,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("course/{id}")]
-        public async Task<IActionResult> GetCourseById([FromRoute] Guid id)
+        [Route("course")]
+        public async Task<IActionResult> GetCourseById([Required][FromQuery] Guid id)
         {
             try
             {
@@ -97,8 +97,8 @@ namespace Lms.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/{status}")]
-        public async Task<IActionResult> GetCourseByStatus([FromRoute] string status)
+        [Route("courses")]
+        public async Task<IActionResult> GetCourseByStatus([Required][FromQuery] string status)
         {
             try
             {
@@ -225,8 +225,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("courses/{id}")]
-        public async Task<IActionResult> DeleteCourseById([FromRoute] Guid id)
+        [Route("courses")]
+        public async Task<IActionResult> DeleteCourseById([Required][FromQuery] Guid id)
         {
             try
             {

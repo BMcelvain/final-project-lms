@@ -18,7 +18,7 @@ namespace Lms.Daos
             this.sqlWrapper = sqlWrapper;
         }
 
-        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistory(Guid StudentId,string StudentLastName = null, string StudentPhone = null, string StudentStatus = null, string CourseStatus = null)
+        public async Task<IEnumerable<StudentEnrollmentModel>> GetStudentEnrollmentHistory(Guid StudentId, string StudentPhone = null, string StudentStatus = null, string Cancelled = null, string HasPassed = null)
         {
             var query = $"SELECT" +
             $"  C.[CourseId]" +
@@ -43,11 +43,6 @@ namespace Lms.Daos
                 query += " AND S.StudentId = @StudentId";
                 parameters.Add("StudentId", StudentId, DbType.Guid);
             }
-            if (!string.IsNullOrEmpty(StudentLastName))
-            {
-                query += " AND StudentLastName = @StudentLastName";
-                parameters.Add("StudentLastName", StudentLastName, DbType.String);
-            }
             if (!string.IsNullOrEmpty(StudentPhone))
             {
                 query += " AND StudentPhone = @StudentPhone";
@@ -58,10 +53,15 @@ namespace Lms.Daos
                 query += " AND StudentStatus = @StudentStatus";
                 parameters.Add("StudentStatus", StudentStatus, DbType.String);
             }
-            if (!string.IsNullOrEmpty(CourseStatus))
+            if (!string.IsNullOrEmpty(Cancelled))
             {
-                query += " AND CourseStatus = @CourseStatus";
-                parameters.Add("CourseStatus", CourseStatus, DbType.String);
+                query += " AND Cancelled = @Cancelled";
+                parameters.Add("Cancelled", Cancelled, DbType.String);
+            }
+            if (!string.IsNullOrEmpty(HasPassed))
+            {
+                query += " AND HasPassed = @HasPassed";
+                parameters.Add("HasPassed", HasPassed, DbType.String);
             }
 
             using (sqlWrapper.CreateConnection())

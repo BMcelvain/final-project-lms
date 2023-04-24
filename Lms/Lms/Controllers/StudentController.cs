@@ -13,8 +13,8 @@ using Serilog;
 using Lms.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
-
-
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lms.Controllers
 {
@@ -60,8 +60,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("student/{id}")]
-        public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
+        [Route("student")]
+        public async Task<IActionResult> GetStudentById([Required][FromQuery] Guid id)
         {
 
             try
@@ -190,8 +190,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("student/{id}")]
-        public async Task<IActionResult> DeleteStudentById([FromRoute] Guid id)
+        [Route("student")]
+        public async Task<IActionResult> DeleteStudentById([Required][FromQuery] Guid id)
         {
             try
             {

@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
 using FluentAssertions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lms.Controllers
 {
@@ -205,8 +206,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("teacher/{id}")]
-        public async Task<IActionResult> DeleteTeacherById(Guid id)
+        [Route("teacher")]
+        public async Task<IActionResult> DeleteTeacherById([Required][FromQuery] Guid id)
         {
             try
             {
