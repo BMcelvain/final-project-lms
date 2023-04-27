@@ -11,7 +11,7 @@ namespace LMS.UnitTests
 {
     #nullable disable
     [TestClass]
-    public class StudentEnrollmentDaoTests
+    public class StudentEnrollmentInStudentDaoTests
     {
 
         private Mock<ISqlWrapper> _mockSqlWrapper;

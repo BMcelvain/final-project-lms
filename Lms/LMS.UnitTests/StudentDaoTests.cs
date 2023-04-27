@@ -13,19 +13,19 @@ namespace LMS.UnitTests
     [TestClass]
     public class StudentDaoTests
     {
-        #nullable disable
-        Mock<ISqlWrapper> mockSqlWrapper;
-        StudentDao sut;
-        Guid studentGuid;
-        List<StudentModel> students;
+#nullable disable
+        private Mock<ISqlWrapper> _mockSqlWrapper;
+        private StudentDao _sut;
+        private Guid _studentGuid;
+        private List<StudentModel> _students;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockSqlWrapper = new Mock<ISqlWrapper>();
-            sut = new StudentDao(mockSqlWrapper.Object);
-            studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0");
-            students = new List<StudentModel>()
+            _mockSqlWrapper = new Mock<ISqlWrapper>();
+            _sut = new StudentDao(_mockSqlWrapper.Object);
+            _studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B0");
+            _students = new List<StudentModel>()
             {
                 new StudentModel()
                 {
@@ -42,20 +42,20 @@ namespace LMS.UnitTests
         [TestCleanup]
         public void Cleanup()
         {
-            mockSqlWrapper = null;
-            sut = null;
-            studentGuid = new Guid();
-            students = null;
+            _mockSqlWrapper = null;
+            _sut = null;
+            _studentGuid = new Guid();
+            _students = null;
         }
 
         [TestMethod]
         public void CreateStudentInSql_UsesProperSqlQuery_OneTime()
         {
             //Act
-            _ = sut.CreateStudent(students.First());
+            _ = _sut.CreateStudent(_students.First());
 
             //Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT Student (StudentId, StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus)" +
+            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "INSERT Student (StudentId, StudentFirstName, StudentLastName,StudentPhone, StudentEmail, StudentStatus)" +
                          $"VALUES(@StudentId, @StudentFirstName, @StudentLastName, @StudentPhone, @StudentEmail, @StudentStatus)"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
@@ -63,17 +63,17 @@ namespace LMS.UnitTests
         public void GetStudentById_UsesProperSqlQuery_OneTime()
         {
             // Act
-            _ = sut.GetStudentById<StudentModel>(studentGuid);
+            _ = _sut.GetStudentById<StudentModel>(_studentGuid);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * FROM Student WHERE StudentId = @StudentId"), It.IsAny<DynamicParameters>()), Times.Once);
+            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.QueryFirstOrDefaultAsync<StudentModel>(It.Is<string>(sql => sql == $"SELECT * FROM Student WHERE StudentId = @StudentId"), It.IsAny<DynamicParameters>()), Times.Once);
         }
 
         [TestMethod]
         public void PartiallyUpdateStudentById_UsesProperSqlQuery_OneTime()
         {
             // Act
-            _ = sut.PartiallyUpdateStudentById(students.First());
+            _ = _sut.PartiallyUpdateStudentById(_students.First());
 
             // Assert
             mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == "UPDATE Student SET StudentFirstName=@StudentFirstName, StudentLastName=@StudentLastName, " +
@@ -85,10 +85,10 @@ namespace LMS.UnitTests
         public void DeleteStudentById_UsesProperSqlQuery_OneTime()
         {
             // Act
-            _ = sut.DeleteStudentById(studentGuid);
+            _ = _sut.DeleteStudentById(_studentGuid);
 
             // Assert
-            mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == $"DELETE FROM Student WHERE StudentId = @StudentId"), It.IsAny<DynamicParameters>()), Times.Once);
+            _mockSqlWrapper.Verify(sqlWrapper => sqlWrapper.ExecuteAsync(It.Is<string>(sql => sql == $"DELETE FROM Student WHERE StudentId = @StudentId"), It.IsAny<DynamicParameters>()), Times.Once);
         }
     }
 }

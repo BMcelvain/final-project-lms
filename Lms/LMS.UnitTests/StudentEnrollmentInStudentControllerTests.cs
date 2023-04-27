@@ -17,7 +17,7 @@ namespace LMS.UnitTests
 {
 #nullable disable warnings
     [TestClass]
-    public class StudentEnrollmentControllerTests
+    public class StudentEnrollmentTests
     {
         private Mock<IStudentDao> _mockStudentDao;
         private StudentController _sut;

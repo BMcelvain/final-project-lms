@@ -20,24 +20,24 @@ namespace LMS.UnitTests
     [TestClass]
     public class CourseControllerTests
     {
-        Mock<ICourseDao> mockCourseDao;
-        CourseController sut;
-        Guid courseGuid;
-        Guid studentGuid;
-        JsonPatchDocument<CourseModel> courseJsonDocument;
-        List<CourseModel> courses;
-        IMemoryCache cache;
+        private Mock<ICourseDao> _mockCourseDao;
+        private CourseController _sut;
+        private Guid _courseGuid;
+        private Guid _studentGuid;
+        private JsonPatchDocument<CourseModel> _courseJsonDocument;
+        private List<CourseModel> _courses;
+        private IMemoryCache _cache;
 
         [TestInitialize]
         public void Initialize()
         {
-            mockCourseDao = new Mock<ICourseDao>();
-            cache = new MemoryCache(new MemoryCacheOptions());
-            sut = new CourseController(mockCourseDao.Object, cache);
-            courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
-            studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B2");
-            courseJsonDocument  = new JsonPatchDocument<CourseModel>();
-            courses = new List<CourseModel>()
+            _mockCourseDao = new Mock<ICourseDao>();
+            _cache = new MemoryCache(new MemoryCacheOptions());
+            _sut = new CourseController(_mockCourseDao.Object, _cache);
+            _courseGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167A6");
+            _studentGuid = new Guid("0AE43554-0BB1-42B1-94C7-04420A2167B2");
+            _courseJsonDocument  = new JsonPatchDocument<CourseModel>();
+            _courses = new List<CourseModel>()
             {
                 new CourseModel()
                 {
@@ -63,24 +63,24 @@ namespace LMS.UnitTests
         [TestCleanup]
         public void Cleanup()
         {
-            mockCourseDao = new Mock<ICourseDao>();
-            sut = null;
-            courseGuid = new Guid();
-            studentGuid = new Guid();
-            courseJsonDocument = null;
-            courses = null;
+            _mockCourseDao = new Mock<ICourseDao>();
+            _sut = null;
+            _courseGuid = new Guid();
+            _studentGuid = new Guid();
+            _courseJsonDocument = null;
+            _courses = null;
         }
 
         [TestMethod]
         public async Task CreateCourse_ReturnsOkResponse_WhenModelIsValid()
         { 
             // Arrange
-            mockCourseDao
+            _mockCourseDao
                 .Setup(x => x.CreateCourse(It.IsAny<CourseModel>()))
                 .Callback(() => { return; });
 
             // Act
-            var result = await sut.CreateCourse(courses.First());
+            var result = await _sut.CreateCourse(_courses.First());
 
             // Assert
             var okResult = result as OkObjectResult;
@@ -90,19 +90,19 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<OkObjectResult>();
             courseInApiOkResponse.Should().NotBeNull();
-            courseInApiOkResponse.Should().BeEquivalentTo(courses.First());
+            courseInApiOkResponse.Should().BeEquivalentTo(_courses.First());
         }
 
         [TestMethod]
         public async Task GetCoursesById_ReturnsCourseAndOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(courseGuid))
-                .ReturnsAsync(courses.First());
+            _mockCourseDao
+                .Setup(x => x.GetCourseById<CourseModel>(_courseGuid))
+                .ReturnsAsync(_courses.First());
 
             // Act
-            var result = await sut.GetCourseById(courseGuid);
+            var result = await _sut.GetCourseById(_courseGuid);
             
             // Assert
             var okResult = result as OkObjectResult;
@@ -112,14 +112,14 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<OkObjectResult>();
             courseInApiOkResponse.Should().NotBeNull();
-            courseInApiOkResponse.Should().BeEquivalentTo(courses.First());
+            courseInApiOkResponse.Should().BeEquivalentTo(_courses.First());
         }
 
         [TestMethod]
         public async Task GetCourseById_ReturnsNotFoundResponse_WhenGuidIsInvalid()
         {
             // Act
-            var result = await sut.GetCourseById(courseGuid);
+            var result = await _sut.GetCourseById(_courseGuid);
             
             // Assert
             var notFoundResult = result as NotFoundObjectResult;
@@ -135,12 +135,12 @@ namespace LMS.UnitTests
         public async Task GetCourseByStatus_ReturnsCoursesAndOkResponse_WhenStatusIsActive()
         {
             // Arrange
-            mockCourseDao
+            _mockCourseDao
                 .Setup(x => x.GetCourseByStatus("Active"))
-                .ReturnsAsync(courses);
+                .ReturnsAsync(_courses);
 
             // Act
-            var result = await sut.GetCourseByStatus("Active");
+            var result = await _sut.GetCourseByStatus("Active");
 
             // Assert
             var okResult = result as OkObjectResult;
@@ -150,14 +150,14 @@ namespace LMS.UnitTests
             result.Should().NotBeNull();
             result.Should().BeOfType<OkObjectResult>();
             apiOkResponseInOkResult.StatusCode.Should().Be(200);
-            coursesInApiOkResponse.Should().BeEquivalentTo(courses);
+            coursesInApiOkResponse.Should().BeEquivalentTo(_courses);
         }
 
         [TestMethod]
         public async Task GetCourseByStatus_ReturnsBadRequestResponse_WhenStatusIsNotActiveOrInactive()
         {
             // Act
-            var result = await sut.GetCourseByStatus("Test");
+            var result = await _sut.GetCourseByStatus("Test");
 
             // Assert
             var badRequestResult = result as BadRequestObjectResult;
@@ -173,12 +173,12 @@ namespace LMS.UnitTests
         public async Task PartiallyUpdateCourseById_ReturnsCourseAndOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(courseGuid))
-                .ReturnsAsync(courses.First());
+            _mockCourseDao
+                .Setup(x => x.GetCourseById<CourseModel>(_courseGuid))
+                .ReturnsAsync(_courses.First());
 
             // Act
-            var result = await sut.PartiallyUpdateCourseById(courseGuid, courseJsonDocument);
+            var result = await _sut.PartiallyUpdateCourseById(_courseGuid, _courseJsonDocument);
 
             // Assert
             var okResult = result as OkObjectResult;
@@ -190,14 +190,14 @@ namespace LMS.UnitTests
             apiOkResponseInOkResult.StatusCode.Should().Be(200);
             apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
             courseInApiOkResponse.Should().NotBeNull();
-            courseInApiOkResponse.Should().BeEquivalentTo(courses.First());
+            courseInApiOkResponse.Should().BeEquivalentTo(_courses.First());
         }
 
         [TestMethod]
         public async Task PartiallyUpdateCourseById_ReturnsNotFound_WhenGuidIsInvalid()
         {
             // Act
-            var result = await sut.PartiallyUpdateCourseById(courseGuid, courseJsonDocument);
+            var result = await _sut.PartiallyUpdateCourseById(_courseGuid, _courseJsonDocument);
 
             // Arrange
             var notFoundResult = result as NotFoundObjectResult;
@@ -213,12 +213,12 @@ namespace LMS.UnitTests
         public async Task DeleteCourseById_ReturnsCourseAndOkResponse_WhenGuidIsValid()
         {
             // Arrange
-            mockCourseDao
-                .Setup(x => x.GetCourseById<CourseModel>(courseGuid))
-                .ReturnsAsync(courses.First());
+            _mockCourseDao
+                .Setup(x => x.GetCourseById<CourseModel>(_courseGuid))
+                .ReturnsAsync(_courses.First());
 
             // Act
-            var result = await sut.DeleteCourseById(courseGuid);
+            var result = await _sut.DeleteCourseById(_courseGuid);
 
             // Assert
             var okResult = result as OkObjectResult;
@@ -230,14 +230,14 @@ namespace LMS.UnitTests
             apiOkResponseInOkResult.StatusCode.Should().Be(200);
             apiOkResponseInOkResult.Message.Should().BeEquivalentTo("Results were a success.");
             courseInApiOkResponse.Should().NotBeNull();
-            courseInApiOkResponse.Should().BeEquivalentTo(courses.First());
+            courseInApiOkResponse.Should().BeEquivalentTo(_courses.First());
         }
 
         [TestMethod]
         public async Task DeleteCourseById_ReturnsNotFoundResponse_WhenCourseGuidIsInvalid()
         {
             // Act
-            var result = await sut.DeleteCourseById(courseGuid);
+            var result = await _sut.DeleteCourseById(_courseGuid);
 
             // Assert 
             var notFoundResult = result as NotFoundObjectResult;
