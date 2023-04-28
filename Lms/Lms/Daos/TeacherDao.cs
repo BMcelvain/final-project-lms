@@ -38,32 +38,38 @@ namespace Lms.Daos
             }
         }
 
-        // GET a single teacher (by Id) within the Teacher table.
-        public async Task<TeacherModel> GetTeacherById<TeacherModel>(Guid id)
+        // GET a teacher by filters
+        public async Task<IEnumerable<TeacherModel>> GetTeacher(Guid TeacherId, string TeacherLastName = null, string TeacherPhone = null, string TeacherStatus = null)
         {
-            var query = $"SELECT * FROM Teacher WHERE TeacherId = @TeacherId";
+            var query = $"SELECT * FROM Teacher WHERE 1=1";
+
 
             var parameters = new DynamicParameters();
-            parameters.Add("TeacherId", id, DbType.Guid);
-
-            using (sqlWrapper.CreateConnection())
+            if (TeacherId != Guid.Empty)
             {
-                var teacher = await sqlWrapper.QueryFirstOrDefaultAsync<TeacherModel>(query, parameters);
-                return teacher;
+                query += " AND TeacherId = @TeacherId";
+                parameters.Add("TeacherId", TeacherId, DbType.Guid);
             }
-        }
-
-        //Get teachers by status within the Teacher table
-        public async Task<IEnumerable<TeacherModel>> GetTeacherByStatus(string status)
-        {
-            var query = $"SELECT * FROM Teacher WHERE TeacherStatus = @teacherStatus ORDER BY TeacherLastName ASC";
-            var teacherStatus = new { teacherStatus = new DbString { Value = status, IsFixedLength = false, IsAnsi = true } };
+            if (!string.IsNullOrEmpty(TeacherLastName))
+            {
+                query += " AND TeacherLastName = @TeacherLastName";
+                parameters.Add("TeacherLastName", TeacherLastName, DbType.String);
+            }
+            if (!string.IsNullOrEmpty(TeacherPhone))
+            {
+                query += " AND TeacherPhone = @TeacherPhone";
+                parameters.Add("TeacherPhone", TeacherPhone, DbType.String);
+            }
+            if (!string.IsNullOrEmpty(TeacherStatus))
+            {
+                query += " AND TeacherStatus = @TeacherStatus";
+                parameters.Add("TeacherStatus", TeacherStatus, DbType.String);
+            }
 
             using (sqlWrapper.CreateConnection())
             {
-                var teachers = await sqlWrapper.QueryAsync<TeacherModel>(query, teacherStatus);
-
-                return teachers.ToList();
+                var teacher = await sqlWrapper.QueryAsync<TeacherModel>(query, parameters);
+                return teacher.ToList();
             }
         }
 

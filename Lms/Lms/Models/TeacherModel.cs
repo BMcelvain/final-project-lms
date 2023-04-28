@@ -12,7 +12,7 @@ namespace Lms.Models
         public string TeacherFirstName { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z][A-Za-z]+$", ErrorMessage = "Please enter last name starting with capital letter, lowercase for the remaining letters. Hyphenated last names are acceptable.")]
+        [RegularExpression(@"^[A-Z][A-Za-z-]+$", ErrorMessage = "Please enter last name starting with capital letter, lowercase for the remaining letters. Hyphenated last names are acceptable.")]
         public string TeacherLastName { get; set; }
 
         [Required(ErrorMessage = "Please enter phone number in a valid format: e.g. XXX-XXX-XXXX.")]

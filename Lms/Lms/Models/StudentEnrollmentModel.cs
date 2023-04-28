@@ -8,7 +8,7 @@ namespace Lms.Models
         public Guid CourseId { get; set; }
 
         [Required]
-        [RegularExpression(@"^[A-Z][A-Za-z]+$", ErrorMessage = "Please enter Course name starting with capital letter, lowercase for the remaining letters.")]
+        [RegularExpression(@"^[A-Z][A-Za-z ]+$", ErrorMessage = "Please enter Course name starting with capital letter, lowercase for the remaining letters.")]
         public string CourseName { get; set; }
 
         [Required]
@@ -27,9 +27,10 @@ namespace Lms.Models
         [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Please enter an E-Mail in a valid format: example@vu.com.")]
         public string TeacherEmail { get; set; }
 
-        [Required(ErrorMessage = "Please enter phone number in a valid format: XXX-XXX-XXXX.")]
-        [Phone]
-        public string StudentPhone { get; set; }
+        [Required]
+        [EmailAddress]
+        [RegularExpression(@"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "Please enter an E-Mail in a valid format: example@vu.com.")]
+        public string StudentEmail { get; set; }
     }
 }
 

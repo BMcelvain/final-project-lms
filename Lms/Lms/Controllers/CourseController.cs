@@ -33,7 +33,7 @@ namespace Lms.Controllers
         /// <param name="newCourse"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("courses")]
+        [Route("course")]
         public async Task<IActionResult> CreateCourse(CourseModel newCourse)
         {
             try
@@ -56,8 +56,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("course/{id}")]
-        public async Task<IActionResult> GetCourseById([FromRoute] Guid id)
+        [Route("course")]
+        public async Task<IActionResult> GetCourseById([Required][FromQuery] Guid id)
         {
             try
             {
@@ -97,8 +97,8 @@ namespace Lms.Controllers
         /// <param name="status"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("courses/{status}")]
-        public async Task<IActionResult> GetCourseByStatus([FromRoute] string status)
+        [Route("courses")]
+        public async Task<IActionResult> GetCourseByStatus([Required][FromQuery] string status)
         {
             try
             {
@@ -167,7 +167,7 @@ namespace Lms.Controllers
                     {
                         case "/coursename":
                             string CourseName = operation.value?.ToString();
-                            if (!Regex.IsMatch(CourseName, @"^[A-Z][A-Za-z]+$"))
+                            if (!Regex.IsMatch(CourseName, @"^[A-Z][A-Za-z ]+$"))
                             {
                                 return BadRequest(new ApiResponse(400, "Please enter Course name starting with capital letter, lowercase for the remaining letters."));
                             }
@@ -194,7 +194,7 @@ namespace Lms.Controllers
                             }
                             break;
                         default:
-                            return BadRequest(new ApiResponse(500, "The JSON patch document is missing."));
+                            return BadRequest(new ApiResponse(400, "The JSON patch document is missing."));
                     }
                 }
 
@@ -225,8 +225,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("courses/{id}")]
-        public async Task<IActionResult> DeleteCourseById([FromRoute] Guid id)
+        [Route("course")]
+        public async Task<IActionResult> DeleteCourseById([Required][FromQuery] Guid id)
         {
             try
             {
@@ -243,91 +243,6 @@ namespace Lms.Controllers
                 cache.Remove($"coursesKey{course.CourseStatus}");
 
                 return Ok(new ApiOkResponse(course));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Add a Student to a Course
-        /// </summary>
-        /// <param name="addStudentInCourse"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route("StudentInCourse")]
-        public async Task<IActionResult> StudentInCourse(StudentInCourseModel addStudentInCourse)
-        {
-            try
-            {
-                await courseDao.StudentInCourse(addStudentInCourse);
-
-                return Ok(new ApiOkResponse(addStudentInCourse));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Update a Student in a Course - e.g. passed the course
-        /// </summary>
-        /// <param name="studentId"></param>
-        /// <param name="courseId"></param>
-        /// <param name="addStudentCourseUpdates"></param>
-        /// <returns></returns>
-        [HttpPatch]
-        [Route("StudentInCourse")]
-        public async Task<IActionResult> PartiallyUpdateStudentInCourseByCourseStudentId([Required][FromQuery] Guid studentId, [Required][FromQuery] Guid courseId, JsonPatchDocument<StudentInCourseModel> addStudentCourseUpdates)
-        {
-            try
-            {
-                var addStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
-
-                if (addStudentInCourse == null)
-                {
-                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
-                }
-
-                addStudentCourseUpdates.ApplyTo(addStudentInCourse);
-                addStudentInCourse.StudentId = studentId;
-
-                await courseDao.PartiallyUpdateStudentInCourseByCourseStudentId(addStudentInCourse);
-
-                return Ok(new ApiOkResponse(addStudentInCourse));
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        /// <summary>
-        /// Delete Student in a Course
-        /// </summary>
-        /// <param name="studentId"></param>
-        /// <param name="courseId"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Route("StudentInCourse")]
-        public async Task<IActionResult> DeleteStudentInCourseByStudentCourseId([Required][FromQuery] Guid studentId, [Required][FromQuery] Guid courseId)
-        {
-            try
-            {
-                var deleteStudentInCourse = await courseDao.GetCourseById<StudentInCourseModel>(courseId);
-
-                if (deleteStudentInCourse == null)
-                {
-                    return NotFound(new ApiResponse(404, $"Course with that id not found."));
-                }
-
-                deleteStudentInCourse.StudentId = studentId;
-
-                await courseDao.DeleteStudentInCourseByStudentCourseId(deleteStudentInCourse);
-
-                return Ok(new ApiOkResponse(deleteStudentInCourse));
             }
             catch (Exception e)
             {

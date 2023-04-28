@@ -10,9 +10,18 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
+using Lms.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using Microsoft.IdentityModel.Tokens;
+
 
 namespace Lms.Controllers
 {
+    [Authorize(Roles = UserRoles.Admin)]
     [ApiController]
     public class StudentController : ControllerBase
     {
@@ -54,8 +63,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("student/{id}")]
-        public async Task<IActionResult> GetStudentById([FromRoute] Guid id)
+        [Route("student/bystudentid")]
+        public async Task<IActionResult> GetStudentById([Required][FromQuery] Guid id)
         {
 
             try
@@ -89,7 +98,94 @@ namespace Lms.Controllers
                 return StatusCode(500, e.Message);
             }
         }
- 
+
+        /// <summary>
+        /// Get Student Enrollment Audit History By Parameters
+        /// </summary>
+        /// <param name="StudentId"></param>
+        /// <param name="StudentPhone"></param>
+        /// <param name="Cancelled"></param>
+        /// <param name="HasPassed"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("student/studentenrollment/byparameters")]
+        public async Task<IActionResult> GetStudentEnrollmentHistory([FromQuery] Guid StudentId, string StudentPhone, string Cancelled, string HasPassed)
+        {
+            try
+            {
+                if (cache.TryGetValue($"enrollmentKey{StudentId}", out IEnumerable<StudentEnrollmentModel> studentEnrollments))
+                {
+                    Log.Information($"Student enrollment for student with that id found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student enrollment for student with that id not found in cache. Checking database.");
+
+                    studentEnrollments = await studentDao.GetStudentEnrollmentHistory(StudentId, StudentPhone, Cancelled, HasPassed);
+
+                    if (studentEnrollments.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, $"Student enrollment not found. Please check your entries and try again."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{StudentId}", studentEnrollments, cacheEntryOptions);
+                }
+
+                return Ok(new ApiOkResponse(studentEnrollments));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Get Student Enrollment Audit History by CourseId
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("students/bycourseid")]
+        public async Task<IActionResult> GetStudentsInCourseByCourseId([Required][FromQuery] Guid courseId)
+        {
+            try
+            {
+                if (cache.TryGetValue($"enrollmentKey{courseId}", out IEnumerable<StudentEnrollmentModel> studentsInCourse))
+                {
+                    Log.Information($"Student Enrollment for student with that id found in cache");
+                }
+                else
+                {
+                    Log.Information($"Student Enrollment for student with that id not found in cache. Checking database.");
+
+                    studentsInCourse = (IEnumerable<StudentEnrollmentModel>)await studentDao.GetStudentsInCourseByCourseId(courseId);
+                    //await studentDao.GetStudentsInCourseByCourseId(courseId);
+                    if (studentsInCourse.IsNullOrEmpty())
+                    {
+                        return NotFound(new ApiResponse(404, "No students found in a course with that id. The course may have not students."));
+                    }
+
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
+                        .SetSlidingExpiration(TimeSpan.FromSeconds(15))
+                        .SetSize(1024);
+
+                    cache.Set($"courseKey{courseId}", studentsInCourse, cacheEntryOptions);
+                }
+
+                return Ok(new ApiOkResponse(studentsInCourse));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         /// <summary>
         /// Update StudentFirstName, StudentLastName, StudentPhone, StudentEmail,or Student Status
         /// </summary>
@@ -184,8 +280,8 @@ namespace Lms.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route("student/{id}")]
-        public async Task<IActionResult> DeleteStudentById([FromRoute] Guid id)
+        [Route("student")]
+        public async Task<IActionResult> DeleteStudentById([Required][FromQuery] Guid id)
         {
             try
             {
